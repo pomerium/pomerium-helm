@@ -10,7 +10,7 @@ config:
   sharedSecret: ""
   cookieSecret: ""
   generateTLS: true
-  policyFile: |-
+  policyFile:
     - from: httpbin.corp.pomerium.io
       to: http://httpbin
       allowed_domains:
@@ -132,5 +132,5 @@ extraVolumes: {}
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.0.3"
+  tag: "v0.0.4"
   pullPolicy: "IfNotPresent"
