@@ -1,3 +1,4 @@
+{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
 {{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
 apiVersion: apps/v1
 kind: Deployment
@@ -21,8 +22,9 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-{{- if .Values.podAnnotations }}
       annotations:
+        config/checksum: {{ print .Values.config.extraOpts | sha256sum }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
@@ -42,6 +44,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+{{- if or .Values.config.existingConfig .Values.config.policy }}
+          - --config=/etc/pomerium/config.yaml
+{{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -118,6 +123,15 @@ spec:
             path: /ping
             port: https
             scheme: HTTPS
+{{- if or .Values.config.existingConfig .Values.config.policy }}
+        volumeMounts:
+        - mountPath: /etc/pomerium/
+          name: config
+      volumes:
+      - name: config
+        configMap:
+          name: {{ $configName }}
+{{- end }}
       resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
