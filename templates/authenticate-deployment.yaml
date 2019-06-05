@@ -57,6 +57,8 @@ spec:
         env:
         - name: SERVICES
           value: authenticate
+        - name: AUTHENTICATE_SERVICE_URL
+          value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: COOKIE_SECRET
           valueFrom:
             secretKeyRef:
@@ -67,10 +69,6 @@ spec:
             secretKeyRef:
               name: {{ $secretName }}
               key: shared-secret
-        - name: REDIRECT_URL
-          value: {{ default (printf "https://%s.%s/oauth2/callback" (include "pomerium.authenticate.fullname" .)  .Values.config.rootDomain ) .Values.authenticate.redirectUrl }}
-        - name: PROXY_ROOT_DOMAIN
-          value: {{ .Values.config.rootDomain }}
         - name: IDP_PROVIDER
           value: {{ .Values.authenticate.idp.provider }}
         - name: IDP_CLIENT_ID
@@ -85,11 +83,13 @@ spec:
               key: idp-client-secret
         - name: IDP_PROVIDER_URL
           value: {{ .Values.authenticate.idp.url }}
+{{- if .Values.authenticate.idp.serviceAccount }}
         - name: IDP_SERVICE_ACCOUNT
           valueFrom:
             secretKeyRef:
               name:  {{ $secretName }}
               key: idp-service-account
+{{- end }}
         - name: CERTIFICATE
           valueFrom:
             secretKeyRef:
@@ -132,8 +132,6 @@ spec:
         configMap:
           name: {{ $configName }}
 {{- end }}
-      resources:
-{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
