@@ -116,6 +116,8 @@ spec:
         configMap:
           name: {{ $configName }}
 {{- end }}
+      resources:
+{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
