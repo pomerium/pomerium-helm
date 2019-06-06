@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
-  config.yaml: 
+  config.yaml: |
 {{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
 {{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
 {{- end }}
