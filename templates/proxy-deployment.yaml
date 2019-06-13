@@ -12,6 +12,7 @@ metadata:
   name: {{ template "pomerium.proxy.fullname" . }}
 {{- if .Values.annotations }}
   annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{ toYaml .Values.annotations | indent 4 }}
 {{- end }}
 spec:
@@ -23,8 +24,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        config/checksum: {{ print .Values.config.extraOpts | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
@@ -116,8 +116,6 @@ spec:
         configMap:
           name: {{ $configName }}
 {{- end }}
-      resources:
-{{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
