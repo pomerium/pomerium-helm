@@ -5,7 +5,7 @@ config:
       allowed_domains:
       - pomerium.io
     - from: https://external-httpbin.corp.pomerium.io
-      to: httpbin.org
+      to: https://httpbin.org
       allowed_domains:
       - gmail.com
     - from: https://weirdlyssl.corp.pomerium.io
