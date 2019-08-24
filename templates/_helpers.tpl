@@ -95,7 +95,7 @@ If release name contains chart name it will be used as a full name.
 
 
 {{/*
-Check if a valid source control provider has been set
+Check if a valid identity provider has been set
 Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates/_provider-envs.yaml
 */}}
 {{- define "pomerium.providerOK" -}}
