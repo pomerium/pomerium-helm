@@ -32,8 +32,7 @@ Get the Pomerium URL by running:
 ####        ERROR: You did not set a valid identity provider              ####
 ##############################################################################
 
-This deployment will be incomplete until you configure a valid version
-control provider:
+This deployment will be incomplete until you configure a valid identity provider:
 
     helm upgrade {{ .Release.Name }} \
         --reuse-values \
