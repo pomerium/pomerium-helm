@@ -19,11 +19,11 @@ spec:
         - {{ printf "authorize.%s" .Values.config.rootDomain | quote }}
         - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
       {{- range .Values.ingress.hosts }}
-        - {{ printf "%s.%s" . $.Values.config.rootDomain }}
+        - {{ printf "%s.%s" . $.Values.config.rootDomain | quote}}
       {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ printf "%s.%s" . $.Values.config.rootDomain }}
+    - host: {{ printf "%s.%s" . $.Values.config.rootDomain | quote}}
       http:
         paths:
           - paths:
