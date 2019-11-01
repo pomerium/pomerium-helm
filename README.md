@@ -80,7 +80,7 @@ You may force recreation of your TLS certificates by setting `config.forceGenera
 ### Self Provisioned
 If you wish to provide your own TLS certificates in secrets, you should:
 1) turn `generateTLS` to `false`
-2) specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.  
+2) specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
 
 All services can share the secret if appropriate.
 
@@ -135,7 +135,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `tracing.jaeger.agent_endpoint`     | The jaeger agent endpoint                                                                                                                                                                                  | Required                                                                           |
 | `ingress.enabled`                   | Enables Ingress for pomerium                                                                                                                                                                               | `false`                                                                            |
 | `ingress.annotations`               | Ingress annotations                                                                                                                                                                                        | `{}`                                                                               |
-| `ingress.hosts`                     | Ingress accepted hostnames                                                                                                                                                                                 | `nil`                                                                              |
+| `ingress.hosts`                     | Ingress accepted hostnames                                                                                                                                                                                 | `[]`                                                                              |
 | `ingress.tls`                       | Ingress TLS configuration                                                                                                                                                                                  | `[]`                                                                               |
 | `metrics.enabled`                   | Enable prometheus metrics endpoint                                                                                                                                                                         | `false`                                                                            |
 | `metrics.port`                      | Prometheus metrics endpoint port                                                                                                                                                                           | `9090`                                                                             |
@@ -156,7 +156,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 - Expose replica count for individual services
 - Switch Authorize service to CluserIP for client side load balancing
   - You must run pomerium v0.3.0+ to support this feature correctly
-  
+
 ## Upgrading
 
 ### 4.0.0
@@ -165,7 +165,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 3.0.0
 
-- This version moves all certificates to TLS secrets.  
+- This version moves all certificates to TLS secrets.
   - If you have existing generated certificates:
     - Let pomerium regenerate your certificates during upgrade
       - set `config.forceGenerateTLS` to `true`
@@ -173,14 +173,14 @@ A full listing of Pomerium's configuration variables can be found on the [config
       - set `config.forceGenerateTLS` to `false`
     - **OR:** To retain your certificates
       - save your existing pomerium secret
-      - set `config.existingLegacyTLSSecret` to `true` 
+      - set `config.existingLegacyTLSSecret` to `true`
       - set `config.existingConfig` to point to your configuration secret
       - upgrade
       - re-create pomerium secret from saved yaml
   - If you have externally sourced certificates in your pomerium secret:
     - [Move and convert your certificates](scripts/upgrade-v3.0.0.sh) to type TLS Secrets and configure `[service].existingTLSSecret` to point to your secrets
     - **OR:** To continue using your certificates from the existing config, set `config.existingLegacyTLSSecret` to `true`
-    
+
 ****
 ### 2.0.0
 
@@ -190,7 +190,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
 
-### Prometheus Operator 
+### Prometheus Operator
 
 This chart assumes you have already installed the Prometheus Operator CRDs.
 
