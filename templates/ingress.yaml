@@ -18,12 +18,12 @@ spec:
       hosts:
         - {{ printf "authorize.%s" .Values.config.rootDomain | quote }}
         - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
-      {{- range $key, $value := .Values.config.policy }}
-        - {{ $value.from | trimPrefix "https://" | trimPrefix "http://" | quote}}
+      {{- range .Values.config.policy }}
+        - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       {{- end }}
   rules:
-    {{- range $key, $value := .Values.config.policy }}
-    - host: {{ $value.from | trimPrefix "https://" | trimPrefix "http://" | quote}}
+    {{- range .Values.config.policy }}
+    - host: {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       http:
         paths:
           - paths:

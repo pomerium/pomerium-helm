@@ -1,8 +1,8 @@
 {{- if eq (include "pomerium.providerOK" .) "true" }}
 {{- if .Values.ingress.enabled }}
 From outside the cluster, the server URL(s) are:
-{{- range $key, $value := .Values.config.policy }}
-    {{ $value.from | quote}}
+{{- range .Values.config.policy }}
+    {{ .from | quote}}
 {{- end }}
 
 {{- else if contains "NodePort" .Values.service.type }}
