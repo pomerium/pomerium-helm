@@ -21,7 +21,20 @@ spec:
       {{- range .Values.config.policy }}
         - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       {{- end }}
+      {{- range .Values.ingress.hosts }}
+        - {{ . | quote }}
+      {{- end }}
   rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - paths:
+            backend:
+              serviceName: {{ template "pomerium.proxy.fullname" $ }}
+              servicePort: https
+    {{- end }}
+    {{- if not .Values.ingress.hosts }}
     {{- range .Values.config.policy }}
     - host: {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       http:
@@ -30,6 +43,7 @@ spec:
             backend:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: https
+    {{- end }}
     {{- end }}
     {{- if not .Values.service.authorize.headless }}
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
