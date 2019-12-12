@@ -1,8 +1,8 @@
 # For detailed explanation of each of the configuration settings see
 # https://www.pomerium.io/reference/
 
-nameOverride: pomerium
-fullnameOverride: pomerium
+nameOverride: ""
+fullnameOverride: ""
 
 # settings that are shared by all services
 config:
@@ -21,8 +21,8 @@ config:
   policy: {}
 
 authenticate:
-  fullnameOverride: authenticate
-  nameOverride: authenticate
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   redirectUrl: ""
   # see https://www.pomerium.io/docs/identity-providers.html
@@ -41,8 +41,8 @@ authenticate:
 
 
 authorize:
-  fullnameOverride: authorize
-  nameOverride: authorize
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   tls:
     cert: ""
@@ -53,8 +53,8 @@ authorize:
 
 
 proxy:
-  fullnameOverride: proxy
-  nameOverride: proxy
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   tls:
     cert: ""
