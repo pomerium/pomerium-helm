@@ -11,9 +11,18 @@ metadata:
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
+    {{ $annotationExist := false }}
 {{- if .Values.service.annotations }}
+{{ $annotationExist = true }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.proxy.service.annotations }}
+{{- if not $annotationsExist }}
+{{ $annotationExist = true}}
+  annotations:
+{{- end }}
+{{ toYaml .Values.proxy.service.annotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
