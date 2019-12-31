@@ -21,6 +21,7 @@
   - [Metrics Discovery Configuration](#metrics-discovery-configuration)
     - [Prometheus Operator](#prometheus-operator)
     - [Prometheus kubernetes_sd_configs](#prometheus-kubernetessdconfigs)
+    - [Contributing](#Contributing)
 
 ## TL;DR;
 
@@ -69,18 +70,20 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 In default configuration, this chart will automatically generate TLS certificates in a helm `pre-install` hook for the Pomerium services to communicate with.
 
-Upon delete, you will need to manually delete the generated secrets.  Example:
+Upon delete, you will need to manually delete the generated secrets. Example:
 
 ```console
 kubectl delete secret -l app.kubernetes.io/name=pomerium
 ```
 
-You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`.  Delete any existing TLS secrets first to prevent errors, and  make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
+You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`. Delete any existing TLS secrets first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
 
 ### Self Provisioned
+
 If you wish to provide your own TLS certificates in secrets, you should:
-1) turn `generateTLS` to `false`
-2) specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
+
+1. turn `generateTLS` to `false`
+2. specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
 
 All services can share the secret if appropriate.
 
@@ -89,16 +92,16 @@ All services can share the secret if appropriate.
 A full listing of Pomerium's configuration variables can be found on the [config reference page](https://www.pomerium.io/docs/reference/reference.html).
 
 | Parameter                           | Description                                                                                                                                                                                                   | Default                                                                               |
-|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `nameOverride`                      | Name of the chart.                                                                                                                                                                                            | `pomerium`                                                                            |
 | `fullnameOverride`                  | Full name of the chart.                                                                                                                                                                                       | `pomerium`                                                                            |
 | `config.rootDomain`                 | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/reference/reference.html#proxy-root-domains).                                                               | `corp.pomerium.io`                                                                    |
 | `config.existingSecret`             | Name of the existing Kubernetes Secret.                                                                                                                                                                       |                                                                                       |
 | `config.existingConfig`             | Name of the existing Config Map deployed on Kubernetes.                                                                                                                                                       |                                                                                       |
-| `config.existingLegacyTLSSecret`    | Use a Pre-3.0.0 secret for the service TLS data.  Only use if upgrading from <= 2.0.0                                                                                                                         | `false`                                                                               |
+| `config.existingLegacyTLSSecret`    | Use a Pre-3.0.0 secret for the service TLS data. Only use if upgrading from <= 2.0.0                                                                                                                          | `false`                                                                               |
 | `config.existingCASecret`           | Name of the existing CA Secret.                                                                                                                                                                               |                                                                                       |
 | `config.generateTLS`                | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                         | `true`                                                                                |
-| `config.forceGenerateTLS`           | Force recreation of generated TLS certificates.  You will need to restart your deployments after running                                                                                                      | `false`                                                                               |
+| `config.forceGenerateTLS`           | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                       | `false`                                                                               |
 | `config.sharedSecret`               | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/reference/reference.html#shared-secret).                                                                                 | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)              |
 | `config.cookieSecret`               | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                                 | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)              |
 | `config.policy`                     | Base64 encoded string containing the routes, and their access policies.                                                                                                                                       |                                                                                       |
@@ -129,12 +132,12 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `service.annotations`               | Service annotations                                                                                                                                                                                           | `{}`                                                                                  |
 | `service.externalPort`              | Pomerium's port                                                                                                                                                                                               | `443`                                                                                 |
 | `service.type`                      | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                            | `ClusterIP`                                                                           |
-| `service.authorize.headless`        | Run Authorize service in Headless mode.  Turn off if you **require** NodePort or LoadBalancer access to Authorize                                                                                             | `true`                                                                                |
+| `service.authorize.headless`        | Run Authorize service in Headless mode. Turn off if you **require** NodePort or LoadBalancer access to Authorize                                                                                              | `true`                                                                                |
 | `serviceMonitor.enabled`            | Create Prometheus Operator ServiceMonitor                                                                                                                                                                     | `false`                                                                               |
 | `serviceMonitor.namespace`          | Namespace to create the ServiceMonitor resource in                                                                                                                                                            | The namespace of the chart                                                            |
 | `serviceMonitor.labels`             | Additional labels to apply to the ServiceMonitor resource                                                                                                                                                     | `release: prometheus`                                                                 |
 | `tracing.enabled`                   | Enable distributed tracing                                                                                                                                                                                    | `false`                                                                               |
-| `tracing.debug`                     | Set trace sampling to 100%.  Use with caution!                                                                                                                                                                | `false`                                                                               |
+| `tracing.debug`                     | Set trace sampling to 100%. Use with caution!                                                                                                                                                                 | `false`                                                                               |
 | `tracing.provider`                  | Specifies the tracing provider to configure (Valid options: Jaeger)                                                                                                                                           | Required                                                                              |
 | `tracing.jaeger.collector_endpoint` | The jaeger collector endpoint                                                                                                                                                                                 | Required                                                                              |
 | `tracing.jaeger.agent_endpoint`     | The jaeger agent endpoint                                                                                                                                                                                     | Required                                                                              |
@@ -145,14 +148,15 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `metrics.enabled`                   | Enable prometheus metrics endpoint                                                                                                                                                                            | `false`                                                                               |
 | `metrics.port`                      | Prometheus metrics endpoint port                                                                                                                                                                              | `9090`                                                                                |
 
-
 ## Changelog
 
 ### 4.0.0
+
 - Upgrade to Pomerium v0.4.0
 - Handle breaking changes from Pomerium
 
 ### 3.0.0
+
 - Refactor TLS certificates to use Kubernetes TLS secrets
 - Generate TLS certificates in a hook to prevent certificate churn
 
@@ -165,6 +169,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ## Upgrading
 
 ### 4.0.0
+
 - There are no user facing changes in this chart release
 - See [Pomerium Changelog](https://www.pomerium.io/docs/upgrading.html#since-0-3-0) for internal details
 
@@ -186,14 +191,15 @@ A full listing of Pomerium's configuration variables can be found on the [config
     - [Move and convert your certificates](scripts/upgrade-v3.0.0.sh) to type TLS Secrets and configure `[service].existingTLSSecret` to point to your secrets
     - **OR:** To continue using your certificates from the existing config, set `config.existingLegacyTLSSecret` to `true`
 
-****
+---
+
 ### 2.0.0
 
 - You will need to run `helm upgrade --force` to recreate the authorize service correctly
 
 ## Metrics Discovery Configuration
 
-This chart provices two ways to surface metrics for discovery.  Under normal circumstances, you will only set up one method.
+This chart provices two ways to surface metrics for discovery. Under normal circumstances, you will only set up one method.
 
 ### Prometheus Operator
 
@@ -209,15 +215,14 @@ serviceMonitor:
   enabled: true
   labels:
     release: prometheus # default
-
 ```
 
 Example ServiceMonitor configuration:
 
 ```yaml
-    serviceMonitorSelector:
-      matchLabels:
-        release: prometheus # operator chart default
+serviceMonitorSelector:
+  matchLabels:
+    release: prometheus # operator chart default
 ```
 
 ### Prometheus kubernetes_sd_configs
@@ -235,6 +240,7 @@ service:
 ```
 
 Example prometheus discovery config:
+
 ```yaml
 - job_name: 'pomerium'
 metrics_path: /metrics
@@ -261,3 +267,11 @@ relabel_configs:
   replacement: $1:$2
   target_label: __address__
 ```
+
+## Contributing
+
+Contributions to the pomerium-helm repository are welcome! We have a 3 step process for contributions:
+
+- Commit changes to a git branch, making sure to sign-off those changes for the [Developer Certificate of Origin](https://github.com/chef/chef/blob/master/CONTRIBUTING.md#developer-certification-of-origin-dco). We require DCO sign-offs to maintain upstream compatibility with the [Helm](https://helm.sh/blog/helm-dco/) projects official repository [requirements](https://helm.sh/blog/helm-dco/).
+- Create a GitHub Pull Request for your change, following the instructions in the pull request template.
+- Perform a Code Review with the project maintainers on the pull request.
