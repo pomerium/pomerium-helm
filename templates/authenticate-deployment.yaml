@@ -10,18 +10,14 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: authenticate
   name: {{ template "pomerium.authenticate.fullname" . }}
-  {{ $annotationExist := false }}
-{{- if .Values.annotations }}
-{{ $annotationExist = true }}
-  annotations:
-{{ toYaml .Values.annotations | indent 4 }}
-{{- end }}
-{{- if .Values.authenticate.deployment.annotations }}
-{{- if not $annotationsExist }}
-{{ $annotationExist = true}}
-  annotations:
-{{- end }}
-{{ toYaml .Values.authenticate.deployment.annotations | indent 4 }}
+ {{- if .Values.authenticate.deployment.annotations }}
+ {{- range $key, $value := .Values.authenticate.deployment.annotations }}
+   {{ $key }}: {{ $value | quote }}
+ {{- end }}
+{{- else if .Values.annotations }}
+ {{- range $key, $value := .Values.annotations }}
+   {{ $key }}: {{ $value | quote }}
+ {{- end }}
 {{- end }}
 spec:
   replicas: {{ default .Values.replicaCount .Values.authenticate.replicaCount }}
