@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: authorize
   name: {{ template "pomerium.authorize.fullname" . }}
+  annotations:
  {{- if .Values.authorize.deployment.annotations }}
  {{- range $key, $value := .Values.authorize.deployment.annotations }}
    {{ $key }}: {{ $value | quote }}

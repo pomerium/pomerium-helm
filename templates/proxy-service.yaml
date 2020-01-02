@@ -11,6 +11,7 @@ metadata:
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
+annotations:
 {{- if .Values.proxy.service.annotations }}
  {{- range $key, $value := .Values.proxy.service.annotations }}
    {{ $key }}: {{ $value | quote }}
