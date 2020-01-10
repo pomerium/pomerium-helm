@@ -75,7 +75,7 @@ proxy:
   authorizeInternalUrl: ""
   service: 
     annotations: {}
-  deployment: 
+  deployment:
     annotations: {}
 
 forwardAuth:
