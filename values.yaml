@@ -56,7 +56,7 @@ authorize:
   replicaCount: 1
   service:
     annotations: {}
-  deployment: 
+  deployment:
     annotations: {}
 
 
