@@ -38,7 +38,7 @@ authenticate:
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
-  service: 
+  service:
     annotations: {}
   deployment: 
     annotations: {}
