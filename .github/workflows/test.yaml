@@ -1,0 +1,42 @@
+name: Chart Test
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "charts/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Run chart-testing (lint)
+        id: lint
+        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        with:
+          command: lint
+          config: .ct.yaml
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.0.0-alpha.3
+        with:
+          install_local_path_provisioner: true
+
+      - name: Install helm
+        uses: azure/setup-helm@v1
+        id: install
+
+      - name: "Add stable repo"
+        run: "helm repo add stable https://kubernetes-charts.storage.googleapis.com"
+
+      - name: Install Ingress Controller
+        run: "helm install stable/nginx-ingress --generate-name --set controller.service.type='NodePort'"
+
+      - name: Run chart-testing (install)
+        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        with:
+          command: install
+          config: .ct.yaml
