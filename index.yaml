@@ -31,4 +31,214 @@ entries:
     urls:
     - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.2.0/pomerium-4.2.0.tgz
     version: 4.2.0
+  - apiVersion: v1
+    appVersion: 0.5.2
+    created: "2020-01-13T23:35:20.182747-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: 6a98308b9166dc814f106c55a7475a4ab921ea48fc468a24ae5cc37e373c227b
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.1.4/pomerium-4.1.4.tgz
+    version: 4.1.4
+  - apiVersion: v1
+    appVersion: 0.5.2
+    created: "2020-01-13T23:35:20.070378-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: 781f7c9e4dffbef2c32b399ed10786f7a38cd0eb986e0d3360de1948858808d8
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.1.3/pomerium-4.1.3.tgz
+    version: 4.1.3
+  - apiVersion: v1
+    appVersion: 0.5.1
+    created: "2020-01-13T23:35:19.948575-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: 4531ba343dfcbdf99edb970c21835c22f1864b9b0b3846aa1461b6a92fa6fbbe
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.1.2/pomerium-4.1.2.tgz
+    version: 4.1.2
+  - apiVersion: v1
+    appVersion: 0.5.1
+    created: "2020-01-13T23:35:19.808957-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: 5132e46ed202f865bb842f2162b62dfbb8683f93ac2042212b044a9150ad307d
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.1.1/pomerium-4.1.1.tgz
+    version: 4.1.1
+  - apiVersion: v1
+    appVersion: 0.4.2
+    created: "2020-01-13T23:35:19.668183-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: 2e89f275f3fd108b8aa030eca26f77bf7b8ae78b566091481c1f14a5a8ab715b
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.1.0/pomerium-4.1.0.tgz
+    version: 4.1.0
+  - apiVersion: v1
+    appVersion: 0.4.2
+    created: "2020-01-13T23:35:19.546813-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: e868d7ee0803b625efce41fbdb87aa01e8415f2019713377b884a803b3a245f2
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.0.1/pomerium-4.0.1.tgz
+    version: 4.0.1
+  - apiVersion: v1
+    appVersion: 0.4.0
+    created: "2020-01-13T23:35:19.415648-05:00"
+    description: Pomerium is an identity-aware access proxy.
+    digest: e4cd381d2dda0f8d432bf59f40e07994ca3ed47e42614825a4999915234d5999
+    engine: gotpl
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bobby.desimone@gmail.com
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-4.0.0/pomerium-4.0.0.tgz
+    version: 4.0.0
 generated: "2020-01-14T01:09:54.635843979Z"
