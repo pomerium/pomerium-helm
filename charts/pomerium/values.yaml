@@ -25,6 +25,7 @@ authenticate:
   nameOverride: ""
   existingTLSSecret: ""
   redirectUrl: ""
+  cacheServiceUrl: ""
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
     provider: google
@@ -45,6 +46,21 @@ authenticate:
 
 
 authorize:
+  fullnameOverride: ""
+  nameOverride: ""
+  existingTLSSecret: ""
+  tls:
+    cert: ""
+    key: ""
+    defaultSANList: []
+    defaultIPList: []
+  replicaCount: 1
+  service:
+    annotations: {}
+  deployment:
+    annotations: {}
+
+cache:
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
@@ -85,6 +101,8 @@ forwardAuth:
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
   authorize:
+    headless: true
+  cache:
     headless: true
   type: ClusterIP
   externalPort: 443
@@ -150,7 +168,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.5.2"
+  tag: "v0.6.0"
   pullPolicy: "IfNotPresent"
 
 metrics:
