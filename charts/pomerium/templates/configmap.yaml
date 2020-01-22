@@ -9,6 +9,20 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
+  config.yaml: ""
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "pomerium.fullname" . }}-base
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
   config.yaml: |
 {{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
 {{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
@@ -40,3 +54,15 @@ data:
 {{ toYaml .Values.config.policy | indent 6 }}
 {{- end -}}
 {{- end }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "pomerium.operator.electionConfigMap" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

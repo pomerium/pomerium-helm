@@ -25,6 +25,11 @@
 {{- default (printf "%s-cache" .Chart.Name) .Values.cache.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*Expand the name of the operator .*/}}
+{{- define "pomerium.operator.name" -}}
+{{- default (printf "%s-operator" .Chart.Name) .Values.operator.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -95,6 +100,20 @@ If release name contains chart name it will be used as a full name.
 {{- printf "%s-authenticate" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s-authenticate" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* operator fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.operator.fullname" -}}
+{{- if .Values.operator.fullnameOverride -}}
+{{- .Values.operator.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-operator" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-operator" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -252,4 +271,14 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{/*Expand the FQDN of the forward-auth endpoint.*/}}
 {{- define "pomerium.forwardAuth.name" -}}
 {{- default (printf "forwardauth.%s" .Values.config.rootDomain ) .Values.forwardAuth.nameOverride -}}
+{{- end -}}
+
+{{/*Expand the serviceAccountName for the operator */}}
+{{- define "pomerium.operator.serviceAccountName" -}}
+{{- default (printf "%s-operator" ( include "pomerium.fullname" .) ) .Values.forwardAuth.nameOverride -}}
+{{- end -}}
+
+{{/*Expand the configMap for operator election */}}
+{{- define "pomerium.operator.electionConfigMap" -}}
+{{- printf "%s-election" ( include "pomerium.operator.name" .) -}}
 {{- end -}}

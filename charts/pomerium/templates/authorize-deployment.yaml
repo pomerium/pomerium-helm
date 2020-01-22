@@ -32,7 +32,6 @@ spec:
     metadata:
       annotations:
         {{- /* policy is already covered by hot-reloading */}}
-        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -54,9 +53,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-{{- if or .Values.config.existingConfig .Values.config.policy }}
           - --config=/etc/pomerium/config.yaml
-{{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -118,10 +115,8 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-{{- if or .Values.config.existingConfig .Values.config.policy }}
         - mountPath: /etc/pomerium/
           name: config
-{{- end }}
 {{- /* TODO in future: Remove legacy logic */ -}}
 {{- if not .Values.config.existingLegacyTLSSecret }}
         - mountPath: /pomerium/cert.pem
@@ -135,11 +130,9 @@ spec:
           subPath: {{ template "pomerium.caSecret.certName" . }}
 {{- end }}
       volumes:
-{{- if or .Values.config.existingConfig .Values.config.policy }}
       - name: config
         configMap:
           name: {{ $configName }}
-{{- end }}
 {{- /* TODO in future: Remove legacy logic */ -}}
 {{- if not .Values.config.existingLegacyTLSSecret }}
       - name: service-tls
