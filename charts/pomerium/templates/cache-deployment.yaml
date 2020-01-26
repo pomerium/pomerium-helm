@@ -4,15 +4,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: authenticate
-  name: {{ template "pomerium.authenticate.fullname" . }}
+    app.kubernetes.io/component: cache
+  name: {{ template "pomerium.cache.fullname" . }}
   annotations:
- {{- if .Values.authenticate.deployment.annotations }}
- {{- range $key, $value := .Values.authenticate.deployment.annotations }}
+ {{- if .Values.cache.deployment.annotations }}
+ {{- range $key, $value := .Values.cache.deployment.annotations }}
    {{ $key }}: {{ $value | quote }}
  {{- end }}
 {{- else if .Values.annotations }}
@@ -21,10 +21,10 @@ metadata:
  {{- end }}
 {{- end }}
 spec:
-  replicas: {{ default .Values.replicaCount .Values.authenticate.replicaCount }}
+  replicas: {{ default .Values.replicaCount .Values.cache.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+      app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
@@ -36,7 +36,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+        app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
         helm.sh/chart: {{ template "pomerium.chart" . }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -64,42 +64,14 @@ spec:
 {{- end }}
         env:
         - name: SERVICES
-          value: authenticate
-        - name: AUTHENTICATE_SERVICE_URL
-          value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+          value: cache
         - name: CACHE_SERVICE_URL
           value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
-        - name: COOKIE_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: {{ $secretName }}
-              key: cookie-secret
         - name: SHARED_SECRET
           valueFrom:
             secretKeyRef:
               name: {{ $secretName }}
               key: shared-secret
-        - name: IDP_PROVIDER
-          value: {{ .Values.authenticate.idp.provider }}
-        - name: IDP_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: idp-client-id
-        - name: IDP_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: idp-client-secret
-        - name: IDP_PROVIDER_URL
-          value: {{ .Values.authenticate.idp.url }}
-{{- if .Values.authenticate.idp.serviceAccount }}
-        - name: IDP_SERVICE_ACCOUNT
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: idp-service-account
-{{- end }}
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"
         - name: CERTIFICATE_KEY_FILE
@@ -118,15 +90,12 @@ spec:
             name: metrics
             protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /ping
+          tcpSocket:
             port: https
-            scheme: HTTPS
+          initialDelaySeconds: 15
         readinessProbe:
-          httpGet:
-            path: /ping
+          tcpSocket:
             port: https
-            scheme: HTTPS
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -136,10 +105,10 @@ spec:
 {{- end }}
         - mountPath: /pomerium/cert.pem
           name: service-tls
-          subPath: {{ template "pomerium.authenticate.tlsSecret.certName" . }}
+          subPath: tls.crt
         - mountPath: /pomerium/privkey.pem
           name: service-tls
-          subPath: {{ template "pomerium.authenticate.tlsSecret.keyName" . }}
+          subPath: tls.key
         - mountPath: /pomerium/ca.pem
           name: ca-tls
           subPath: {{ template "pomerium.caSecret.certName" . }}
@@ -151,11 +120,12 @@ spec:
 {{- end }}
       - name: service-tls
         secret:
-          secretName: {{ template "pomerium.authenticate.tlsSecret.name" . }}
+          secretName: {{ template "pomerium.cache.tlsSecret.name" . }}
       - name: ca-tls
         secret:
           secretName: {{ template "pomerium.caSecret.name" . }}
 {{- if .Values.extraVolumes }}
+      volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
 {{- end }}
 {{- if .Values.imagePullSecrets }}

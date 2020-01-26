@@ -20,6 +20,11 @@
 {{- default (printf "%s-authorize" .Chart.Name) .Values.authorize.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*Expand the name of the cache-service.*/}}
+{{- define "pomerium.cache.name" -}}
+{{- default (printf "%s-cache" .Chart.Name) .Values.cache.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -62,6 +67,20 @@ If release name contains chart name it will be used as a full name.
 {{- printf "%s-authorize" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s-authorize" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* cache services fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.cache.fullname" -}}
+{{- if .Values.cache.fullnameOverride -}}
+{{- .Values.cache.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-cache" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-cache" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -148,6 +167,20 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
+{{/* Determine secret name for cache TLS Cert */}}
+{{- define "pomerium.cache.tlsSecret.name" -}}
+{{- if .Values.cache.existingTLSSecret -}}
+{{- .Values.cache.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-cache-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-cache-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{/* Determine secret name for Proxy TLS Cert */}}
 {{- define "pomerium.proxy.tlsSecret.name" -}}
 {{- if .Values.proxy.existingTLSSecret -}}
@@ -192,6 +225,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- /* TODO in future: Remove legacy logic */ -}}
 {{- printf "%s" (ternary "tls.key" "authorize-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
 {{- end -}}
+
 
 {{- define "pomerium.caSecret.name" -}}
 {{if .Values.config.existingCASecret }}
