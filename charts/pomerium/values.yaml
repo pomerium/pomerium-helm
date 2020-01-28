@@ -87,7 +87,6 @@ proxy:
     defaultIPList: []
   replicaCount: 1
   authenticateServiceUrl: ""
-  authorizeServiceUrl: ""
   authorizeInternalUrl: ""
   service:
     annotations: {}
