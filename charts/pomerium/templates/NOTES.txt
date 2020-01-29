@@ -32,23 +32,7 @@ Get the Pomerium URL by running:
 ####        ERROR: You did not set a valid identity provider              ####
 ##############################################################################
 
-This deployment will be incomplete until you configure a valid identity provider:
-
-    helm upgrade {{ .Release.Name }} \
-        --reuse-values \
-        --set config.sharedSecret=$(head -c32 /dev/urandom | base64) \
-        --set config.cookieSecret=$(head -c32 /dev/urandom | base64) \
-        --set config.cert=$(base64 -i cert.pem) \
-        --set config.key=$(base64 -i privkey.pem) \
-        --set config.policy="$(cat policy.example.yaml | base64)" \
-        --set authenticate.idp.provider="google" \
-        --set config.rootDomain="corp.pomerium.io" \
-        --set authenticate.redirectUrl="https://auth.corp.pomerium.io/oauth2/callback" \
-        --set authenticate.idp.clientID="REPLACE_ME" \
-        --set authenticate.idp.clientSecret="REPLACE_ME" \
-        --set proxy.authenticateServiceUrl="https://auth.corp.pomerium.io" \
-        --set proxy.authorizeServiceUrl="https://access.corp.pomerium.io"
-        stable/pomerium
+This deployment will be incomplete until you configure a valid identity provider.
 
 Currently supported providers:
 
