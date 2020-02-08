@@ -81,6 +81,8 @@ spec:
               key: shared-secret
         - name: IDP_PROVIDER
           value: {{ .Values.authenticate.idp.provider }}
+        - name: IDP_SCOPES
+          value: {{ .Values.authenticate.idp.scopes }}
         - name: IDP_CLIENT_ID
           valueFrom:
             secretKeyRef:

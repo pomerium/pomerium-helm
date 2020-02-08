@@ -32,6 +32,7 @@ authenticate:
     clientID: "REPLACE_ME"
     clientSecret: "REPLACE_ME"
     url: ""
+    scopes: ""
     serviceAccount: ""
   tls:
     cert: ""
