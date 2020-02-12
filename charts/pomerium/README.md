@@ -7,14 +7,17 @@
   - [Install the chart](#install-the-chart)
   - [Uninstalling the Chart](#uninstalling-the-chart)
   - [TLS Certificates](#tls-certificates)
+    - [Ingress Controller Annotations](#ingress-controller-annotations)
     - [Auto Generation](#auto-generation)
     - [Self Provisioned](#self-provisioned)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [5.0.0](#500)
     - [4.0.0](#400)
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [5.0.0](#500-1)
     - [4.0.0](#400-1)
     - [3.0.0](#300-1)
     - [2.0.0](#200-1)
@@ -35,21 +38,13 @@ helm install my-release pomerium/pomerium
 An example of a minimal, but complete installation of pomerium with identity provider settings, random secrets, certificates, and external URLs is as follows:
 
 ```sh
-kubectl create configmap config --from-file="config.yaml"="$HOME/pomerium/docs/docs/examples/config/config.example.yaml"
-
 helm install my-release pomerium/pomerium\
-	--set service.type="NodePort" \
 	--set config.rootDomain="corp.beyondperimeter.com" \
-	--set config.existingConfig="config" \
 	--set config.sharedSecret=$(head -c32 /dev/urandom | base64) \
 	--set config.cookieSecret=$(head -c32 /dev/urandom | base64) \
-	--set ingress.secret.name="pomerium-tls" \
-	--set ingress.secret.cert=$(base64 -i "$HOME/.acme.sh/*.corp.beyondperimeter.com_ecc/fullchain.cer") \
-	--set ingress.secret.key=$(base64 -i "$HOME/.acme.sh/*.corp.beyondperimeter.com_ecc/*.corp.beyondperimeter.com.key") \
 	--set authenticate.idp.provider="google" \
 	--set authenticate.idp.clientID="REPLACE_ME" \
 	--set authenticate.idp.clientSecret="REPLACE_ME"
-
 ```
 
 ## Uninstalling the Chart
@@ -63,6 +58,10 @@ helm delete --purge my-release
 The command removes nearly all the Kubernetes components associated with the chart and deletes the release.
 
 ## TLS Certificates
+
+### Ingress Controller Annotations
+
+Pomerium uses TLS for all components.  You may need to configure your ingress controller to communicate with pomerium over TLS.
 
 ### Auto Generation
 
@@ -149,7 +148,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `tracing.jaeger.collector_endpoint`   | The jaeger collector endpoint                                                                                                                                                                                                                                                                      | Required                                                                              |
 | `tracing.jaeger.agent_endpoint`       | The jaeger agent endpoint                                                                                                                                                                                                                                                                          | Required                                                                              |
 | `ingress.enabled`                     | Enables Ingress for pomerium                                                                                                                                                                                                                                                                       | `true`                                                                                |
-| `ingress.annotations`                 | Ingress annotations                                                                                                                                                                                                                                                                                | `{}`                                                                                  |
+| `ingress.annotations`                 | Ingress annotations.  Ensure you set appropriate annotations for TLS backend and large URLs if using Azure.                                                                                                                                                                                        | `{}`                                                                                  |
 | `ingress.hosts`                       | Ingress accepted hostnames                                                                                                                                                                                                                                                                         | `[]`                                                                                  |
 | `ingress.tls`                         | Ingress TLS configuration                                                                                                                                                                                                                                                                          | `[]`                                                                                  |
 | `metrics.enabled`                     | Enable prometheus metrics endpoint                                                                                                                                                                                                                                                                 | `false`                                                                               |
