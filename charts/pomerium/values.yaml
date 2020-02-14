@@ -18,7 +18,7 @@ config:
   forceGenerateTLS: false
   extraOpts: {}
   existingPolicy: ""
-  policy: {}
+  policy: []
 
 authenticate:
   fullnameOverride: ""
@@ -32,6 +32,7 @@ authenticate:
     clientID: "REPLACE_ME"
     clientSecret: "REPLACE_ME"
     url: ""
+    scopes: ""
     serviceAccount: ""
   tls:
     cert: ""
