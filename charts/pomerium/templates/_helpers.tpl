@@ -229,7 +229,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{- define "pomerium.caSecret.name" -}}
 {{if .Values.config.existingCASecret }}
-{{- .Values.proxy.existingCASecret | trunc 63 | trimSuffix "-" -}}
+{{- .Values.config.existingCASecret | trunc 63 | trimSuffix "-" -}}
 {{- /* TODO in future: Remove legacy logic */ -}}
 {{- else if .Values.config.existingLegacyTLSSecret -}}
 {{- template "pomerium.fullname" . -}}
