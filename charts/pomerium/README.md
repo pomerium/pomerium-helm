@@ -6,6 +6,7 @@
   - [TL;DR;](#tldr)
   - [Install the chart](#install-the-chart)
   - [Uninstalling the Chart](#uninstalling-the-chart)
+  - [Pomerium Operator (EXPERIMENTAL)](#pomerium-operator-experimental)
   - [TLS Certificates](#tls-certificates)
     - [Ingress Controller Annotations](#ingress-controller-annotations)
     - [Auto Generation](#auto-generation)
@@ -56,6 +57,16 @@ helm delete --purge my-release
 ```
 
 The command removes nearly all the Kubernetes components associated with the chart and deletes the release.
+
+## Pomerium Operator (EXPERIMENTAL)
+
+To provide dynamic pomerium configuration, an [operator](https://github.com/pomerium/pomerium-operator) is being introduced to this chart.  
+
+To enable pomerium-operator, set `operator.enabled` to `true`.  Your existing values should continue to work as-is.  Enabling it will allow you to take advantage of `Service` and `Ingress` annotations to dynamically configure pomerium policies.
+
+See https://github.com/pomerium/pomerium-operator#using for information on how to use these annotations.
+
+Operator based deplyoment is experimental.  Please report any issues!
 
 ## TLS Certificates
 
@@ -157,6 +168,16 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `cache.fullnameOverride`              | Full name of the cache service.                                                                                                                                                                                                                                                                    | `cache`                                                                               |
 | `cache.replicaCount`                  | Number of cache pods to run                                                                                                                                                                                                                                                                        | `1`                                                                                   |
 | `cache.existingTLSSecret`             | Name of existing TLS Secret for authorize service                                                                                                                                                                                                                                                  |
+| `operator.enabled`                    | Enable experimental pomerium operator support                                                                                                                                                                                                                                                      | false                                                                                 |
+| `operator.nameOverride`               | Name of the operator                                                                                                                                                                                                                                                                               | `operator`                                                                            |
+| `operator.fullnameOverride`           | Full name of the operator                                                                                                                                                                                                                                                                          | `operator`                                                                            |
+| `operator.replicaCount`               | Number of operator pods to run                                                                                                                                                                                                                                                                     | `1`                                                                                   |
+| `operator.image.repository`           | Pomerium Operator image                                                                                                                                                                                                                                                                            | `pomerium/pomerium-operator`                                                          |
+| `operator.image.tag`                  | Pomerium Operator image tag                                                                                                                                                                                                                                                                        | `v0.0.1-rc1`                                                                          |
+| `operator.config.ingressClass`        | `kubernetes.io/ingress.class` for the operator to monitor                                                                                                                                                                                                                                          | `pomerium`                                                                            |
+| `operator.config.serviceClass`        | `kubernetes.io/service.class` for the operator to monitor                                                                                                                                                                                                                                          | `pomerium`                                                                            |
+| `operator.config.debug`               | Enable Pomerium Operator debug logging                                                                                                                                                                                                                                                             | `false`                                                                               |
+| `operator.deployment.annotations`     | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                                  |
 
 ## Changelog
 

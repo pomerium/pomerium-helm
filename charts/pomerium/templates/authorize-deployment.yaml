@@ -32,6 +32,9 @@ spec:
     metadata:
       annotations:
         {{- /* policy is already covered by hot-reloading */}}
+        {{- if not .Values.operator.enabled }}
+        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}	
+        {{- end }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -53,7 +56,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
+        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
           - --config=/etc/pomerium/config.yaml
+        {{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -115,8 +120,10 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
         - mountPath: /etc/pomerium/
           name: config
+        {{- end }}
 {{- /* TODO in future: Remove legacy logic */ -}}
 {{- if not .Values.config.existingLegacyTLSSecret }}
         - mountPath: /pomerium/cert.pem

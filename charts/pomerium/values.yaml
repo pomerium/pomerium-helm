@@ -95,6 +95,7 @@ proxy:
     annotations: {}
 
 operator:
+  enabled: false
   fullnameOverride: ""
   nameOverride: ""
   replicaCount: 1
