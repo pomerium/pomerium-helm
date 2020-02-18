@@ -10,7 +10,6 @@ config:
   rootDomain: corp.beyondperimeter.com
   existingSecret: ""
   existingConfig: ""
-  existingLegacyTLSSecret: false
   existingCASecret: ""
   sharedSecret: ""
   cookieSecret: ""

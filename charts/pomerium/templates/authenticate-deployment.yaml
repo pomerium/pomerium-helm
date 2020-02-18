@@ -140,13 +140,13 @@ spec:
         {{- end }}
         - mountPath: /pomerium/cert.pem
           name: service-tls
-          subPath: {{ template "pomerium.authenticate.tlsSecret.certName" . }}
+          subPath: tls.crt
         - mountPath: /pomerium/privkey.pem
           name: service-tls
-          subPath: {{ template "pomerium.authenticate.tlsSecret.keyName" . }}
+          subPath: tls.key
         - mountPath: /pomerium/ca.pem
           name: ca-tls
-          subPath: {{ template "pomerium.caSecret.certName" . }}
+          subPath: ca.crt
       volumes:
       - name: config
         configMap:

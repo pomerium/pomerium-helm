@@ -113,7 +113,7 @@ spec:
           subPath: tls.key
         - mountPath: /pomerium/ca.pem
           name: ca-tls
-          subPath: {{ template "pomerium.caSecret.certName" . }}
+          subPath: ca.crt
       volumes:
       - name: config
         configMap:

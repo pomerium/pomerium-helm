@@ -13,6 +13,7 @@
     - [Self Provisioned](#self-provisioned)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [6.0.0](#600)
     - [5.0.0](#500)
     - [4.0.0](#400)
     - [3.0.0](#300)
@@ -106,7 +107,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.rootDomain`                   | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/reference/reference.html#proxy-root-domains).                                                                                                                                                    | `corp.pomerium.io`                                                                    |
 | `config.existingSecret`               | Name of the existing Kubernetes Secret.                                                                                                                                                                                                                                                            |                                                                                       |
 | `config.existingConfig`               | Name of the existing Config Map deployed on Kubernetes.                                                                                                                                                                                                                                            |                                                                                       |
-| `config.existingLegacyTLSSecret`      | Use a Pre-3.0.0 secret for the service TLS data. Only use if upgrading from <= 2.0.0                                                                                                                                                                                                               | `false`                                                                               |
 | `config.existingCASecret`             | Name of the existing CA Secret.                                                                                                                                                                                                                                                                    |                                                                                       |
 | `config.generateTLS`                  | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                                                                                                              | `true`                                                                                |
 | `config.forceGenerateTLS`             | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                               |
@@ -180,6 +180,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`     | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                                  |
 
 ## Changelog
+
+### 6.0.0
+
+- Integrate pomerium operator
+- Remove legacy TLS config support.  See [v3.0.0 Upgrade Notes](#300-1) to migrate
 
 ### 5.0.0
 
