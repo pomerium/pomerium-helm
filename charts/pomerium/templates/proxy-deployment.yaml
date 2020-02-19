@@ -32,7 +32,9 @@ spec:
     metadata:
       annotations:
         {{- /* policy is already covered by hot-reloading */}}
-        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}
+        {{- if not .Values.operator.enabled }}
+        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}	
+        {{- end }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
@@ -54,9 +56,9 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-{{- if or .Values.config.existingConfig .Values.config.policy }}
+        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
           - --config=/etc/pomerium/config.yaml
-{{- end }}
+        {{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -81,31 +83,12 @@ spec:
           value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: AUTHORIZE_SERVICE_URL
           value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- if .Values.config.existingLegacyTLSSecret }}
-        - name: CERTIFICATE
-          valueFrom:
-            secretKeyRef:
-              name:  {{ template "pomerium.proxy.tlsSecret.name" . }}
-              key:  {{ template "pomerium.proxy.tlsSecret.certName" . }}
-        - name: CERTIFICATE_KEY
-          valueFrom:
-            secretKeyRef:
-              name:  {{ template "pomerium.proxy.tlsSecret.name" . }}
-              key:  {{ template "pomerium.proxy.tlsSecret.keyName" . }}
-        - name: CERTIFICATE_AUTHORITY
-          valueFrom:
-            secretKeyRef:
-              name:  {{ template "pomerium.caSecret.name" . }}
-              key:  {{ template "pomerium.caSecret.certName" . }}
-{{- else }}
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"
         - name: CERTIFICATE_KEY_FILE
           value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
-{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -130,37 +113,29 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-{{- if or .Values.config.existingConfig .Values.config.policy }}
+        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
         - mountPath: /etc/pomerium/
           name: config
-{{- end }}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- if not .Values.config.existingLegacyTLSSecret }}
+        {{- end }}
         - mountPath: /pomerium/cert.pem
           name: service-tls
-          subPath: {{ template "pomerium.proxy.tlsSecret.certName" . }}
+          subPath: tls.crt
         - mountPath: /pomerium/privkey.pem
           name: service-tls
-          subPath: {{ template "pomerium.proxy.tlsSecret.keyName" . }}
+          subPath: tls.key
         - mountPath: /pomerium/ca.pem
           name: ca-tls
-          subPath: {{ template "pomerium.caSecret.certName" . }}
-{{- end }}
+          subPath: ca.crt
       volumes:
-{{- if or .Values.config.existingConfig .Values.config.policy }}
       - name: config
         configMap:
           name: {{ $configName }}
-{{- end }}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- if not .Values.config.existingLegacyTLSSecret }}
       - name: service-tls
         secret:
           secretName: {{ template "pomerium.proxy.tlsSecret.name" . }}
       - name: ca-tls
         secret:
           secretName: {{ template "pomerium.caSecret.name" . }}
-{{- end }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}

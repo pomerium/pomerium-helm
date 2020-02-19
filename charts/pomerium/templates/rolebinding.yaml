@@ -1,0 +1,20 @@
+{{- if and .Values.rbac.create .Values.operator.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: operator
+  name: {{ template "pomerium.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "pomerium.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "pomerium.operator.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

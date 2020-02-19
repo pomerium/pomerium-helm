@@ -10,7 +10,6 @@ config:
   rootDomain: corp.beyondperimeter.com
   existingSecret: ""
   existingConfig: ""
-  existingLegacyTLSSecret: false
   existingCASecret: ""
   sharedSecret: ""
   cookieSecret: ""
@@ -91,6 +90,21 @@ proxy:
   authorizeInternalUrl: ""
   service:
     annotations: {}
+  deployment:
+    annotations: {}
+
+operator:
+  enabled: false
+  fullnameOverride: ""
+  nameOverride: ""
+  replicaCount: 1
+  image:
+    repository: "pomerium/pomerium-operator"
+    tag: "v0.0.1-rc1"
+  config:
+    ingressClass: pomerium
+    serviceClass: pomerium
+    debug: false
   deployment:
     annotations: {}
 
@@ -188,3 +202,6 @@ serviceMonitor:
   namespace: ""
   labels:
     release: prometheus
+
+rbac:
+  create: true

@@ -25,6 +25,11 @@
 {{- default (printf "%s-cache" .Chart.Name) .Values.cache.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*Expand the name of the operator .*/}}
+{{- define "pomerium.operator.name" -}}
+{{- default (printf "%s-operator" .Chart.Name) .Values.operator.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -99,6 +104,20 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{/* operator fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.operator.fullname" -}}
+{{- if .Values.operator.fullnameOverride -}}
+{{- .Values.operator.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-operator" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-operator" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{/*Create chart name and version as used by the chart label.*/}}
 {{- define "pomerium.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
@@ -137,9 +156,6 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- define "pomerium.authenticate.tlsSecret.name" -}}
 {{- if .Values.authenticate.existingTLSSecret -}}
 {{- .Values.authenticate.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- else if .Values.config.existingLegacyTLSSecret -}}
-{{ template "pomerium.fullname" . }}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
@@ -154,9 +170,6 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- define "pomerium.authorize.tlsSecret.name" -}}
 {{- if .Values.authorize.existingTLSSecret -}}
 {{- .Values.authorize.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- else if .Values.config.existingLegacyTLSSecret -}}
-{{ template "pomerium.fullname" . }}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
@@ -185,9 +198,6 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- define "pomerium.proxy.tlsSecret.name" -}}
 {{- if .Values.proxy.existingTLSSecret -}}
 {{- .Values.proxy.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- else if .Values.config.existingLegacyTLSSecret -}}
-{{ template "pomerium.fullname" . }}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
@@ -198,41 +208,9 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
-{{/* Set up secret data field names for each service */}}
-{{- define "pomerium.proxy.tlsSecret.certName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "tls.crt" "proxy-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-{{- define "pomerium.proxy.tlsSecret.keyName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "tls.key" "proxy-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-
-{{- define "pomerium.authenticate.tlsSecret.certName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "tls.crt" "authenticate-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-{{- define "pomerium.authenticate.tlsSecret.keyName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "tls.key" "authenticate-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-
-{{- define "pomerium.authorize.tlsSecret.certName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "tls.crt" "authorize-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-{{- define "pomerium.authorize.tlsSecret.keyName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "tls.key" "authorize-key" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-
-
 {{- define "pomerium.caSecret.name" -}}
 {{if .Values.config.existingCASecret }}
 {{- .Values.config.existingCASecret | trunc 63 | trimSuffix "-" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- else if .Values.config.existingLegacyTLSSecret -}}
-{{- template "pomerium.fullname" . -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
@@ -243,13 +221,17 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
-{{- define "pomerium.caSecret.certName" -}}
-{{- /* TODO in future: Remove legacy logic */ -}}
-{{- printf "%s" (ternary "ca.crt" "ca-cert" (empty .Values.config.existingLegacyTLSSecret)) -}}
-{{- end -}}
-
-
 {{/*Expand the FQDN of the forward-auth endpoint.*/}}
 {{- define "pomerium.forwardAuth.name" -}}
 {{- default (printf "forwardauth.%s" .Values.config.rootDomain ) .Values.forwardAuth.nameOverride -}}
+{{- end -}}
+
+{{/*Expand the serviceAccountName for the operator */}}
+{{- define "pomerium.operator.serviceAccountName" -}}
+{{- default (printf "%s-operator" ( include "pomerium.fullname" .) ) .Values.forwardAuth.nameOverride -}}
+{{- end -}}
+
+{{/*Expand the configMap for operator election */}}
+{{- define "pomerium.operator.electionConfigMap" -}}
+{{- printf "%s-election" ( include "pomerium.operator.name" .) -}}
 {{- end -}}

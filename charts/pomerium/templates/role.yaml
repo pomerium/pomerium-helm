@@ -1,0 +1,52 @@
+{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
+{{- $baseConfigName := default (printf "%s-base" (include "pomerium.fullname" .)) .Values.config.existingConfig }}
+
+{{- if and .Values.rbac.create .Values.operator.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "pomerium.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: operator
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - configmaps
+      - deployments
+    resourceNames:
+      - {{ $configName | quote }}
+      - {{ template "pomerium.authenticate.fullname" . }}
+      - {{ template "pomerium.authorize.fullname" . }}
+      - {{ template "pomerium.proxy.fullname" . }}
+      - {{ template "pomerium.operator.electionConfigMap" . }}
+      - {{ template "pomerium.cache.fullname" . }}
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      - {{ $baseConfigName | quote }}
+    verbs:
+      - get
+      - list
+      - watch
+{{- end -}}

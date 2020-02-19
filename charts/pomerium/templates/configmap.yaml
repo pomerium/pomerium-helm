@@ -1,8 +1,27 @@
 {{- if not .Values.config.existingConfig }}
+{{- if .Values.operator.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "pomerium.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  config.yaml: ""
+
+---
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  {{- if .Values.operator.enabled }}
+  name: {{ template "pomerium.fullname" . }}-base
+  {{- else }}
+  name: {{ template "pomerium.fullname" . }}
+  {{- end }}
   labels:
     app.kubernetes.io/name: {{ template "pomerium.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
@@ -39,4 +58,19 @@ data:
     policy: 
 {{ toYaml .Values.config.policy | indent 6 }}
 {{- end -}}
+{{- end }}
+
+{{- if .Values.operator.enabled }}
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "pomerium.operator.electionConfigMap" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
 {{- end }}
