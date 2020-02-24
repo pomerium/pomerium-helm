@@ -138,7 +138,9 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 */}}
 {{- define "pomerium.providerOK" -}}
 {{- if .Values.authenticate.idp -}}
-  {{- if eq .Values.authenticate.idp.clientID "" -}}
+  {{- if .Values.config.existingSecret -}}
+  true
+  {{- else if eq .Values.authenticate.idp.clientID "" -}}
   false
   {{- else if eq .Values.authenticate.idp.clientSecret "" -}}
   false
