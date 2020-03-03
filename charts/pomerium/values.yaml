@@ -89,6 +89,7 @@ proxy:
     key: ""
     defaultSANList: []
     defaultIPList: []
+  signingKey: ""
   replicaCount: 1
   authenticateServiceUrl: ""
   authorizeInternalUrl: ""
