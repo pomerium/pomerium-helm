@@ -25,7 +25,7 @@ spec:
 {{- if .Values.service.cache.headless }}
   clusterIP: None
   type: ClusterIP
-{{- else }}}
+{{- else }}
   type: {{ .Values.service.type }}
 {{- end }}
   ports:
