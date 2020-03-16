@@ -82,7 +82,7 @@ spec:
         - name: SIGNING_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ $secretName }}
+              name: {{ template "pomerium.proxy.signingKeySecret.name" . }}
               key: signing-key
         - name: AUTHENTICATE_SERVICE_URL
           value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
