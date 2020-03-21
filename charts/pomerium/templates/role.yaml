@@ -1,5 +1,5 @@
-{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
-{{- $baseConfigName := default (printf "%s-base" (include "pomerium.fullname" .)) .Values.config.existingConfig }}
+{{- $secretName := include "pomerium.secretName" . }}
+{{- $baseSecretName := include "pomerium.baseSecretName" . }}
 
 {{- if and .Values.rbac.create .Values.operator.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
@@ -26,8 +26,9 @@ rules:
     resources:
       - configmaps
       - deployments
+      - secrets
     resourceNames:
-      - {{ $configName | quote }}
+      - {{ $secretName | quote }}
       - {{ template "pomerium.authenticate.fullname" . }}
       - {{ template "pomerium.authorize.fullname" . }}
       - {{ template "pomerium.proxy.fullname" . }}
@@ -39,14 +40,16 @@ rules:
       - watch
       - update
       - create
+{{- if $baseSecretName }}
   - apiGroups:
       - ""
     resources:
-      - configmaps
+      - secrets
     resourceNames:
-      - {{ $baseConfigName | quote }}
+      - {{ $baseSecretName | quote }}
     verbs:
       - get
       - list
       - watch
+{{- end -}}
 {{- end -}}

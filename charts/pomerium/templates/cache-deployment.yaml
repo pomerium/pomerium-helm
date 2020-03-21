@@ -1,5 +1,4 @@
-{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
-{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+{{- $secretName := include "pomerium.secretName" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,9 +53,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
           - --config=/etc/pomerium/config.yaml
-        {{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -69,11 +66,6 @@ spec:
           value: cache
         - name: CACHE_SERVICE_URL
           value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
-        - name: SHARED_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: {{ $secretName }}
-              key: shared-secret
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"
         - name: CERTIFICATE_KEY_FILE
@@ -101,10 +93,8 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
         - mountPath: /etc/pomerium/
           name: config
-        {{- end }}
         - mountPath: /pomerium/cert.pem
           name: service-tls
           subPath: tls.crt
@@ -116,8 +106,8 @@ spec:
           subPath: ca.crt
       volumes:
       - name: config
-        configMap:
-          name: {{ $configName }}
+        secret:
+          secretName: {{ $secretName }}
       - name: service-tls
         secret:
           secretName: {{ template "pomerium.cache.tlsSecret.name" . }}

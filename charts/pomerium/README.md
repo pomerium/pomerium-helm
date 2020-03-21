@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [8.0.0](#800)
     - [7.0.0](#700)
     - [6.0.0](#600)
     - [5.0.0](#500)
@@ -23,6 +24,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [8.0.0](#800-1)
     - [7.0.0](#700-1)
     - [5.0.0](#500-1)
     - [4.0.0](#400-1)
@@ -137,7 +139,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.rootDomain`                   | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/reference/reference.html#proxy-root-domains).                                                                                                                                                    | `corp.pomerium.io`                                                                    |
 | `config.administrators`               | Comma seperated list of email addresses of administrative users [See more](https://www.pomerium.io/configuration/#administrators).                                                                                                                                                                 | Optional                                                                              |
 | `config.existingSecret`               | Name of the existing Kubernetes Secret.                                                                                                                                                                                                                                                            |                                                                                       |
-| `config.existingConfig`               | Name of the existing Config Map deployed on Kubernetes.                                                                                                                                                                                                                                            |                                                                                       |
 | `config.existingCASecret`             | Name of the existing CA Secret.                                                                                                                                                                                                                                                                    |                                                                                       |
 | `config.generateSigningKey`           | Generate a signing key to sign jwt in proxy responses. Manual signing key can be set in values.                                                                                                                                                                                                    | `true`                                                                                |
 | `config.forceGenerateSigningKey`      | Force recreation of generated signing key. You will need to restart your deployments after running                                                                                                                                                                                                 | `false`                                                                               |
@@ -216,6 +217,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 8.0.0
+
+- Pomerium `ConfigMap` and `Secret` were combined into a single `Secret`. See [v8.0.0 Upgrade Nodes](#800-1) to migrate
+
 ### 7.0.0
 
 - Add automatic signing key generation.  See [v7.0.0 Upgrade Nodes](#700-1) to migrate
@@ -247,6 +252,17 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 8.0.0
+
+- `config.existingConfig` `ConfigMap` has been merged with `config.existingSecret` `Secret`. All keys from `config.existingConfig` were moved to the `config.existingSecret`
+- `config.existingSecret` structure has been changed:
+
+  - all top level keys were moved under the `config.yaml` section
+  - naming of the top level keys was changed from `cookie-secret` to `cookie_secret` according to [the `config.yaml` format](https://www.pomerium.io/configuration/#shared-settings) (basically `'-'` was changed to the `'_'`)
+
+- `config.existingConfig` and `config.existingSecret` cannot be used separately anymore
+- If `config.existingConfig` and `config.existingSecret` options weren't used no actions are required
 
 ### 7.0.0
 

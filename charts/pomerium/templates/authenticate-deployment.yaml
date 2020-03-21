@@ -1,5 +1,4 @@
-{{- $configName := default (include "pomerium.fullname" .) .Values.config.existingConfig }}
-{{- $secretName := default (include "pomerium.fullname" .) .Values.config.existingSecret }}
+{{- $secretName := include "pomerium.secretName" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,9 +53,7 @@ spec:
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
-        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
           - --config=/etc/pomerium/config.yaml
-        {{- end }}
 {{- range $key, $value := .Values.extraArgs }}
 {{- if $value }}
           - --{{ $key }}={{ $value }}
@@ -71,39 +68,12 @@ spec:
           value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
         - name: CACHE_SERVICE_URL
           value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
-        - name: COOKIE_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: {{ $secretName }}
-              key: cookie-secret
-        - name: SHARED_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: {{ $secretName }}
-              key: shared-secret
         - name: IDP_PROVIDER
           value: {{ .Values.authenticate.idp.provider }}
         - name: IDP_SCOPES
           value: {{ .Values.authenticate.idp.scopes }}
-        - name: IDP_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: idp-client-id
-        - name: IDP_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: idp-client-secret
         - name: IDP_PROVIDER_URL
           value: {{ .Values.authenticate.idp.url }}
-{{- if .Values.authenticate.idp.serviceAccount }}
-        - name: IDP_SERVICE_ACCOUNT
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: idp-service-account
-{{- end }}
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"
         - name: CERTIFICATE_KEY_FILE
@@ -134,10 +104,8 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        {{- if or (or .Values.config.existingConfig .Values.config.policy) .Values.operator.enabled }}
         - mountPath: /etc/pomerium/
           name: config
-        {{- end }}
         - mountPath: /pomerium/cert.pem
           name: service-tls
           subPath: tls.crt
@@ -149,8 +117,8 @@ spec:
           subPath: ca.crt
       volumes:
       - name: config
-        configMap:
-          name: {{ $configName }}
+        secret:
+          secretName: {{ $secretName }}
       - name: service-tls
         secret:
           secretName: {{ template "pomerium.authenticate.tlsSecret.name" . }}
