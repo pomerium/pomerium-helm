@@ -11,6 +11,9 @@ config:
   existingSecret: ""
   existingConfig: ""
   existingCASecret: ""
+  ca:
+    cert: ""
+    key: ""
   sharedSecret: ""
   cookieSecret: ""
   generateTLS: true
