@@ -63,17 +63,17 @@ The command removes nearly all the Kubernetes components associated with the cha
 
 To provide dynamic pomerium configuration, an [operator](https://github.com/pomerium/pomerium-operator) is being introduced to this chart.
 
-To enable pomerium-operator, set `operator.enabled` to `true`. Your existing values should continue to work as-is. Enabling it will allow you to take advantage of `Service` and `Ingress` annotations to dynamically configure pomerium policies.
+To enable pomerium-operator, set `operator.enabled` to `true`.  Your existing values should continue to work as-is.  Enabling it will allow you to take advantage of `Service` and `Ingress` annotations to dynamically configure pomerium policies.
 
 See https://github.com/pomerium/pomerium-operator#using for information on how to use these annotations.
 
-Operator based deplyoment is experimental. Please report any issues!
+Operator based deplyoment is experimental.  Please report any issues!
 
 ## TLS Certificates
 
 ### Ingress Controller Annotations
 
-Pomerium uses TLS for all components. You may need to configure your ingress controller to communicate with pomerium over TLS.
+Pomerium uses TLS for all components.  You may need to configure your ingress controller to communicate with pomerium over TLS.
 
 ### Auto Generation
 
@@ -160,7 +160,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `tracing.jaeger.collector_endpoint`   | The jaeger collector endpoint                                                                                                                                                                                                                                                                      | Required                                                                              |
 | `tracing.jaeger.agent_endpoint`       | The jaeger agent endpoint                                                                                                                                                                                                                                                                          | Required                                                                              |
 | `ingress.enabled`                     | Enables Ingress for pomerium                                                                                                                                                                                                                                                                       | `true`                                                                                |
-| `ingress.annotations`                 | Ingress annotations. Ensure you set appropriate annotations for TLS backend and large URLs if using Azure.                                                                                                                                                                                         | `{}`                                                                                  |
+| `ingress.annotations`                 | Ingress annotations.  Ensure you set appropriate annotations for TLS backend and large URLs if using Azure.                                                                                                                                                                                        | `{}`                                                                                  |
 | `ingress.hosts`                       | Ingress accepted hostnames                                                                                                                                                                                                                                                                         | `[]`                                                                                  |
 | `ingress.secretName`                  | Ingress TLS certificate secret name                                                                                                                                                                                                                                                                | `[]`                                                                                  |
 | `metrics.enabled`                     | Enable prometheus metrics endpoint                                                                                                                                                                                                                                                                 | `false`                                                                               |
@@ -185,7 +185,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ### 6.0.0
 
 - Integrate pomerium operator
-- Remove legacy TLS config support. See [v3.0.0 Upgrade Notes](#300-1) to migrate
+- Remove legacy TLS config support.  See [v3.0.0 Upgrade Notes](#300-1) to migrate
 
 ### 5.0.0
 
