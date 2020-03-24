@@ -31,7 +31,7 @@ spec:
       annotations:
         {{- /* policy is already covered by hot-reloading */}}
         {{- if not .Values.operator.enabled }}
-        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}	
+        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}
         {{- end }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}

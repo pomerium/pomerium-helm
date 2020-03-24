@@ -25,7 +25,7 @@ metadata:
 spec:
   replicas: {{ default .Values.replicaCount .Values.proxy.replicaCount }}
   selector:
-    matchLabels:  
+    matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
@@ -33,7 +33,7 @@ spec:
       annotations:
         {{- /* policy is already covered by hot-reloading */}}
         {{- if not .Values.operator.enabled }}
-        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}	
+        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}
         {{- end }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
