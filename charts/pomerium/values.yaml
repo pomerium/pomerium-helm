@@ -17,6 +17,7 @@ config:
   forceGenerateTLS: false
   extraOpts: {}
   existingPolicy: ""
+  administrators: ""
   policy: []
 
 authenticate:

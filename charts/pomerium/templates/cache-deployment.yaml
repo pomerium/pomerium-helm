@@ -80,13 +80,6 @@ spec:
           value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
-{{- if .Values.config.administrators }}
-        - name: ADMINISTRATORS
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: administrators
-{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}

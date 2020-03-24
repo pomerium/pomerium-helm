@@ -104,13 +104,6 @@ spec:
               name:  {{ $secretName }}
               key: idp-service-account
 {{- end }}
-{{- if .Values.config.administrators }}
-        - name: ADMINISTRATORS
-          valueFrom:
-            secretKeyRef:
-              name:  {{ $secretName }}
-              key: administrators
-{{- end }}
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"
         - name: CERTIFICATE_KEY_FILE
