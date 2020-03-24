@@ -36,7 +36,7 @@ data:
 {{ fail "Cannot use config.policy with config.existingPolicy" }}
 {{- end }}
 {{- if .Values.config.administrators }}
-    administrators: :{{ .Values.config.administrators }}
+    administrators: {{ .Values.config.administrators }}
 {{- end -}}
 {{- if .Values.config.extraOpts }}
 {{ toYaml .Values.config.extraOpts | indent 4 -}}
