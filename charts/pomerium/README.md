@@ -82,7 +82,11 @@ In default configuration, this chart will automatically generate TLS certificate
 Upon delete, you will need to manually delete the generated secrets. Example:
 
 ```console
-kubectl delete secret -l app.kubernetes.io/name=pomerium
+kubectl delete secret pomerium-authenticate-tls
+kubectl delete secret pomerium-authorize-tls
+kubectl delete secret pomerium-ca-tls
+kubectl delete secret pomerium-cache-tls
+kubectl delete secret pomerium-proxy-tls
 ```
 
 You may force recreation of your TLS certificates by setting `config.forceGenerateTLS` to `true`. Delete any existing TLS secrets first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
@@ -91,10 +95,31 @@ You may force recreation of your TLS certificates by setting `config.forceGenera
 
 If you wish to provide your own TLS certificates in secrets, you should:
 
-1. turn `generateTLS` to `false`
+1. turn `config.generateTLS` to `false`
 2. specify `authenticate.existingTLSSecret`, `authorize.existingTLSSecret`, and `proxy.existingTLSSecret`, pointing at the appropriate TLS certificate for each service.
 
 All services can share the secret if appropriate.
+
+## Signing Key
+
+### Auto Generation
+
+In default configuration, this chart will automatically generate a signing key in a helm `pre-install` hook for the Pomerium proxy to sign jwt sent in responses.
+
+Upon delete, you will need to manually delete the generated secret. Example:
+
+```console
+kubectl delete secret pomerium-proxy-signing-key
+```
+
+You may force recreation of your signing key by setting `config.forceGenerateSigningKey` to `true`. Delete already existing signing key secret first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secret.
+
+### Self Provisioned
+
+If you wish to provide your own signing key in secret, you should:
+
+1. turn `config.generateSigningKey` to `false`
+2. specify `proxy.existingSigningKeySecret` with secret's name
 
 ## Configuration
 
@@ -109,6 +134,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.existingSecret`               | Name of the existing Kubernetes Secret.                                                                                                                                                                                                                                                            |                                                                                       |
 | `config.existingConfig`               | Name of the existing Config Map deployed on Kubernetes.                                                                                                                                                                                                                                            |                                                                                       |
 | `config.existingCASecret`             | Name of the existing CA Secret.                                                                                                                                                                                                                                                                    |                                                                                       |
+| `config.generateSigningKey`           | Generate a signing key to sign jwt in proxy responses. Manual signing key can be set in values.                                                                                                                                                                              | `true`                                                                                |
+| `config.forceGenerateSigningKey`      | Force recreation of generated signing key. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                               |
 | `config.generateTLS`                  | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                                                                                                              | `true`                                                                                |
 | `config.forceGenerateTLS`             | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                               |
 | `config.sharedSecret`                 | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/reference/reference.html#shared-secret).                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)              |
@@ -136,6 +163,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `proxy.existingTLSSecret`             | Name of existing TLS Secret for proxy service                                                                                                                                                                                                                                                      |                                                                                       |
 | `proxy.deployment.annotations`        | Annotations for the proxy deployment. If none given, then use value of `annotations`                                                                                                                                                                                                               | `{}`                                                                                  |
 | `proxy.service.annotations`           | Annotations for the proxy service. If none given, then use value of `service.annotations`                                                                                                                                                                                                          | `{}`                                                                                  |
+| `proxy.existingSigningKeySecret`      | Name of existing Signing key Secret for proxy requests.                                                                                                                                                                                                                              |                                                                                       |
+| `proxy.signingKey`                    | Signing key is the base64 encoded key used to sign outbound requests.                                                                                                                                                                                                                              |                                                                                       |
 | `authorize.nameOverride`              | Name of the authorize service.                                                                                                                                                                                                                                                                     | `authorize`                                                                           |
 | `authorize.fullnameOverride`          | Full name of the authorize service.                                                                                                                                                                                                                                                                | `authorize`                                                                           |
 | `authorize.replicaCount`              | Number of Authorize pods to run                                                                                                                                                                                                                                                                    | `1`                                                                                   |

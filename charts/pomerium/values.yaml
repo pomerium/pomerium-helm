@@ -18,6 +18,8 @@ config:
   cookieSecret: ""
   generateTLS: true
   forceGenerateTLS: false
+  generateSigningKey: true
+  forceGenerateSigningKey: false
   extraOpts: {}
   existingPolicy: ""
   administrators: ""
@@ -89,6 +91,8 @@ proxy:
     key: ""
     defaultSANList: []
     defaultIPList: []
+  existingSigningKeySecret: ""
+  signingKey: ""
   replicaCount: 1
   authenticateServiceUrl: ""
   authorizeInternalUrl: ""
