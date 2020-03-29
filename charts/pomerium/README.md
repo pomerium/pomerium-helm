@@ -11,14 +11,19 @@
     - [Ingress Controller Annotations](#ingress-controller-annotations)
     - [Auto Generation](#auto-generation)
     - [Self Provisioned](#self-provisioned)
+  - [Signing Key](#signing-key)
+    - [Auto Generation](#auto-generation-1)
+    - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [7.0.0](#700)
     - [6.0.0](#600)
     - [5.0.0](#500)
     - [4.0.0](#400)
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [7.0.0](#700-1)
     - [5.0.0](#500-1)
     - [4.0.0](#400-1)
     - [3.0.0](#300-1)
@@ -130,12 +135,12 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `nameOverride`                        | Name of the chart.                                                                                                                                                                                                                                                                                 | `pomerium`                                                                            |
 | `fullnameOverride`                    | Full name of the chart.                                                                                                                                                                                                                                                                            | `pomerium`                                                                            |
 | `config.rootDomain`                   | Root Domain specifies the sub-domain handled by pomerium. [See more](https://www.pomerium.io/docs/reference/reference.html#proxy-root-domains).                                                                                                                                                    | `corp.pomerium.io`                                                                    |
-| `config.administrators`     | Comma seperated list of email addresses of administrative users [See more](https://www.pomerium.io/configuration/#administrators).                                                                                                                                                                      | Optional                                                                              |
+| `config.administrators`               | Comma seperated list of email addresses of administrative users [See more](https://www.pomerium.io/configuration/#administrators).                                                                                                                                                                 | Optional                                                                              |
 | `config.existingSecret`               | Name of the existing Kubernetes Secret.                                                                                                                                                                                                                                                            |                                                                                       |
 | `config.existingConfig`               | Name of the existing Config Map deployed on Kubernetes.                                                                                                                                                                                                                                            |                                                                                       |
 | `config.existingCASecret`             | Name of the existing CA Secret.                                                                                                                                                                                                                                                                    |                                                                                       |
-| `config.generateSigningKey`           | Generate a signing key to sign jwt in proxy responses. Manual signing key can be set in values.                                                                                                                                                                              | `true`                                                                                |
-| `config.forceGenerateSigningKey`      | Force recreation of generated signing key. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                               |
+| `config.generateSigningKey`           | Generate a signing key to sign jwt in proxy responses. Manual signing key can be set in values.                                                                                                                                                                                                    | `true`                                                                                |
+| `config.forceGenerateSigningKey`      | Force recreation of generated signing key. You will need to restart your deployments after running                                                                                                                                                                                                 | `false`                                                                               |
 | `config.generateTLS`                  | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                                                                                                              | `true`                                                                                |
 | `config.forceGenerateTLS`             | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                               |
 | `config.sharedSecret`                 | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/reference/reference.html#shared-secret).                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)              |
@@ -163,7 +168,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `proxy.existingTLSSecret`             | Name of existing TLS Secret for proxy service                                                                                                                                                                                                                                                      |                                                                                       |
 | `proxy.deployment.annotations`        | Annotations for the proxy deployment. If none given, then use value of `annotations`                                                                                                                                                                                                               | `{}`                                                                                  |
 | `proxy.service.annotations`           | Annotations for the proxy service. If none given, then use value of `service.annotations`                                                                                                                                                                                                          | `{}`                                                                                  |
-| `proxy.existingSigningKeySecret`      | Name of existing Signing key Secret for proxy requests.                                                                                                                                                                                                                              |                                                                                       |
+| `proxy.existingSigningKeySecret`      | Name of existing Signing key Secret for proxy requests.                                                                                                                                                                                                                                            |                                                                                       |
 | `proxy.signingKey`                    | Signing key is the base64 encoded key used to sign outbound requests.                                                                                                                                                                                                                              |                                                                                       |
 | `authorize.nameOverride`              | Name of the authorize service.                                                                                                                                                                                                                                                                     | `authorize`                                                                           |
 | `authorize.fullnameOverride`          | Full name of the authorize service.                                                                                                                                                                                                                                                                | `authorize`                                                                           |
@@ -211,6 +216,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 7.0.0
+
+- Add automatic signing key generation.  See [v7.0.0 Upgrade Nodes](#700-1) to migrate
+
 ### 6.0.0
 
 - Integrate pomerium operator
@@ -238,6 +247,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 7.0.0
+
+- A signing key is now automatically generated, similar to TLS secrets.
+  - If upgrading an install you should temporarily set `config.forceGenerateSigningKey` to `true` and generate this key during upgrade.
 
 ### 5.0.0
 
