@@ -9,6 +9,9 @@ metadata:
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook: pre-install
 data:
   config.yaml: ""
 
