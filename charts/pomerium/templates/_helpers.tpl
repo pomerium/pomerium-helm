@@ -251,3 +251,19 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- define "pomerium.operator.electionConfigMap" -}}
 {{- printf "%s-election" ( include "pomerium.operator.name" .) -}}
 {{- end -}}
+
+{{/*Expand the name of the config secret */}}
+{{- define "pomerium.secretName" -}}
+{{- if and .Values.config.existingSecret (not .Values.operator.enabled) -}}
+{{- .Values.config.existingSecret -}}
+{{- else -}}
+{{- include "pomerium.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*Expand the name of the config secret */}}
+{{- define "pomerium.baseSecretName" -}}
+{{- if .Values.operator.enabled -}}
+{{- default (printf "%s-base" (include "pomerium.fullname" .)) .Values.config.existingSecret -}}
+{{- end -}}
+{{- end -}}

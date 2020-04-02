@@ -1,4 +1,5 @@
-{{- $configName := default (printf "%s-base" (include "pomerium.fullname" .)) .Values.config.existingConfig }}
+{{- $secretName := include "pomerium.secretName" . }}
+{{- $baseSecretName := include "pomerium.baseSecretName" . }}
 {{- if .Values.operator.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -64,6 +65,7 @@ spec:
           - --election-configmap={{ template "pomerium.operator.electionConfigMap" . }}
           - --election-namespace={{ .Release.Namespace }}
           - --election=true
+          - --pomerium-secret={{ $secretName }}
         ports:
           - containerPort: 8080
             name: metrics
@@ -88,8 +90,8 @@ spec:
           name: config
       volumes:
       - name: config
-        configMap:
-          name: {{ $configName }}
+        secret:
+          secretName: {{ $baseSecretName }}
       serviceAccountName: {{ template "pomerium.operator.serviceAccountName" . }}
 {{- if .Values.extraVolumes }}
 {{- toYaml .Values.extraVolumes | indent 8 }}
