@@ -20,7 +20,9 @@ metadata:
  {{- end }}
 {{- end }}
 spec:
+  {{- if (ne .Values.authenticate.autoscaling.enabled true) }}
   replicas: {{ default .Values.replicaCount .Values.authenticate.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}

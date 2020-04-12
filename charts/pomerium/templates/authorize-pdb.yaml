@@ -1,0 +1,18 @@
+{{- if .Values.authorize.pdb.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authorize
+  name: {{ template "pomerium.authorize.fullname" . }}-pdp
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "pomerium.authorize.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  minAvailable: {{ .Values.authorize.pdb.minAvailable }}
+{{- end }}
