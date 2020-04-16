@@ -1,0 +1,32 @@
+{{- if .Values.authenticate.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authenticate
+  name: {{ template "pomerium.authenticate.fullname" . }}-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "pomerium.authenticate.fullname" . }}
+  minReplicas: {{ .Values.authenticate.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.authenticate.autoscaling.maxReplicas }}
+  metrics:
+{{- with .Values.authenticate.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ . }}
+{{- end }}
+{{- with .Values.authenticate.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ . }}
+{{- end }}
+{{- end }}

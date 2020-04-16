@@ -1,0 +1,18 @@
+{{- if .Values.authenticate.pdb.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: authenticate
+  name: {{ template "pomerium.authenticate.fullname" . }}-pdp
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  minAvailable: {{ .Values.authenticate.pdb.minAvailable }}
+{{- end }}

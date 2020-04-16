@@ -22,7 +22,9 @@ metadata:
   {{- end }}
 {{- end }}
 spec:
+  {{- if (ne .Values.proxy.autoscaling.enabled true) }}
   replicas: {{ default .Values.replicaCount .Values.proxy.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}

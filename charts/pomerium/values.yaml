@@ -44,6 +44,15 @@ authenticate:
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+  pdb:
+    enabled: false
+    minAvailable: 1
   service:
     annotations: {}
   deployment:
@@ -60,6 +69,15 @@ authorize:
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+  pdb:
+    enabled: false
+    minAvailable: 1
   service:
     annotations: {}
   deployment:
@@ -75,6 +93,9 @@ cache:
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
+  pdb:
+    enabled: false
+    minAvailable: 1
   service:
     annotations: {}
   deployment:
@@ -93,6 +114,15 @@ proxy:
   existingSigningKeySecret: ""
   signingKey: ""
   replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+  pdb:
+    enabled: false
+    minAvailable: 1
   authenticateServiceUrl: ""
   authorizeInternalUrl: ""
   service:
