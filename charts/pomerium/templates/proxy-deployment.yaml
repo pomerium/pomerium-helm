@@ -83,6 +83,12 @@ spec:
           value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
+{{- if .Values.config.insecure }}
+        - name: INSECURE_SERVER
+          value: "true"
+        - name: GRPC_INSECURE
+          value: "true"
+{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -98,12 +104,20 @@ spec:
           httpGet:
             path: /ping
             port: https
+{{- if .Values.config.insecure }}
+            scheme: HTTP
+{{- else }}
             scheme: HTTPS
+{{- end }}
         readinessProbe:
           httpGet:
             path: /ping
             port: https
+{{- if .Values.config.insecure }}
+            scheme: HTTP
+{{- else }}
             scheme: HTTPS
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

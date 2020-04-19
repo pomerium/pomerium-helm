@@ -72,6 +72,12 @@ spec:
           value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
+{{- if .Values.config.insecure }}
+        - name: INSECURE_SERVER
+          value: "true"
+        - name: GRPC_INSECURE
+          value: "true"
+{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
