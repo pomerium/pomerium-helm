@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [8.0.4](#804)
     - [8.0.0](#800)
     - [7.0.0](#700)
     - [6.0.0](#600)
@@ -240,6 +241,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`     | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                                  |
 
 ## Changelog
+
+### 8.0.4
+
+- Add `config.insecure` flag in order to support running Pomerium in non-tls mode to play well with reverse proxy's like Istio's envoy
 
 ### 8.0.0
 
