@@ -48,3 +48,11 @@ the official documentation:
 
     https://www.pomerium.io/docs/identity-providers.html
 {{- end }}
+
+{{- if .Values.config.insecure }}
+##############################################################################
+####        DANGER: You have disabled TLS!
+####
+####        Please only do this if you absolutely know what you are doing.
+##############################################################################
+{{- end }}

@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [8.4.0](#840)
     - [8.0.0](#800)
     - [7.0.0](#700)
     - [6.0.0](#600)
@@ -144,6 +145,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.forceGenerateSigningKey`      | Force recreation of generated signing key. You will need to restart your deployments after running                                                                                                                                                                                                 | `false`                                                                               |
 | `config.generateTLS`                  | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                                                                                                              | `true`                                                                                |
 | `config.forceGenerateTLS`             | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                               |
+| `config.insecure`                     | DANGER, this disables tls between services. Only do this if you know what you are doing. One reason might be that you want to offload tls to a reverse proxy (i.e. istio, traefik) | `false`  |                                                                                                                                                                                           | `false`                                                                               |
 | `config.sharedSecret`                 | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/reference/reference.html#shared-secret).                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)              |
 | `config.cookieSecret`                 | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)              |
 | `config.policy`                       | Base64 encoded string containing the routes, and their access policies.                                                                                                                                                                                                                            |                                                                                       |
@@ -239,6 +241,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`     | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                                  |
 
 ## Changelog
+
+### 8.4.0
+
+- Add `config.insecure` flag in order to support running Pomerium in non-tls mode to play well with reverse proxy's like Istio's envoy
 
 ### 8.0.0
 
