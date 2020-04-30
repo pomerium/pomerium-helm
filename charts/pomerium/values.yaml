@@ -150,6 +150,7 @@ forwardAuth:
   enabled: false
   # Will not create an ingress. ForwardAuth is ony accessible as internal service.
   internal: false
+  internalClusterDomain: cluster.local
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
