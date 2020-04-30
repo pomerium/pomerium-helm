@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [8.5.5](#855)
     - [8.5.1](#851)
     - [8.5.0](#850)
     - [8.4.0](#840)
@@ -248,7 +249,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 8.5.5
 
-- Fix: Set not only the service but also the namespace when `forwardAuth.internal == true`    
+- Fix: Set not only the service but also the namespace when `forwardAuth.internal == true`
 
 ### 8.5.1
 
