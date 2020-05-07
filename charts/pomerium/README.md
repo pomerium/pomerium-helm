@@ -245,6 +245,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 8.5.5
+
+- Fix: Set not only the service but also the namespace when `forwardAuth.internal == true`    
+
 ### 8.5.1
 
 - Add documentation for `extraOpts` flag, remove `policyFile` flag as it isn't implemented.
