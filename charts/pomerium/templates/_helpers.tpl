@@ -244,7 +244,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{/*Expand the internal FQDN of the forward-auth endpoint.*/}}
 {{- define "pomerium.forwardAuth.internal.name" -}}
-{{- printf "%s.%s.svc.%s" (include "pomerium.proxy.fullname" .) .Release.Namespace .Values.forwardAuth.internalClusterDomain -}}
+{{- printf "%s.%s.svc.%s" (include "pomerium.proxy.fullname" .) .Release.Namespace .Values.forwardAuth.internalClusterDomain | trimSuffix "." -}}
 {{- end -}}
 
 {{/*Expand the serviceAccountName for the operator */}}
