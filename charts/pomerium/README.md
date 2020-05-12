@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [8.5.6](#856)
     - [8.5.5](#855)
     - [8.5.1](#851)
     - [8.5.0](#850)
@@ -246,6 +247,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`                            | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                     |
 
 ## Changelog
+
+### 8.5.6
+
+- Use fqdn of internal service when forwardAuth is in internal mode.
+- Add `forwardAuth.internalClusterDomain` for setting non-standard kubernetes cluster domains.
 
 ### 8.5.5
 
