@@ -137,7 +137,7 @@ operator:
   replicaCount: 1
   image:
     repository: "pomerium/pomerium-operator"
-    tag: "v0.0.1-rc3"
+    tag: "v0.0.2"
   config:
     ingressClass: pomerium
     serviceClass: pomerium
@@ -221,7 +221,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.7.5"
+  tag: "v0.7.6"
   pullPolicy: "IfNotPresent"
 
 metrics:
