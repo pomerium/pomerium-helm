@@ -267,3 +267,34 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- default (printf "%s-base" (include "pomerium.fullname" .)) .Values.config.existingSecret -}}
 {{- end -}}
 {{- end -}}
+
+{{/*Expand the port number for secure or insecure mode */}}
+{{- define "pomerium.trafficPort.number" -}}
+{{- if .Values.config.insecure -}}
+80
+{{- else -}}
+443
+{{- end -}}
+{{- end -}}
+
+{{/*Expand the port name for secure or insecure mode */}}
+{{- define "pomerium.trafficPort.name" -}}
+{{- if .Values.config.insecure -}}
+http
+{{- else -}}
+https
+{{- end -}}
+{{- end -}}
+
+{{/*Expand the service port number for secure or insecure mode */}}
+{{- define "pomerium.service.externalPort" -}}
+{{- if .Values.service.externalPort -}}
+{{- .Values.service.externalPort -}}
+{{- else -}}
+{{-   if .Values.config.insecure -}}
+80
+{{-   else -}}
+443
+{{-   end -}}
+{{- end -}}
+{{- end -}}

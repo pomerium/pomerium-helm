@@ -94,8 +94,8 @@ spec:
           value: {{ quote $value }}
 {{- end }}
         ports:
-          - containerPort: 443
-            name: https
+          - containerPort: {{ template "pomerium.trafficPort.number" . }}
+            name: {{ template "pomerium.trafficPort.name" . }}
             protocol: TCP
           - containerPort: {{ .Values.metrics.port }}
             name: metrics
@@ -103,7 +103,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: https
+            port: {{ template "pomerium.trafficPort.name" . }}
 {{- if .Values.config.insecure }}
             scheme: HTTP
 {{- else }}
@@ -112,7 +112,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: https
+            port: {{ template "pomerium.trafficPort.name" . }}
 {{- if .Values.config.insecure }}
             scheme: HTTP
 {{- else }}

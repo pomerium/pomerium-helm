@@ -37,7 +37,7 @@ spec:
           - paths:
             backend:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
-              servicePort: https
+              servicePort: {{ template "pomerium.trafficPort.name" $ }}
     {{- end }}
     {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
     {{- range .Values.config.policy }}
@@ -47,7 +47,7 @@ spec:
           - paths:
             backend:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
-              servicePort: https
+              servicePort: {{ template "pomerium.trafficPort.name" $ }}
     {{- end }}
     {{- end }}
     {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal)}}
@@ -57,7 +57,7 @@ spec:
           - paths:
             backend:
               serviceName: {{ template "pomerium.proxy.fullname" . }}
-              servicePort: https
+              servicePort: {{ template "pomerium.trafficPort.name" . }}
     {{- end }}
     {{- if not .Values.service.authorize.headless }}
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
@@ -66,7 +66,7 @@ spec:
           - paths:
             backend:
               serviceName: {{ template "pomerium.authorize.fullname" . }}
-              servicePort: https
+              servicePort: {{ template "pomerium.trafficPort.name" . }}
     {{- end }}
     - host: {{ printf "authenticate.%s" .Values.config.rootDomain }}
       http:
@@ -74,5 +74,5 @@ spec:
           - paths:
             backend:
               serviceName: {{ template "pomerium.authenticate.fullname" . }}
-              servicePort: https
+              servicePort: {{ template "pomerium.trafficPort.name" . }}
 {{- end }}
