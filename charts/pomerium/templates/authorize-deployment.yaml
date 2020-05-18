@@ -68,17 +68,18 @@ spec:
         env:
         - name: SERVICES
           value: authorize
+{{- if .Values.config.insecure }}
+        - name: INSECURE_SERVER
+          value: "true"
+        - name: GRPC_INSECURE
+          value: "true"
+{{- else }}
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"
         - name: CERTIFICATE_KEY_FILE
           value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
-{{- if .Values.config.insecure }}
-        - name: INSECURE_SERVER
-          value: "true"
-        - name: GRPC_INSECURE
-          value: "true"
 {{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
@@ -103,6 +104,7 @@ spec:
         volumeMounts:
         - mountPath: /etc/pomerium/
           name: config
+{{- if (not .Values.config.insecure) }}
         - mountPath: /pomerium/cert.pem
           name: service-tls
           subPath: tls.crt
@@ -112,16 +114,19 @@ spec:
         - mountPath: /pomerium/ca.pem
           name: ca-tls
           subPath: ca.crt
+{{- end }}
       volumes:
       - name: config
         secret:
           secretName: {{ $secretName }}
+{{- if (not .Values.config.insecure) }}
       - name: service-tls
         secret:
           secretName: {{ template "pomerium.authorize.tlsSecret.name" . }}
       - name: ca-tls
         secret:
           secretName: {{ template "pomerium.caSecret.name" . }}
+{{- end }}
 {{- if .Values.extraVolumes }}
       volumes:
 {{- toYaml .Values.extraVolumes | indent 8 }}
