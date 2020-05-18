@@ -210,16 +210,16 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
-{{/* Determine secret name for Proxy signing key */}}
-{{- define "pomerium.proxy.signingKeySecret.name" -}}
-{{- if .Values.proxy.existingSigningKeySecret -}}
-{{- .Values.proxy.existingSigningKeySecret | trunc 63 | trimSuffix "-" -}}
+{{/* Determine secret name for Authorize signing key */}}
+{{- define "pomerium.authorize.signingKeySecret.name" -}}
+{{- if .Values.authorize.existingsigningKeySecret -}}
+{{- .Values.authorize.existingsigningKeySecret | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- printf "%s-proxy-signing-key" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-authorize-signing-key" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s-proxy-signing-key" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s-authorize-signing-key" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
