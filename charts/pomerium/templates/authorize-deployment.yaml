@@ -70,7 +70,7 @@ spec:
         - name: SIGNING_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.proxy.signingKeySecret.name" . }}
+              name: {{ template "pomerium.authorize.signingKeySecret.name" . }}
               key: signing-key
         - name: CERTIFICATE_FILE
           value: "/pomerium/cert.pem"

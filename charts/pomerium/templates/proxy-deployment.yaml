@@ -68,7 +68,7 @@ spec:
         - name: SIGNING_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "pomerium.proxy.signingKeySecret.name" . }}
+              name: {{ template "pomerium.authorize.signingKeySecret.name" . }}
               key: signing-key
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
