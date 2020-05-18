@@ -69,6 +69,8 @@ authorize:
     key: ""
     defaultSANList: []
     defaultIPList: []
+  existingSigningKeySecret: ""
+  signingKey: ""
   replicaCount: 1
   autoscaling:
     enabled: false
@@ -112,8 +114,6 @@ proxy:
     key: ""
     defaultSANList: []
     defaultIPList: []
-  existingSigningKeySecret: ""
-  signingKey: ""
   replicaCount: 1
   autoscaling:
     enabled: false

@@ -65,26 +65,11 @@ spec:
         env:
         - name: SERVICES
           value: authorize
-<<<<<<< HEAD
-=======
         - name: SIGNING_KEY
           valueFrom:
             secretKeyRef:
               name: {{ template "pomerium.authorize.signingKeySecret.name" . }}
               key: signing-key
-        - name: CERTIFICATE_FILE
-          value: "/pomerium/cert.pem"
-        - name: CERTIFICATE_KEY_FILE
-          value: "/pomerium/privkey.pem"
-        - name: CERTIFICATE_AUTHORITY_FILE
-          value: "/pomerium/ca.pem"
-{{- if .Values.config.insecure }}
-        - name: INSECURE_SERVER
-          value: "true"
-        - name: GRPC_INSECURE
-          value: "true"
-{{- end }}
->>>>>>> d11a0b6... add signing-key ev to authorize
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
