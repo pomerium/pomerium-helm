@@ -123,7 +123,7 @@ In default configuration, this chart will automatically generate a signing key i
 Upon delete, you will need to manually delete the generated secret. Example:
 
 ```console
-kubectl delete secret pomerium-proxy-signing-key
+kubectl delete secret pomerium-authorize-signing-key
 ```
 
 You may force recreation of your signing key by setting `config.forceGenerateSigningKey` to `true`. Delete already existing signing key secret first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secret.
@@ -133,7 +133,7 @@ You may force recreation of your signing key by setting `config.forceGenerateSig
 If you wish to provide your own signing key in secret, you should:
 
 1. turn `config.generateSigningKey` to `false`
-2. specify `proxy.existingSigningKeySecret` with secret's name
+2. specify `authorize.existingsigningKeySecret` with secret's name
 
 ## Configuration
 
