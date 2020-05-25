@@ -49,6 +49,11 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
+        runAsNonRoot: true
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
 {{- end }}
@@ -66,6 +71,8 @@ spec:
 {{- end }}
 {{- end }}
         env:
+        - name: ADDRESS
+          value: ":8443"
         - name: SERVICES
           value: proxy
         - name: SIGNING_KEY
@@ -94,7 +101,7 @@ spec:
           value: {{ quote $value }}
 {{- end }}
         ports:
-          - containerPort: 443
+          - containerPort: 8443
             name: https
             protocol: TCP
           - containerPort: {{ .Values.metrics.port }}
