@@ -85,19 +85,19 @@ spec:
           value: {{ quote $value }}
 {{- end }}
         ports:
-          - containerPort: 443
-            name: https
+          - containerPort: {{ template "pomerium.trafficPort.number" . }}
+            name: {{ template "pomerium.trafficPort.name" . }}
             protocol: TCP
           - containerPort: {{ .Values.metrics.port }}
             name: metrics
             protocol: TCP
         livenessProbe:
           tcpSocket:
-            port: https
+            port: {{ template "pomerium.trafficPort.name" . }}
           initialDelaySeconds: 15
         readinessProbe:
           tcpSocket:
-            port: https
+            port: {{ template "pomerium.trafficPort.name" . }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

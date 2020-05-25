@@ -31,10 +31,10 @@ spec:
   type: {{ .Values.service.type }}
 {{- end }}
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: https
+    - port: {{ template "pomerium.service.externalPort" . }}
+      targetPort: {{ template "pomerium.trafficPort.name" . }}
       protocol: TCP
-      name: https
+      name: {{ template "pomerium.trafficPort.name" . }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP
