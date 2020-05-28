@@ -74,6 +74,8 @@ spec:
           value: "/pomerium/privkey.pem"
         - name: CERTIFICATE_AUTHORITY_FILE
           value: "/pomerium/ca.pem"
+        - name: AUTHENTICATE_SERVICE_URL
+          value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
 {{- if .Values.config.insecure }}
         - name: INSECURE_SERVER
           value: "true"
