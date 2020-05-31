@@ -246,6 +246,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 9.2.1
+
+- Fix: Set correct app version and image version to 0.9.0    
+
+
 ### 8.5.5
 
 - Fix: Set not only the service but also the namespace when `forwardAuth.internal == true`    
