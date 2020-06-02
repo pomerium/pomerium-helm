@@ -30,11 +30,9 @@ spec:
   template:
     metadata:
       annotations:
-        {{- /* policy is already covered by hot-reloading */}}
         {{- if not .Values.operator.enabled }}
-        checksum/config: {{ print .Values.config.extraOpts | sha256sum }}
+        checksum/secret: {{ include "pomerium.config.static" . | sha256sum }}
         {{- end }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
