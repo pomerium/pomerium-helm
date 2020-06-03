@@ -298,3 +298,51 @@ https
 {{-   end -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "pomerium.config.static" -}}
+address: ":{{ template "pomerium.trafficPort.number" }}"
+{{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
+{{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
+{{- end }}
+{{- if and .Values.config.existingPolicy .Values.config.policy }}
+{{ fail "Cannot use config.policy with config.existingPolicy" }}
+{{- end }}
+{{- if .Values.config.administrators }}
+administrators: {{ .Values.config.administrators | quote }}
+{{- end -}}
+{{- if .Values.config.extraOpts }}
+{{ toYaml .Values.config.extraOpts -}}
+{{- end -}}
+{{- if .Values.metrics.enabled }}
+metrics_address: ":{{ .Values.metrics.port }}"
+{{- end -}}
+{{- if .Values.tracing.enabled }}
+tracing_debug: {{ .Values.tracing.debug }}
+tracing_provider: {{ required "tracing_provider is required for tracing" .Values.tracing.provider }}
+
+{{- if eq .Values.tracing.provider "jaeger" }}
+tracing_jaeger_collector_endpoint: {{ required "collector_endpoint is required for jaeoger tracing" .Values.tracing.jaeger.collector_endpoint }}
+tracing_jaeger_agent_endpoint: {{ required "agent_endpoint is required for jaeger tracing" .Values.tracing.jaeger.agent_endpoint }}
+{{- end -}}
+
+{{- end -}}
+{{- if and .Values.forwardAuth.enabled .Values.forwardAuth.internal }}
+forward_auth_url: https://{{ include "pomerium.proxy.fullname" $ }}.{{ .Release.Namespace }}
+{{ else }}
+forward_auth_url: https://{{ include "pomerium.forwardAuth.name" $ }}
+{{- end }}
+cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
+shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
+idp_client_id: {{ .Values.authenticate.idp.clientID }}
+idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
+{{- if .Values.authenticate.idp.serviceAccount }}
+idp_service_account: {{ .Values.authenticate.idp.serviceAccount }}
+{{- end }}
+{{- end -}}
+
+{{- define "pomerium.config.dynamic" -}}
+{{- if .Values.config.policy }}
+policy:
+{{ toYaml .Values.config.policy | indent 2 }}
+{{- end }}
+{{- end -}}
