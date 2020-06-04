@@ -343,6 +343,6 @@ idp_service_account: {{ .Values.authenticate.idp.serviceAccount }}
 {{- define "pomerium.config.dynamic" -}}
 {{- if .Values.config.policy }}
 policy:
-{{ toYaml .Values.config.policy | indent 2 }}
+{{ tpl (toYaml .Values.config.policy) . | indent 2 }}
 {{- end }}
 {{- end -}}
