@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [10.0.0](#1000)
     - [8.5.5](#855)
     - [8.5.1](#851)
     - [8.5.0](#850)
@@ -28,6 +29,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [10.0.0](#1000-1)
     - [8.0.0](#800-1)
     - [7.0.0](#700-1)
     - [5.0.0](#500-1)
@@ -36,7 +38,7 @@
     - [2.0.0](#200-1)
   - [Metrics Discovery Configuration](#metrics-discovery-configuration)
     - [Prometheus Operator](#prometheus-operator)
-    - [Prometheus kubernetes_sd_configs](#prometheus-kubernetessdconfigs)
+    - [Prometheus kubernetes_sd_configs](#prometheus-kubernetes_sd_configs)
 
 ## TL;DR;
 
@@ -246,6 +248,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 10.0.0
+
+- Refactor shared configuration logic to be driven by named templates. See [v10.0.0 Upgrade Nodes](#1000-1) to migrate.
+
 ### 8.5.5
 
 - Fix: Set not only the service but also the namespace when `forwardAuth.internal == true`    
@@ -297,6 +303,32 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 10.0.0
+
+- All shared configuration has been moved from ENV vars to a configuration file.  Users of `config.existingSecret` must specify **all** parameters in their secret or leverage `extraEnv` to pass in overrides.  
+  
+  Some of the impacted chart values and their equivilent settings are listed below:
+
+  | Chart Value                    | Config Parameter                    |
+  | ------------------------------ | ----------------------------------- |
+  | `authenticate.idp.provider`    | `idp_provider`                      |
+  | `authenticate.idp.url`         | `idp_provider_url`                  |
+  | `authenticate.cacheServiceUrl` | `cache_service_url`                 |
+  | `authenticate.idp.scopes`      | `idp_scopes`                        |
+  | `config.insecure`              | `insecure_server` + `grpc_insecure` |
+  | `proxy.authenticateServiceUrl` | `authenticate_service_url`          |
+  | `proxy.authorizeInternalUrl`   | `authorize_service_url`             |
+
+  Other settings required in your `config.existingSecret` or `extraEnv`:
+
+  - `CACHE_SERVICE_URL=[your cache service url]`
+  - `AUTHENTICATE_SERVICE_URL=[your authenticate service url]`
+  - `CERTIFICATE_FILE="/pomerium/cert.pem"`
+  - `CERTIFICATE_KEY_FILE="/pomerium/privkey.pem"`
+  - `CERTIFICATE_AUTHORITY_FILE="/pomerium/ca.pem"`
+
+  If you are not using `config.existingSecret` you should not need to make any changes.
 
 ### 8.0.0
 

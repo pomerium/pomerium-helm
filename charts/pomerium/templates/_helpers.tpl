@@ -239,7 +239,13 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{/*Expand the FQDN of the forward-auth endpoint.*/}}
 {{- define "pomerium.forwardAuth.name" -}}
-{{- default (printf "forwardauth.%s" .Values.config.rootDomain ) .Values.forwardAuth.nameOverride -}}
+{{- if .Values.forwardAuth.nameOverride -}}
+{{- .Values.forwardAuth.nameOverride -}}
+{{- else if .Values.forwardAuth.internal -}}
+{{- printf "%s.%s" (include "pomerium.proxy.fullname" .) ( .Release.Namespace ) -}}
+{{- else -}}
+{{- printf "forwardauth.%s" .Values.config.rootDomain -}}
+{{- end -}}
 {{- end -}}
 
 {{/*Expand the serviceAccountName for the operator */}}
@@ -299,8 +305,25 @@ https
 {{- end -}}
 {{- end -}}
 
+{{/*Creates static configuration yaml */}}
 {{- define "pomerium.config.static" -}}
-address: ":{{ template "pomerium.trafficPort.number" }}"
+address: ":{{ template "pomerium.trafficPort.number" . }}"
+grpc_address: ":{{ template "pomerium.trafficPort.number" . }}"
+{{- if not .Values.config.insecure }}
+certificate_file: "/pomerium/cert.pem"
+certificate_key_file: "/pomerium/privkey.pem"
+certificate_authority_file: "/pomerium/ca.pem"
+{{- end }}
+authenticate_service_url: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.trafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
+cache_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.trafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
+idp_provider: {{ .Values.authenticate.idp.provider }}
+idp_scopes: {{ .Values.authenticate.idp.scopes }}
+idp_provider_url: {{ .Values.authenticate.idp.url }}
+{{- if .Values.config.insecure }}
+insecure_server: true
+grpc_insecure: true
+{{- end }}
 {{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
 {{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
 {{- end }}
@@ -311,6 +334,7 @@ address: ":{{ template "pomerium.trafficPort.number" }}"
 administrators: {{ .Values.config.administrators | quote }}
 {{- end -}}
 {{- if .Values.config.extraOpts }}
+
 {{ toYaml .Values.config.extraOpts -}}
 {{- end -}}
 {{- if .Values.metrics.enabled }}
@@ -327,9 +351,9 @@ tracing_jaeger_agent_endpoint: {{ required "agent_endpoint is required for jaege
 
 {{- end -}}
 {{- if and .Values.forwardAuth.enabled .Values.forwardAuth.internal }}
-forward_auth_url: https://{{ include "pomerium.proxy.fullname" $ }}.{{ .Release.Namespace }}
-{{ else }}
-forward_auth_url: https://{{ include "pomerium.forwardAuth.name" $ }}
+forward_auth_url: {{ printf "%s://%s" ( include "pomerium.trafficPort.name" . ) ( include "pomerium.forwardAuth.name" . ) }}
+{{- else if .Values.forwardAuth.enabled }}
+forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" . ) }}
 {{- end }}
 cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
 shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
@@ -340,9 +364,46 @@ idp_service_account: {{ .Values.authenticate.idp.serviceAccount }}
 {{- end }}
 {{- end -}}
 
+{{/* Creates dynamic configuration yaml */}}
 {{- define "pomerium.config.dynamic" -}}
 {{- if .Values.config.policy }}
 policy:
 {{ toYaml .Values.config.policy | indent 2 }}
 {{- end }}
+{{- end -}}
+
+{{- define "pomerium.volumeMounts" -}}
+- mountPath: /etc/pomerium/
+  name: config
+- mountPath: /pomerium/cert.pem
+  name: service-tls
+  subPath: tls.crt
+- mountPath: /pomerium/privkey.pem
+  name: service-tls
+  subPath: tls.key
+- mountPath: /pomerium/ca.pem
+  name: ca-tls
+  subPath: ca.crt
+{{- end -}}
+
+{{/* Generates common volumes for all services */}}
+{{- define "pomerium.volumes.shared" -}}
+- name: config
+  secret:
+    secretName: {{ include "pomerium.secretName" . }}
+- name: ca-tls
+  secret:
+    secretName: {{ template "pomerium.caSecret.name" . }}
+    optional: true
+{{- if .Values.extraVolumes }}
+{{- toYaml .Values.extraVolumes | indent 8 }}
+{{- end }}
+{{- end -}}
+
+{{/* Generates volumes specific to a service */}}
+{{- define "pomerium.volumes.service" -}}
+- name: service-tls
+  secret:
+    secretName: {{ include (printf "pomerium.%s.tlsSecret.name" .currentServiceName ) . }}
+    optional: true
 {{- end -}}
