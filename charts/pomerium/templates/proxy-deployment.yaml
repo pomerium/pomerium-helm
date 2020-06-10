@@ -1,4 +1,3 @@
-{{- $secretName := include "pomerium.secretName" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -71,22 +70,6 @@ spec:
             secretKeyRef:
               name: {{ template "pomerium.proxy.signingKeySecret.name" . }}
               key: signing-key
-        - name: AUTHENTICATE_SERVICE_URL
-          value: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
-        - name: AUTHORIZE_SERVICE_URL
-          value: {{ default (printf "https://%s.%s.svc.cluster.local" (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-        - name: CERTIFICATE_FILE
-          value: "/pomerium/cert.pem"
-        - name: CERTIFICATE_KEY_FILE
-          value: "/pomerium/privkey.pem"
-        - name: CERTIFICATE_AUTHORITY_FILE
-          value: "/pomerium/ca.pem"
-{{- if .Values.config.insecure }}
-        - name: INSECURE_SERVER
-          value: "true"
-        - name: GRPC_INSECURE
-          value: "true"
-{{- end }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -102,48 +85,21 @@ spec:
           httpGet:
             path: /ping
             port: {{ template "pomerium.trafficPort.name" . }}
-{{- if .Values.config.insecure }}
-            scheme: HTTP
-{{- else }}
-            scheme: HTTPS
-{{- end }}
+            scheme: {{ upper (include "pomerium.trafficPort.name" .) }}
         readinessProbe:
           httpGet:
             path: /ping
             port: {{ template "pomerium.trafficPort.name" . }}
-{{- if .Values.config.insecure }}
-            scheme: HTTP
-{{- else }}
-            scheme: HTTPS
-{{- end }}
+            scheme: {{ upper (include "pomerium.trafficPort.name" .) }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /etc/pomerium/
-          name: config
-        - mountPath: /pomerium/cert.pem
-          name: service-tls
-          subPath: tls.crt
-        - mountPath: /pomerium/privkey.pem
-          name: service-tls
-          subPath: tls.key
-        - mountPath: /pomerium/ca.pem
-          name: ca-tls
-          subPath: ca.crt
+{{ include "pomerium.volumeMounts" . | indent 10 }}
       volumes:
-      - name: config
-        secret:
-          secretName: {{ $secretName }}
-      - name: service-tls
-        secret:
-          secretName: {{ template "pomerium.proxy.tlsSecret.name" . }}
-      - name: ca-tls
-        secret:
-          secretName: {{ template "pomerium.caSecret.name" . }}
-{{- if .Values.extraVolumes }}
-      volumes:
-{{- toYaml .Values.extraVolumes | indent 8 }}
-{{- end }}
+{{ include "pomerium.volumes.shared" . | indent 8 }}
+{{- $ctx := . }}
+{{- $_ := set $ctx "currentServiceName" "proxy" }}
+{{ include "pomerium.volumes.service" $ctx | indent 8 }}
 {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
