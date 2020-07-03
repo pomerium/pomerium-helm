@@ -140,6 +140,8 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- if .Values.authenticate.idp -}}
   {{- if .Values.config.existingSecret -}}
   true
+  {{- else if and .Values.extraEnv.IDP_CLIENT_ID .Values.extraEnv.IDP_CLIENT_SECRET -}}
+  true
   {{- else if eq .Values.authenticate.idp.clientID "" -}}
   false
   {{- else if eq .Values.authenticate.idp.clientSecret "" -}}
