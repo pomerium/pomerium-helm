@@ -36,9 +36,12 @@ This deployment will be incomplete until you configure a valid identity provider
 
 Currently supported providers:
 
-    - Okta
-    - Google
     - Azure Active Directory
+    - AWS Cognito
+    - GitHub
+    - GitLab
+    - Google
+    - Okta
     - OneLogin
 
 See the values.yaml file to see what values are required for each provider.
