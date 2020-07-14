@@ -69,6 +69,10 @@ spec:
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
+{{- if .Values.extraEnvFrom }}
+        envFrom: 
+{{        toYaml .Values.extraEnvFrom | indent 8 }}
+{{- end }}
         ports:
           - containerPort: {{ template "pomerium.trafficPort.number" . }}
             name: {{ template "pomerium.trafficPort.name" . }}

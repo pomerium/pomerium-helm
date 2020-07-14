@@ -215,6 +215,7 @@ replicaCount: 1
 # For any other settings that are optional. for a complete listing see:
 # https://www.pomerium.io/docs/config-reference.html
 extraEnv: {}
+extraEnvFrom: []
 extraArgs: {}
 extraVolumes: {}
 
