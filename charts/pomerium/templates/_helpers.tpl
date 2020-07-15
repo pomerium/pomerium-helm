@@ -396,7 +396,7 @@ policy:
     secretName: {{ template "pomerium.caSecret.name" . }}
     optional: true
 {{- if .Values.extraVolumes }}
-{{- toYaml .Values.extraVolumes | indent 8 }}
+{{ toYaml .Values.extraVolumes }}
 {{- end }}
 {{- end -}}
 

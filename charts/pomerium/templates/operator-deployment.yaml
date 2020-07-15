@@ -92,10 +92,10 @@ spec:
       - name: config
         secret:
           secretName: {{ $baseSecretName }}
-      serviceAccountName: {{ template "pomerium.operator.serviceAccountName" . }}
 {{- if .Values.extraVolumes }}
-{{- toYaml .Values.extraVolumes | indent 8 }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
 {{- end }}
+      serviceAccountName: {{ template "pomerium.operator.serviceAccountName" . }}
 {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
