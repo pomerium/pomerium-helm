@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [11.0.0](#1100)
     - [10.2.0](#1020)
     - [10.0.0](#1000)
     - [8.5.5](#855)
@@ -30,6 +31,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [11.0.0](#1100-1)
     - [10.0.0](#1000-1)
     - [8.0.0](#800-1)
     - [7.0.0](#700-1)
@@ -253,6 +255,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 11.0.0
+
+- Signing key has been refactored to correspond with Pomerium changes. See [v11.0.0 Upgrade Nodes](#1100-1) to migrate.
+
 ### 10.2.0
 
 - Update port names in insecure mode to address Istio protocol detection.  
@@ -312,6 +318,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 11.0.0
+
+- SigningKey is now under the `authorize` block.  Please update your configuration if you are manually specifying a signing key via `proxy.signingKeySecret` or `proxy.existingSigningKeySecret`
 
 ### 10.0.0
 
