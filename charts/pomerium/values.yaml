@@ -167,6 +167,10 @@ service:
     # how the hell to escape this string from the helm CLI
     # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
   labels: {}
+  grpcTrafficPort:
+    nameOverride: ""
+  httpTrafficPort:
+    nameOverride: ""
 
 ingress:
   secretName: ""
@@ -224,7 +228,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.9.4"
+  tag: "v0.9.5"
   pullPolicy: "IfNotPresent"
 
 metrics:

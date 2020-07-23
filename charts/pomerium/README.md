@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [10.2.0](#1020)
     - [10.0.0](#1000)
     - [8.5.5](#855)
     - [8.5.1](#851)
@@ -215,6 +216,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `image.pullPolicy`                                           | Pomerium image pull policy                                                                                                                                                                                                                                                                         | `IfNotPresent`                                                              |
 | `service.annotations`                                        | Service annotations                                                                                                                                                                                                                                                                                | `{}`                                                                        |
 | `service.externalPort`                                       | Pomerium's port                                                                                                                                                                                                                                                                                    | `443` if `config.insecure` is `false`.  `80` if `config.insecure` is `true` |
+| `service.grpcTrafficPort.nameOverride`                       | Override name of grpc port in services.  Only use if required for protocol detection by mesh or ingress services                                                                                                                                                                                   | `https`/`grpc` in `secure`/`insecure` mode                                  |
+| `service.httpTrafficPort.nameOverride`                       | Override name of http port in services.  Only use if required for protocol detection by mesh or ingress services.  Set to `http2` for istio when offloading mtls to the mesh.                                                                                                                      | `https`/`http` in `secure`/`insecure` mode                                  |
 | `service.type`                                               | Service type (ClusterIP, NodePort or LoadBalancer)                                                                                                                                                                                                                                                 | `ClusterIP`                                                                 |
 | `service.authorize.headless`                                 | Run Authorize service in Headless mode. Turn off if you **require** NodePort or LoadBalancer access to Authorize                                                                                                                                                                                   | `true`                                                                      |
 | `serviceMonitor.enabled`                                     | Create Prometheus Operator ServiceMonitor                                                                                                                                                                                                                                                          | `false`                                                                     |
@@ -249,6 +252,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`                            | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                        |
 
 ## Changelog
+
+### 10.2.0
+
+- Update port names in insecure mode to address Istio protocol detection.  
 
 ### 10.0.0
 

@@ -32,9 +32,9 @@ spec:
 {{- end }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
-      targetPort: {{ template "pomerium.trafficPort.name" . }}
+      targetPort: {{ template "pomerium.grpcTrafficPort.name" . }}
       protocol: TCP
-      name: {{ template "pomerium.trafficPort.name" . }}
+      name: {{ template "pomerium.grpcTrafficPort.name" . }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP
