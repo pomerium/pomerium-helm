@@ -16,6 +16,7 @@
     - [Self Provisioned](#self-provisioned-1)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [10.2.0](#1020)
     - [10.0.0](#1000)
     - [8.5.5](#855)
     - [8.5.1](#851)
@@ -251,6 +252,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`                            | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                        |
 
 ## Changelog
+
+### 10.2.0
+
+- Update port names in insecure mode to address Istio protocol detection.  
 
 ### 10.0.0
 
