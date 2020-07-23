@@ -80,7 +80,7 @@ spec:
 {{- end }}
         ports:
           - containerPort: {{ template "pomerium.trafficPort.number" . }}
-            name: {{ template "pomerium.trafficPort.name" . }}
+            name: {{ template "pomerium.httpTrafficPort.name" . }}
             protocol: TCP
           - containerPort: {{ .Values.metrics.port }}
             name: metrics
@@ -88,13 +88,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: {{ template "pomerium.trafficPort.name" . }}
-            scheme: {{ upper (include "pomerium.trafficPort.name" .) }}
+            port: {{ template "pomerium.httpTrafficPort.name" . }}
+            scheme: {{ upper (include "pomerium.httpTrafficPort.name" .) }}
         readinessProbe:
           httpGet:
             path: /ping
-            port: {{ template "pomerium.trafficPort.name" . }}
-            scheme: {{ upper (include "pomerium.trafficPort.name" .) }}
+            port: {{ template "pomerium.httpTrafficPort.name" . }}
+            scheme: {{ upper (include "pomerium.httpTrafficPort.name" .) }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

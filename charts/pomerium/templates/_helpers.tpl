@@ -283,12 +283,25 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
-{{/*Expand the port name for secure or insecure mode */}}
-{{- define "pomerium.trafficPort.name" -}}
+{{/*Expand the http port name for secure or insecure mode */}}
+{{- define "pomerium.httpTrafficPort.name" -}}
 {{- if .Values.config.insecure -}}
-http
+{{- default "http" .Values.service.httpTrafficPort.nameOverride -}}
 {{- else -}}
-https
+{{- default "https" .Values.service.httpTrafficPort.nameOverride -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Expand the grpc port name for secure or insecure mode 
+
+grpc is used for insecure rather than http for istio compatibility
+*/}}
+{{- define "pomerium.grpcTrafficPort.name" -}}
+{{- if .Values.config.insecure -}}
+{{- default "grpc" .Values.service.grpcTrafficPort.nameOverride -}}
+{{- else -}}
+{{- default "https" .Values.service.grpcTrafficPort.nameOverride -}}
 {{- end -}}
 {{- end -}}
 
@@ -315,8 +328,8 @@ certificate_key_file: "/pomerium/privkey.pem"
 certificate_authority_file: "/pomerium/ca.pem"
 {{- end }}
 authenticate_service_url: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
-authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.trafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-cache_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.trafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
+authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
+cache_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
 idp_provider: {{ .Values.authenticate.idp.provider }}
 idp_scopes: {{ .Values.authenticate.idp.scopes }}
 idp_provider_url: {{ .Values.authenticate.idp.url }}
@@ -351,7 +364,7 @@ tracing_jaeger_agent_endpoint: {{ required "agent_endpoint is required for jaege
 
 {{- end -}}
 {{- if and .Values.forwardAuth.enabled .Values.forwardAuth.internal }}
-forward_auth_url: {{ printf "%s://%s" ( include "pomerium.trafficPort.name" . ) ( include "pomerium.forwardAuth.name" . ) }}
+forward_auth_url: {{ printf "%s://%s" ( include "pomerium.httpTrafficPort.name" . ) ( include "pomerium.forwardAuth.name" . ) }}
 {{- else if .Values.forwardAuth.enabled }}
 forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" . ) }}
 {{- end }}

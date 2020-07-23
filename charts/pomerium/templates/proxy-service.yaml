@@ -27,9 +27,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
-      targetPort: {{ template "pomerium.trafficPort.name" . }}
+      targetPort: {{ template "pomerium.httpTrafficPort.name" . }}
       protocol: TCP
-      name: {{ template "pomerium.trafficPort.name" . }}
+      name: {{ template "pomerium.httpTrafficPort.name" . }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP

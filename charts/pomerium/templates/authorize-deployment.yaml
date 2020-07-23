@@ -75,18 +75,18 @@ spec:
 {{- end }}
         ports:
           - containerPort: {{ template "pomerium.trafficPort.number" . }}
-            name: {{ template "pomerium.trafficPort.name" . }}
+            name: {{ template "pomerium.grpcTrafficPort.name" . }}
             protocol: TCP
           - containerPort: {{ .Values.metrics.port }}
             name: metrics
             protocol: TCP
         livenessProbe:
           tcpSocket:
-            port: {{ template "pomerium.trafficPort.name" . }}
+            port: {{ template "pomerium.grpcTrafficPort.name" . }}
           initialDelaySeconds: 15
         readinessProbe:
           tcpSocket:
-            port: {{ template "pomerium.trafficPort.name" . }}
+            port: {{ template "pomerium.grpcTrafficPort.name" . }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
