@@ -24,6 +24,8 @@ config:
   insecure: false
   administrators: ""
   policy: []
+  existingSigningKeySecret: ""
+  signingKey: ""
 
 authenticate:
   fullnameOverride: ""
@@ -69,8 +71,6 @@ authorize:
     key: ""
     defaultSANList: []
     defaultIPList: []
-  existingSigningKeySecret: ""
-  signingKey: ""
   replicaCount: 1
   autoscaling:
     enabled: false

@@ -321,7 +321,13 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 11.0.0
 
-- SigningKey is now under the `authorize` block.  Please update your configuration if you are manually specifying a signing key via `proxy.signingKeySecret` or `proxy.existingSigningKeySecret`
+- SigningKey is now under the `authorize` block.  
+  - If you are specifying `proxy.signingKeySecret` or `proxy.existingSigningKeySecret`, please change the values to be `config.signingKeySecret` or `config.existingSigningKeySecret`
+  - If were relying on automatic signing key generation do one of the following:
+    1. set `config.forceGenerateSigningKey` to `true` for the upgrade
+    2. replace [RELEASE NAME] with your release name and run: 
+      ```
+      kubectl get secret [RELEASE NAME]-proxy-signing-key -o json | jq '. | .metadata.name = (.metadata.name | sub("(?<x>\\w+)-proxy-signing-key";"\(.x)-signing-key") )' | k apply -f - ``` 
 
 ### 10.0.0
 
