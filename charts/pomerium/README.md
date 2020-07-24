@@ -125,7 +125,7 @@ In default configuration, this chart will automatically generate a signing key i
 Upon delete, you will need to manually delete the generated secret. Example:
 
 ```console
-kubectl delete secret pomerium-authorize-signing-key
+kubectl delete secret pomerium-signing-key
 ```
 
 You may force recreation of your signing key by setting `config.forceGenerateSigningKey` to `true`. Delete already existing signing key secret first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secret.
@@ -135,7 +135,7 @@ You may force recreation of your signing key by setting `config.forceGenerateSig
 If you wish to provide your own signing key in secret, you should:
 
 1. turn `config.generateSigningKey` to `false`
-2. specify `authorize.existingsigningKeySecret` with secret's name
+2. specify `config.existingsigningKeySecret` with secret's name
 
 ## Configuration
 
@@ -151,6 +151,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.existingCASecret`                                    | Name of the existing CA Secret.                                                                                                                                                                                                                                                                    |                                                                             |
 | `config.generateSigningKey`                                  | Generate a signing key to sign jwt in proxy responses. Manual signing key can be set in values.                                                                                                                                                                                                    | `true`                                                                      |
 | `config.forceGenerateSigningKey`                             | Force recreation of generated signing key. You will need to restart your deployments after running                                                                                                                                                                                                 | `false`                                                                     |
+| `config.existingSigningKeySecret`                            | Name of existing Signing key Secret for proxy requests.                                                                                                                                                                                                                                            |                                                                             |
+| `config.signingKey`                                          | Signing key is the base64 encoded key used to sign outbound requests.                                                                                                                                                                                                                              |                                                                             |
 | `config.generateTLS`                                         | Generate a dummy Certificate Authority and certs for service communication. Manual CA and certs can be set in values.                                                                                                                                                                              | `true`                                                                      |
 | `config.forceGenerateTLS`                                    | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                     |
 | `config.insecure`                                            | DANGER, this disables tls between services. Only do this if you know what you are doing. One reason might be that you want to offload tls to a reverse proxy (i.e. istio, traefik)                                                                                                                 | `false`                                                                     |
@@ -195,8 +197,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `proxy.existingTLSSecret`                                    | Name of existing TLS Secret for proxy service                                                                                                                                                                                                                                                      |                                                                             |
 | `proxy.deployment.annotations`                               | Annotations for the proxy deployment. If none given, then use value of `annotations`                                                                                                                                                                                                               | `{}`                                                                        |
 | `proxy.service.annotations`                                  | Annotations for the proxy service. If none given, then use value of `service.annotations`                                                                                                                                                                                                          | `{}`                                                                        |
-| `authorize.existingSigningKeySecret`                         | Name of existing Signing key Secret for proxy requests.                                                                                                                                                                                                                                            |                                                                             |
-| `authorize.signingKey`                                       | Signing key is the base64 encoded key used to sign outbound requests.                                                                                                                                                                                                                              |                                                                             |
 | `authorize.nameOverride`                                     | Name of the authorize service.                                                                                                                                                                                                                                                                     | `authorize`                                                                 |
 | `authorize.fullnameOverride`                                 | Full name of the authorize service.                                                                                                                                                                                                                                                                | `authorize`                                                                 |
 | `authorize.replicaCount`                                     | Number of Authorize pods to run                                                                                                                                                                                                                                                                    | `1`                                                                         |
@@ -327,7 +327,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
     1. set `config.forceGenerateSigningKey` to `true` for the upgrade
     2. replace [RELEASE NAME] with your release name and run: 
       ```
-      kubectl get secret [RELEASE NAME]-proxy-signing-key -o json | jq '. | .metadata.name = (.metadata.name | sub("(?<x>\\w+)-proxy-signing-key";"\(.x)-signing-key") )' | k apply -f - ``` 
+      kubectl get secret [RELEASE NAME]-proxy-signing-key -o json | jq '. | .metadata.name = (.metadata.name | sub("(?<x>\\w+)-proxy-signing-key";"\(.x)-signing-key") )' | k apply -f - 
+      ``` 
 
 ### 10.0.0
 
