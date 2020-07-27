@@ -63,6 +63,11 @@ spec:
         env:
         - name: SERVICES
           value: authenticate
+        - name: SIGNING_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "pomerium.signingKeySecret.name" . }}
+              key: signing-key
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
