@@ -14,6 +14,7 @@
   - [Signing Key](#signing-key)
     - [Auto Generation](#auto-generation-1)
     - [Self Provisioned](#self-provisioned-1)
+  - [Kubernetes API Proxy](#kubernetes-api-proxy)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
     - [11.0.0](#1100)
@@ -137,6 +138,44 @@ If you wish to provide your own signing key in secret, you should:
 1. turn `config.generateSigningKey` to `false`
 2. specify `config.existingsigningKeySecret` with secret's name
 
+## Kubernetes API Proxy
+
+Starting in `v0.10`, Pomerium supports delegated authentication for the Kubernetes API Server.  In this model, Kubernetes delegates authentication to Pomerium, allowing Kubernetes RBAC policies to be applied to users authenticated by Pomerium.
+
+This feature does not require running inside the cluster, but this chart supports setting this up with minimal
+configuration.
+
+After setting `apiProxy.enabled`:
+
+1) Add a policy entry (see `apiProxy` values for defaults):
+
+```yaml
+    - from: https://kubernetes.localhost.pomerium.io
+      to: https://kubernetes.default.svc
+      tls_skip_verify: true
+      allowed_domains:
+        - user@gmail.com
+```
+
+2) Add role bindings:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pomerium-admins
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: user@gmail.com
+```
+
+See [docs.pomerium.io/docs/topics/data-storage.html#kubectl-auth](https://docs.pomerium.io/docs/topics/kubernetes-auth.html) for more detail and client setup.
+
 ## Configuration
 
 A full listing of Pomerium's configuration variables can be found on the [config reference page](https://www.pomerium.io/docs/reference/reference.html).
@@ -162,6 +201,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.extraOpts`                                           | Options Dictionary appended to the config file. May contain any additional config value that doesn't have its dedicated helm value counterpart.                                                                                                                                                    | {}                                                                          |
 | `extraEnv`                                                   | Set `env` variables on service pods                                                                                                                                                                                                                                                                | []                                                                          |
 | `extraEnvFrom`                                               | Sets `envFrom` on service pods.  Can be used to source ENV vars from existing secrets or configmaps.  [Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envfromsource-v1-core)                                                                                      | []                                                                          |
+| `apiProxy.enabled`                                           | Create service account, RBAC and ingress rules to proxy to the kubernetes api server on this cluster                                                                                                                                                                                               | `false`                                                                     |
+| `apiProxy.ingress`                                           | When `apiProxy.enabled` is `true`, inject an entry into the pomerium ingress resource                                                                                                                                                                                                              | true                                                                        |
+| `apiProxy.fullNameOverride`                                  | Set the FQDN to the kubernetes api server in the ingress resource                                                                                                                                                                                                                                  | `kubernetes.{{config.rootDomain}}`                                          |
+| `apiProxy.name`                                              | non-FQDN of kubernet4es api server in the ingress resource                                                                                                                                                                                                                                         | `kubernetes`                                                                |
 | `authenticate.nameOverride`                                  | Name of the authenticate service.                                                                                                                                                                                                                                                                  | `authenticate`                                                              |
 | `authenticate.fullnameOverride`                              | Full name of the authenticate service.                                                                                                                                                                                                                                                             | `authenticate`                                                              |
 | `authenticate.redirectUrl`                                   | Redirect URL is the url the user will be redirected to following authentication with the third-party identity provider (IdP). [See more](https://www.pomerium.io/docs/reference/reference.html#redirect-url).                                                                                      | `https://{{authenticate.name}}.{{config.rootDomain}}/oauth2/callback`       |

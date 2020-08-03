@@ -85,6 +85,10 @@ authorize:
     annotations: {}
   deployment:
     annotations: {}
+  serviceAccount:
+    name: pomerium-authorize
+    annotations: {}
+
 
 cache:
   fullnameOverride: ""
@@ -130,6 +134,12 @@ proxy:
     annotations: {}
   deployment:
     annotations: {}
+
+apiProxy:
+  enabled: false
+  ingress: true
+  fullNameOverride: ""
+  name: "kubernetes"
 
 operator:
   enabled: false

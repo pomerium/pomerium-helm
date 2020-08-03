@@ -248,6 +248,21 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
+
+{{/*Expand the FQDN of the api proxy endpoint*/}}
+{{- define "pomerium.apiProxy.name" -}}
+{{- if .Values.apiProxy.fullNameOverride -}}
+{{- .Values.apiProxy.fullNameOverride -}}
+{{- else -}}
+{{- printf "%s.%s" .Values.apiProxy.name .Values.config.rootDomain -}}
+{{- end -}}
+{{- end -}}
+
+{{/*Expand the serviceAccountName for the authorize service */}}
+{{- define "pomerium.authorize.serviceAccountName" -}}
+{{- default (printf "%s-authorize" ( include "pomerium.fullname" .) ) .Values.forwardAuth.nameOverride -}}
+{{- end -}}
+
 {{/*Expand the serviceAccountName for the operator */}}
 {{- define "pomerium.operator.serviceAccountName" -}}
 {{- default (printf "%s-operator" ( include "pomerium.fullname" .) ) .Values.forwardAuth.nameOverride -}}
