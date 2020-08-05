@@ -72,8 +72,12 @@ spec:
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
+{{- range $name, $value := .Values.authenticate.deployment.extraEnv }}
+        - name: {{ $name }}
+          value: {{ quote $value }}
+{{- end }}
 {{- if .Values.extraEnvFrom }}
-        envFrom: 
+        envFrom:
 {{        toYaml .Values.extraEnvFrom | indent 8 }}
 {{- end }}
         ports:
