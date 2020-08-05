@@ -19,7 +19,7 @@ metadata:
  {{- end }}
 {{- end }}
 spec:
-  replicas: {{ default .Values.replicaCount .Values.cache.replicaCount }}
+  replicas: {{ include "pomerium.cache.replicaCount" . }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
@@ -61,6 +61,7 @@ spec:
         env:
         - name: SERVICES
           value: cache
+{{- include "pomerium.databroker.tlsEnv" . | indent 8 }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
@@ -86,8 +87,13 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+          - mountPath: {{ include "pomerium.databroker.storage.clientTLS.path" . }}
+            name: databroker-client-tls
 {{ include "pomerium.volumeMounts" . | indent 10 }}
       volumes:
+        - name: databroker-client-tls
+          secret:
+            secretName: {{ include "pomerium.databroker.storage.clientTLS.secret" . }}
 {{ include "pomerium.volumes.shared" . | indent 8 }}
 {{- $ctx := . }}
 {{- $_ := set $ctx "currentServiceName" "cache" }}
