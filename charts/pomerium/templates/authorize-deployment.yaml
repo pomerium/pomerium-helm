@@ -108,7 +108,6 @@ spec:
 {{- $ctx := . }}
 {{- $_ := set $ctx "currentServiceName" "authorize" }}
 {{ include "pomerium.volumes.service" $ctx | indent 8 }}
-      serviceAccountName: {{ .Values.authorize.serviceAccount.name }}
 {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}

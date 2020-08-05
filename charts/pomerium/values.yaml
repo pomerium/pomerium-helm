@@ -88,9 +88,6 @@ authorize:
     annotations: {}
   deployment:
     annotations: {}
-  serviceAccount:
-    name: pomerium-authorize
-    annotations: {}
     extraEnv: {}
   serviceAccount:
     annotations: {}
