@@ -333,6 +333,34 @@ grpc is used for insecure rather than http for istio compatibility
 {{- end -}}
 {{- end -}}
 
+{{/* Expand databroker client tls path */}}
+{{- define "pomerium.databroker.storage.clientTLS.path" -}}
+/pomerium/databroker-client-tls
+{{- end -}}
+
+{{/* Expand Data Broker Client TLS Secret */}}
+{{- define "pomerium.databroker.storage.clientTLS.secret" -}}
+{{ if .Values.databroker.storage.clientTLS.existingSecretName }}
+{{- .Values.databroker.storage.clientTLS.existingSecretName -}}
+{{- else -}}
+{{- default (printf "%s-databroker-client-tls" (include "pomerium.fullname" .)) .Values.databroker.storage.clientTLS.existingSecretName -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Data Broker Storage Configuration */}}
+{{- define "pomerium.databroker.tlsEnv" -}}
+{{- if or .Values.databroker.storage.clientTLS.existingSecretName .Values.databroker.storage.clientTLS.cert }}
+- name: DATABROKER_STORAGE_CERT_FILE 
+  value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/tls.crt
+- name: DATABROKER_STORAGE_KEY_FILE
+  value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/tls.key
+{{- end  }}
+{{- if or .Values.databroker.storage.clientTLS.existingCASecretKey .Values.databroker.storage.clientTLS.ca }}
+- name: DATABROKER_STORAGE_CA_FILE
+  value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/{{ default "ca.crt" .Values.databroker.storage.clientTLS.existingCASecretKey }}
+{{- end  }}
+{{- end -}}
+
 {{/*Creates static configuration yaml */}}
 {{- define "pomerium.config.static" -}}
 address: ":{{ template "pomerium.trafficPort.number" . }}"
@@ -390,6 +418,11 @@ idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
 {{- if .Values.authenticate.idp.serviceAccount }}
 idp_service_account: {{ .Values.authenticate.idp.serviceAccount }}
 {{- end }}
+databroker_storage_type: {{ .Values.databroker.storage.type }}
+{{- if ne .Values.databroker.storage.type "memory" }}
+databroker_storage_connection_string: {{ .Values.databroker.storage.connectionString }}
+databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify }}
+{{- end  }}
 {{- end -}}
 
 {{/* Creates dynamic configuration yaml */}}
@@ -434,4 +467,13 @@ policy:
   secret:
     secretName: {{ include (printf "pomerium.%s.tlsSecret.name" .currentServiceName ) . }}
     optional: true
+{{- end -}}
+
+{{/* Limit cache replica count by storage backend */}}
+{{- define "pomerium.cache.replicaCount" -}}
+{{- if eq "memory" .Values.databroker.storage.type -}}
+1
+{{- else -}}
+{{ default .Values.replicaCount .Values.cache.replicaCount -}}
+{{- end -}}
 {{- end -}}

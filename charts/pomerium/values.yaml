@@ -108,6 +108,17 @@ cache:
   deployment:
     annotations: {}
 
+databroker:
+  storage:
+    type: "memory"
+    connectionString: ""
+    tlsSkipVerify: false
+    clientTLS:
+      existingSecretName: ""
+      existingCASecretKey: ""
+      cert: ""
+      key: ""
+      ca: ""
 
 proxy:
   fullnameOverride: ""
