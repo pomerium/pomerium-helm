@@ -94,9 +94,7 @@ spec:
           - mountPath: {{ include "pomerium.databroker.storage.clientTLS.path" . }}
             name: databroker-client-tls
 {{ include "pomerium.volumeMounts" . | indent 10 }}
-{{- if .Values.rbac.create }}
       serviceAccountName: {{ template "pomerium.cache.serviceAccountName" . }}
-{{- end }}
       volumes:
         - name: databroker-client-tls
           secret:

@@ -100,9 +100,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
 {{ include "pomerium.volumeMounts" . | indent 10 }}
-{{- if .Values.rbac.create }}
       serviceAccountName: {{ template "pomerium.authorize.serviceAccountName" . }}
-{{- end }}
       volumes:
 {{ include "pomerium.volumes.shared" . | indent 8 }}
 {{- $ctx := . }}
