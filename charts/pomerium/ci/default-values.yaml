@@ -3,19 +3,14 @@ config:
     - from: https://httpbin.corp.pomerium.io
       to: http://httpbin
       allowed_domains:
-      - pomerium.io
+        - pomerium.io
     - from: https://external-httpbin.corp.pomerium.io
       to: https://httpbin.org
       allowed_domains:
-      - gmail.com
+        - gmail.com
     - from: https://weirdlyssl.corp.pomerium.io
       to: http://neverssl.com
       allowed_users:
-      - bdd@pomerium.io
-      allowed_groups:
-      - admins
-      - developers
+        - bdd@pomerium.io
     - from: https://hello.corp.pomerium.io
       to: http://hello:8080
-      allowed_groups:
-      - admins
