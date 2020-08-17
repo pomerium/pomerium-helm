@@ -131,7 +131,6 @@ If release name contains chart name it will be used as a full name.
 {{- join "," $routes.routes | default "none=none" | quote -}}
 {{- end -}}
 
-
 {{/*
 Check if a valid identity provider has been set
 Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates/_provider-envs.yaml
@@ -139,6 +138,8 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- define "pomerium.providerOK" -}}
 {{- if .Values.authenticate.idp -}}
   {{- if .Values.config.existingSecret -}}
+  true
+  {{- else if and .Values.authenticate.deployment.extraEnv.IDP_CLIENT_ID .Values.authenticate.deployment.extraEnv.IDP_CLIENT_SECRET -}}
   true
   {{- else if eq .Values.authenticate.idp.clientID "" -}}
   false
@@ -248,7 +249,6 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
-
 {{/*Expand the FQDN of the api proxy endpoint*/}}
 {{- define "pomerium.apiProxy.name" -}}
 {{- if .Values.apiProxy.fullNameOverride -}}
@@ -258,9 +258,24 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
+{{/*Expand the serviceAccountName for the authenticate service */}}
+{{- define "pomerium.authenticate.serviceAccountName" -}}
+{{- default (printf "%s-authenticate" ( include "pomerium.fullname" .) ) .Values.authenticate.serviceAccount.nameOverride -}}
+{{- end -}}
+
 {{/*Expand the serviceAccountName for the authorize service */}}
 {{- define "pomerium.authorize.serviceAccountName" -}}
-{{- default (printf "%s-authorize" ( include "pomerium.fullname" .) ) .Values.forwardAuth.nameOverride -}}
+{{- default (printf "%s-authorize" ( include "pomerium.fullname" .) ) .Values.authorize.serviceAccount.nameOverride -}}
+{{- end -}}
+
+{{/*Expand the serviceAccountName for the cache service */}}
+{{- define "pomerium.cache.serviceAccountName" -}}
+{{- default (printf "%s-cache" ( include "pomerium.fullname" .) ) .Values.cache.serviceAccount.nameOverride -}}
+{{- end -}}
+
+{{/*Expand the serviceAccountName for the proxy service */}}
+{{- define "pomerium.proxy.serviceAccountName" -}}
+{{- default (printf "%s-proxy" ( include "pomerium.fullname" .) ) .Values.proxy.serviceAccount.nameOverride -}}
 {{- end -}}
 
 {{/*Expand the serviceAccountName for the operator */}}
@@ -308,7 +323,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 
 {{/*
-Expand the grpc port name for secure or insecure mode 
+Expand the grpc port name for secure or insecure mode
 
 grpc is used for insecure rather than http for istio compatibility
 */}}

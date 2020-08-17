@@ -60,7 +60,10 @@ authenticate:
     annotations: {}
   deployment:
     annotations: {}
-
+    extraEnv: {}
+  serviceAccount:
+    annotations: {}
+    nameOverride: ""
 
 authorize:
   fullnameOverride: ""
@@ -85,10 +88,10 @@ authorize:
     annotations: {}
   deployment:
     annotations: {}
+    extraEnv: {}
   serviceAccount:
-    name: pomerium-authorize
     annotations: {}
-
+    nameOverride: ""
 
 cache:
   fullnameOverride: ""
@@ -107,6 +110,10 @@ cache:
     annotations: {}
   deployment:
     annotations: {}
+    extraEnv: {}
+  serviceAccount:
+    annotations: {}
+    nameOverride: ""
 
 databroker:
   storage:
@@ -145,6 +152,10 @@ proxy:
     annotations: {}
   deployment:
     annotations: {}
+    extraEnv: {}
+  serviceAccount:
+    annotations: {}
+    nameOverride: ""
 
 apiProxy:
   enabled: false
@@ -210,6 +221,7 @@ ingress:
     # ===  GKE load balancer tweaks; default on until I can figure out
     # how the hell to escape this string from the helm CLI
     # kubernetes.io/ingress.allow-http: "false"
+
 resources:
   {}
   # limits:

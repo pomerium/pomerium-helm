@@ -37,6 +37,6 @@ roleRef:
   name: {{ printf "%s-api-proxy" (include "pomerium.fullname" .) }}
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.authorize.serviceAccount.name }}
+    name: {{ template "pomerium.authorize.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

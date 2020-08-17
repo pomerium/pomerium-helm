@@ -74,8 +74,12 @@ spec:
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
+{{- range $name, $value := .Values.authorize.deployment.extraEnv }}
+        - name: {{ $name }}
+          value: {{ quote $value }}
+{{- end }}
 {{- if .Values.extraEnvFrom }}
-        envFrom: 
+        envFrom:
 {{        toYaml .Values.extraEnvFrom | indent 8 }}
 {{- end }}
         ports:
@@ -96,12 +100,12 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
 {{ include "pomerium.volumeMounts" . | indent 10 }}
+      serviceAccountName: {{ template "pomerium.authorize.serviceAccountName" . }}
       volumes:
 {{ include "pomerium.volumes.shared" . | indent 8 }}
 {{- $ctx := . }}
 {{- $_ := set $ctx "currentServiceName" "authorize" }}
 {{ include "pomerium.volumes.service" $ctx | indent 8 }}
-      serviceAccountName: {{ .Values.authorize.serviceAccount.name }}
 {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
