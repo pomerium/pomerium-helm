@@ -430,8 +430,8 @@ cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
 shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
 idp_client_id: {{ .Values.authenticate.idp.clientID }}
 idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
-{{- if .Values.authenticate.idp.serviceAccount }}
-idp_service_account: {{ .Values.authenticate.idp.serviceAccount }}
+{{- if or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML }}
+idp_service_account: {{ include "pomerium.idp.serviceAccount" . }}
 {{- end }}
 databroker_storage_type: {{ .Values.databroker.storage.type }}
 {{- if ne .Values.databroker.storage.type "memory" }}
@@ -490,5 +490,14 @@ policy:
 1
 {{- else -}}
 {{ default .Values.replicaCount .Values.cache.replicaCount -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Render idp_service_account */}}
+{{- define "pomerium.idp.serviceAccount" -}}
+{{- if .Values.authenticate.idp.serviceAccount -}}
+{{- .Values.authenticate.idp.serviceAccount -}}
+{{- else -}}
+{{- .Values.authenticate.idp.serviceAccountYAML | toJson | b64enc -}}
 {{- end -}}
 {{- end -}}
