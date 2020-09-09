@@ -322,6 +322,15 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
+{{/*Expand the http port scheme for secure or insecure mode */}}
+{{- define "pomerium.httpTrafficPort.scheme" -}}
+{{- if .Values.config.insecure -}}
+http
+{{- else -}}
+https
+{{- end -}}
+{{- end -}}
+
 {{/*
 Expand the grpc port name for secure or insecure mode
 
