@@ -20,7 +20,7 @@ spec:
         {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
         - {{ template "pomerium.forwardAuth.name" . }}
         {{ end }}
-      {{- if not .Values.ingress.hosts }}
+      {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
       {{- range .Values.config.policy }}
         - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       {{- end }}
