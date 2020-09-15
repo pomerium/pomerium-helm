@@ -1,0 +1,5 @@
+dependencies:
+- name: redis
+  version: ">= 10.9.0"
+  repository: https://charts.bitnami.com/bitnami
+  condition: redis.enabled

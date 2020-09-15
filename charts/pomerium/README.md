@@ -15,6 +15,7 @@
     - [Auto Generation](#auto-generation-1)
     - [Self Provisioned](#self-provisioned-1)
   - [Kubernetes API Proxy](#kubernetes-api-proxy)
+  - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
     - [11.0.0](#1100)
@@ -32,6 +33,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [12.3.0](#1230)
     - [11.0.0](#1100-1)
     - [10.0.0](#1000-1)
     - [8.0.0](#800-1)
@@ -176,6 +178,20 @@ subjects:
 
 See [docs.pomerium.io/docs/topics/data-storage.html#kubectl-auth](https://docs.pomerium.io/docs/topics/kubernetes-auth.html) for more detail and client setup.
 
+## Redis Subchart
+
+To support Pomerium's [storage requirements](https://www.pomerium.com/docs/topics/data-storage.html), a redis subchart can be included as part of your deployment.  To enable it, simply set `redis.enabled` to `true`.  The default configuration is intended to be secure but minimal.  See `redis.*` options in the [configuration](#configuration) section for more options.
+
+This subchart uses [Bitnami's Helm Chart](https://github.com/bitnami/charts/tree/master/bitnami/redis), adding a handful of pomerium-specific options to ease integration.  All values starting with `redis.*` will be passed on to the redis subchart, allowing very flexible configuration.  Unless specified as part of the Pomerium values file, the defaults from the subchart are used.
+
+As with Pomerium's own [TLS certificate support](#tls-certificates), this chart allows you to automatically bootstrap a CA and certificates used for communication with/between redis instances.  In production deployments, we recommend using an external certificate source such as [cert-manager](https://github.com/jetstack/cert-manager).
+
+You may force recreation of these TLS certificates by setting `redis.forceGenerateTLS` to `true`. Delete the existing redis TLS secrets first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secrets.
+
+If you are running in Istio or other secure service meshes, you may wish to set `redis.tls.enabled` to `false` to offload mtls to your mesh.
+
+See [upgrade guide](#1230) to add to existing releases.
+
 ## Configuration
 
 A full listing of Pomerium's configuration variables can be found on the [config reference page](https://www.pomerium.io/docs/reference/reference.html).
@@ -318,6 +334,20 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.config.serviceClass`                               | `kubernetes.io/service.class` for the operator to monitor                                                                                                                                                                                                                                          | `pomerium`                                                                  |
 | `operator.config.debug`                                      | Enable Pomerium Operator debug logging                                                                                                                                                                                                                                                             | `false`                                                                     |
 | `operator.deployment.annotations`                            | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                        |
+| `redis.cluster.slaveCount`                                   | Number of slave replicas to run. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                                    | `1`                                                                         |
+| `redis.enabled`                                              | Enable a redis master-slave subchart deployment based on https://github.com/bitnami/charts/tree/master/bitnami/redis                                                                                                                                                                               | `false`                                                                     |
+| `redis.existingSecret`                                       | Secret used to store authentication password for redis.  This is shared between Pomerium and redis.  [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                | `pomerium-redis-password`                                                   |
+| `redis.existingSecretPasswordKey`                            | Name of key containing password in `redis.existingSecret`. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                          | `password`                                                                  |
+| `redis.forceGenerateTLS`                                     | Force re-generation of TLS certificates used to communicate with redis                                                                                                                                                                                                                             | `false`                                                                     |
+| `redis.generateTLS`                                          | Automatically generate a new CA and certificate pair to communicate with redis                                                                                                                                                                                                                     | `true`                                                                      |
+| `redis.tls.certCAFilename`                                   | Name of secret key containing CA certificate for verify TLS certificates. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                           | `ca.crt`                                                                    |
+| `redis.tls.certFilename`                                     | Name of secret key containing certificate for TLS connections. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                      | `tls.crt`                                                                   |
+| `redis.tls.certificateSecret`                                | Name of secret containing TLS CA, certificate and private key. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                      | `pomerium-redis-tls`                                                        |
+| `redis.tls.certKeyFilename`                                  | Name of secret key containing private key for TLS connections. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                      | `tls.key`                                                                   |
+| `redis.tls.enabled`                                          | Require TLS communication with redis. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                               | `true`                                                                      |
+
+
+
 
 ## Changelog
 
@@ -384,6 +414,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 12.3.0
+
+- If using the new `redis` support and you wish to use the automatic tls generation, set `redis.forceGenerateTLS` to ensure the new secrets are generated.  After the upgrade is complete, you should set `redis.forceGenerateTLS` to `false` (the default) again.
 
 ### 11.0.0
 

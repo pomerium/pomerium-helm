@@ -284,3 +284,18 @@ serviceMonitor:
 
 rbac:
   create: true
+
+redis:
+  enabled: false
+  existingSecret: pomerium-redis-password
+  existingSecretPasswordKey: password
+  generateTLS: true
+  forceGenerateTLS: false
+  cluster:
+    slaveCount: 1
+  tls:
+    enabled: true
+    certificatesSecret: pomerium-redis-tls
+    certFilename: tls.crt
+    certKeyFilename: tls.key
+    certCAFilename: ca.crt
