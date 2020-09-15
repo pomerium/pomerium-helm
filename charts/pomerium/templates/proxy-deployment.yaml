@@ -88,12 +88,12 @@ spec:
           httpGet:
             path: /ping
             port: {{ template "pomerium.httpTrafficPort.name" . }}
-            scheme: {{ upper (include "pomerium.httpTrafficPort.name" .) }}
+            scheme: {{ upper (include "pomerium.httpTrafficPort.scheme" .) }}
         readinessProbe:
           httpGet:
             path: /ping
             port: {{ template "pomerium.httpTrafficPort.name" . }}
-            scheme: {{ upper (include "pomerium.httpTrafficPort.name" .) }}
+            scheme: {{ upper (include "pomerium.httpTrafficPort.scheme" .) }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
