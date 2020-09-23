@@ -11,9 +11,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
+      - name: Install helm
+        uses: azure/setup-helm@v1
+        id: install
+        with:
+          version: v3.3.1
+
+      - name: "Add stable repo"
+        run: "helm repo add stable https://kubernetes-charts.storage.googleapis.com"
+
       - name: Run chart-testing (lint)
         id: lint
-        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        uses: helm/chart-testing-action@v1.0.0
         with:
           command: lint
           config: .ct.yaml
@@ -23,20 +32,20 @@ jobs:
         with:
           install_local_path_provisioner: true
 
-      - name: Install helm
-        uses: azure/setup-helm@v1
-        id: install
-        with:
-          version: v3.0.3
-
-      - name: "Add stable repo"
-        run: "helm repo add stable https://kubernetes-charts.storage.googleapis.com"
-
       - name: Install Ingress Controller
         run: "helm install stable/nginx-ingress --generate-name --set controller.service.type='NodePort'"
 
       - name: Run chart-testing (install)
-        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        uses: helm/chart-testing-action@v1.0.0
         with:
           command: install
+          config: .ct.yaml
+
+      - name: Rebuild deps with helm 2
+        run: docker run -i -v $(pwd):/work quay.io/helmpack/chart-testing:v2.4.0 /bin/sh -c 'cd /work/charts/pomerium/ && helm init --client-only && helm repo add bitnami https://charts.bitnami.com/bitnami && helm dep update && helm dep build'
+
+      - name: Run chart-testing (helm2)
+        uses: helm/chart-testing-action@v1.0.0-alpha.3
+        with:
+          command: lint-and-install
           config: .ct.yaml
