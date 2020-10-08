@@ -3,6 +3,35 @@ entries:
   pomerium:
   - apiVersion: v1
     appVersion: 0.10.4
+    created: "2020-10-08T15:30:48.906155576Z"
+    description: Pomerium is an identity-aware access proxy.
+    digest: 71f4f08c46fe7988fbf1b8d9f579223a43e02c54a6be6763dbd9b82fa3560dc3
+    home: http://www.pomerium.io/
+    icon: https://www.pomerium.io/logo-long.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    maintainers:
+    - email: bdd@pomerium.io
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-12.4.0/pomerium-12.4.0.tgz
+    version: 12.4.0
+  - apiVersion: v1
+    appVersion: 0.10.4
     created: "2020-09-23T15:57:51.80927855Z"
     description: Pomerium is an identity-aware access proxy.
     digest: 6b2784f929e857abde47ec54da3fde4cf9ea80970e7db8cc574d2f6e1274cace
