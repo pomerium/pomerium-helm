@@ -16,6 +16,7 @@ config:
   sharedSecret: ""
   cookieSecret: ""
   generateTLS: true
+  generateTLSAnnotations: {}
   forceGenerateTLS: false
   generateSigningKey: true
   forceGenerateSigningKey: false
