@@ -211,6 +211,8 @@ ingress:
     name: ""
     cert: ""
     key: ""
+  tls:
+    hosts: []
   enabled: true
   hosts: []
   annotations:
