@@ -569,3 +569,22 @@ true
 {{- end -}}
 {{- end -}}
 
+{{/* Expand ingress TLS hosts list */}}
+{{- define "pomerium.ingress.tls.hosts" -}}
+{{- if .Values.ingress.tls.hosts -}}
+{{ .Values.ingress.tls.hosts | toYaml }}
+{{- else -}}
+- {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
+  {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
+- {{ template "pomerium.forwardAuth.name" . }}
+  {{ end }}
+{{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
+{{- range .Values.config.policy }}
+- {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
+{{- end }}
+{{- end }}
+{{- range .Values.ingress.hosts }}
+- {{ . | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}

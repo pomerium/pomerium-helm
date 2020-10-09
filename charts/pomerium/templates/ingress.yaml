@@ -16,18 +16,7 @@ spec:
   tls:
     - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
       hosts:
-        - {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
-        {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
-        - {{ template "pomerium.forwardAuth.name" . }}
-        {{ end }}
-      {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
-      {{- range .Values.config.policy }}
-        - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
-      {{- end }}
-      {{- end }}
-      {{- range .Values.ingress.hosts }}
-        - {{ . | quote }}
-      {{- end }}
+{{      include "pomerium.ingress.tls.hosts" . | indent 8 }}
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ . | quote }}
