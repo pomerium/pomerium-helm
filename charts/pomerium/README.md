@@ -138,7 +138,7 @@ You may force recreation of your signing key by setting `config.forceGenerateSig
 If you wish to provide your own signing key in secret, you should:
 
 1. turn `config.generateSigningKey` to `false`
-2. specify `config.existingsigningKeySecret` with secret's name
+2. specify `config.existingSigningKeySecret` with secret's name
 
 ## Kubernetes API Proxy
 

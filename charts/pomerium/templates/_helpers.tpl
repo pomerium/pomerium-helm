@@ -218,8 +218,8 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{/* Determine secret name for signing key */}}
 {{- define "pomerium.signingKeySecret.name" -}}
-{{- if .Values.config.existingsigningKeySecret -}}
-{{- .Values.config.existingsigningKeySecret | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.config.existingSigningKeySecret -}}
+{{- .Values.config.existingSigningKeySecret | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
