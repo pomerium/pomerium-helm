@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [13.0.0](#1300)
     - [11.0.0](#1100)
     - [10.2.0](#1020)
     - [10.0.0](#1000)
@@ -33,6 +34,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [13.0.0](#1300)
     - [12.3.0](#1230)
     - [11.0.0](#1100-1)
     - [10.0.0](#1000-1)
@@ -361,6 +363,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 13.0.0
+
+- `config.existingSigningKeySecret` updated to have correct camelCase. Additionally uses of `authorize.existingsigningKeySecret` and `authorize.signingKey` have been updated to the correct `config.` block. See [v13.0.0 Upgrade Nodes](#1300-1) to migrate.
+
 ### 11.0.0
 
 - Signing key has been refactored to correspond with Pomerium changes. See [v11.0.0 Upgrade Nodes](#1100-1) to migrate.
@@ -425,13 +431,19 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Upgrading
 
+### 13.0.0
+
+- `existingsigningKeySecret` has been corrected to `existingSigningKeySecret` and properly standardized to the `config` block in all use cases.
+  - If you were specifying `config.existingsigningKeySecret`, update the value to the correct casing.
+  - If you were using `authorize.existingsigningKeySecret` and `authorize.signingKey` to create a signing key with the value from `config.signingKey` there should not be an impact, but the deprecated values can be removed.
+
 ### 12.3.0
 
 - If using the new `redis` support and you wish to use the automatic tls generation, set `redis.forceGenerateTLS` to ensure the new secrets are generated.  After the upgrade is complete, you should set `redis.forceGenerateTLS` to `false` (the default) again.
 
 ### 11.0.0
 
-- SigningKey is now under the `authorize` block.  
+- SigningKey is now under the `config` block.  
   - If you are specifying `proxy.signingKeySecret` or `proxy.existingSigningKeySecret`, please change the values to be `config.signingKeySecret` or `config.existingSigningKeySecret`
   - If were relying on automatic signing key generation do one of the following:
     1. set `config.forceGenerateSigningKey` to `true` for the upgrade
