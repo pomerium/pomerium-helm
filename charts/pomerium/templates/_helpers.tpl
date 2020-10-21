@@ -543,7 +543,7 @@ redis
 {{- else if .Values.config.sharedSecret -}}
 {{-  .Values.config.sharedSecret | sha256sum -}}
 {{- else -}}
-{{- randAscii 32 -}}
+{{- randAlphaNum 10 -}}
 {{- end -}}
 {{- end -}}
 
