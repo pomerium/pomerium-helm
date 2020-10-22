@@ -460,7 +460,11 @@ databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify 
 {{- define "pomerium.config.dynamic" -}}
 {{- if .Values.config.policy }}
 policy:
-{{ tpl (toYaml .Values.config.policy) . | indent 2 }}
+{{-    if kindIs "string" .Values.config.policy }}
+{{       tpl .Values.config.policy . | indent 2 }}
+{{-    else }}
+{{       tpl (toYaml .Values.config.policy) . | indent 2 }}
+{{-    end  }}
 {{- end }}
 {{- end -}}
 
