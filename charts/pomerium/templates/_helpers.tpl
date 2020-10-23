@@ -230,6 +230,30 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
+{{/* Determine secret name for shared secrets */}}
+{{- define "pomerium.sharedSecrets.name" -}}
+{{- if .Values.config.existingSharedSecrets -}}
+{{- .Values.config.existingSharedSecrets | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-shared-secrets" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-shared-secrets" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Determine secret name for databroker storage config */}}
+{{- define "pomerium.databroker.storage.secret.name" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-databroker-storage" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-databroker-storage" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "pomerium.caSecret.name" -}}
 {{if .Values.config.existingCASecret }}
 {{- .Values.config.existingCASecret | trunc 63 | trimSuffix "-" -}}
@@ -381,7 +405,7 @@ grpc is used for insecure rather than http for istio compatibility
 {{/* Data Broker Storage Configuration */}}
 {{- define "pomerium.databroker.tlsEnv" -}}
 {{- if or .Values.databroker.storage.clientTLS.existingSecretName .Values.databroker.storage.clientTLS.cert  ( include "pomerium.redis.tlsCertsGenerated" . )}}
-- name: DATABROKER_STORAGE_CERT_FILE 
+- name: DATABROKER_STORAGE_CERT_FILE
   value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/tls.crt
 - name: DATABROKER_STORAGE_KEY_FILE
   value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/tls.key
@@ -390,6 +414,39 @@ grpc is used for insecure rather than http for istio compatibility
 - name: DATABROKER_STORAGE_CA_FILE
   value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/{{ default "ca.crt" .Values.databroker.storage.clientTLS.existingCASecretKey }}
 {{- end  }}
+{{- end -}}
+
+{{- define "pomerium.databroker.storage.env" -}}
+{{- include "pomerium.databroker.tlsEnv" . }}
+{{ if and .Values.databroker.storage.autoconfigure (ne (include "pomerium.databroker.storage.type" . ) "memory") }}
+- name: DATABROKER_STORAGE_CONNECTION_STRING
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "pomerium.databroker.storage.secret.name" . }}
+      key: DATABROKER_STORAGE_CONNECTION_STRING
+- name: DATABROKER_STORAGE_TLS_SKIP_VERIFY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "pomerium.databroker.storage.secret.name" . }}
+      key: DATABROKER_STORAGE_TLS_SKIP_VERIFY
+{{- end  }}
+{{- end -}}
+
+{{- define "pomerium.sharedEnv" -}}
+{{- if or .Values.config.generateSharedSecrets .Values.config.sharedSecret }}
+- name: SHARED_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "pomerium.sharedSecrets.name" . }}
+      key: SHARED_SECRET
+{{- end }}
+{{- if or .Values.config.generateSharedSecrets .Values.config.cookieSecret }}
+- name: COOKIE_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "pomerium.sharedSecrets.name" . }}
+      key: COOKIE_SECRET
+{{- end }}
 {{- end -}}
 
 {{/*Creates static configuration yaml */}}
@@ -450,10 +507,6 @@ idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
 idp_service_account: {{ include "pomerium.idp.serviceAccount" . }}
 {{- end }}
 databroker_storage_type: {{ include "pomerium.databroker.storage.type" . }}
-{{- if ne (include "pomerium.databroker.storage.type" . ) "memory" }}
-databroker_storage_connection_string: {{ include "pomerium.databroker.storage.connectionString" . }}
-databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify }}
-{{- end  }}
 {{- end -}}
 
 {{/* Creates dynamic configuration yaml */}}
@@ -528,35 +581,6 @@ policy:
 redis
 {{- else -}}
 {{- .Values.databroker.storage.type -}}
-{{- end -}}
-{{- end -}}
-
-{{/* Render databroker connection string */}}
-{{- define "pomerium.databroker.storage.connectionString" -}}
-{{- if .Values.redis.enabled -}}
-{{- default (printf "%s://:%s@%s-master.%s.svc.cluster.local:6379" (include "pomerium.redis.scheme" . ) (include "pomerium.redis.password" . ) (include "pomerium.redis.name" . ) .Release.Namespace ) .Values.databroker.storage.connectionString -}}
-{{- else -}}
-{{- .Values.databroker.storage.connectionString -}}
-{{- end -}}
-{{- end -}}
-
-{{/* Render redis password */}}
-{{- define "pomerium.redis.password" -}}
-{{- if .Values.redis.password -}}
-{{- .Values.redis.password -}}
-{{- else if .Values.config.sharedSecret -}}
-{{-  .Values.config.sharedSecret | sha256sum -}}
-{{- else -}}
-{{- randAscii 32 -}}
-{{- end -}}
-{{- end -}}
-
-{{/* Render redis scheme */}}
-{{- define "pomerium.redis.scheme" -}}
-{{- if .Values.redis.tls.enabled -}}
-rediss
-{{- else -}}
-redis
 {{- end -}}
 {{- end -}}
 

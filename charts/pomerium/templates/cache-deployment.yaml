@@ -61,7 +61,8 @@ spec:
         env:
         - name: SERVICES
           value: cache
-{{- include "pomerium.databroker.tlsEnv" . | indent 8 }}
+{{  include "pomerium.databroker.storage.env" . | indent 8 }}
+{{- include "pomerium.sharedEnv" . | indent 8 }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}

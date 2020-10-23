@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [14.0.0](#1400)
     - [13.0.0](#1300)
     - [11.0.0](#1100)
     - [10.2.0](#1020)
@@ -34,6 +35,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [14.0.0](#1400-1)
     - [13.0.0](#1300-1)
     - [12.3.0](#1230)
     - [11.0.0](#1100-1)
@@ -142,6 +144,28 @@ If you wish to provide your own signing key in secret, you should:
 1. turn `config.generateSigningKey` to `false`
 2. specify `config.existingSigningKeySecret` with secret's name
 
+## Shared secrets
+
+### Auto Generation
+
+In default configuration, this chart will automatically generate a shared secret and cookie secret (as well as a password for Redis, if enabled) in a helm `pre-install` hook for Pomerium to mutually authenticate services.
+
+Upon delete, you will need to manually delete the generated secret(s). Example:
+
+```console
+kubectl delete secret pomerium-shared-secrets
+kubectl delete secret pomerium-databroker-storage # for non-memory (ie. Redis) cache
+```
+
+You may force recreation of your shared secrets by setting `config.forceGenerateSharedSecrets` to `true`. Delete already existing shared secrets first to prevent errors, and make sure you set back to `false` for your next helm upgrade command or your deployment will fail due to existing Secret.
+
+### Self Provisioned
+
+If you wish to provide your own shared secret / cookie secret, you should:
+
+1. turn `config.generateSharedSecrets` to `false`
+2. If not providing the variables through a mechanism like `extraEnv` or `extraEnvFrom`, specify `config.sharedSecret` and `config.cookieSecret` with 32 crypto-random bytes each, encoded as Base64
+
 ## Kubernetes API Proxy
 
 Starting in `v0.10`, Pomerium supports delegated authentication for the Kubernetes API Server.  In this model, Kubernetes delegates authentication to Pomerium, allowing Kubernetes RBAC policies to be applied to users authenticated by Pomerium.
@@ -214,9 +238,12 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.generateTLSAnnotations`                              | Annotations to be applied to generated TLS certificates.                                                                                                                                                                                                                                           | `{}`                                                                        |
 | `config.forceGenerateTLS`                                    | Force recreation of generated TLS certificates. You will need to restart your deployments after running                                                                                                                                                                                            | `false`                                                                     |
 | `config.insecure`                                            | DANGER, this disables tls between services. Only do this if you know what you are doing. One reason might be that you want to offload tls to a reverse proxy (i.e. istio, traefik)                                                                                                                 | `false`                                                                     |
-| `config.sharedSecret`                                        | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/reference/reference.html#shared-secret).                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)    |
-| `config.cookieSecret`                                        | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)    |
-| `config.policy`                                              | List of routes and their policies. Accepts template values or string templates.  [See more](https://www.pomerium.com/reference/#policy).                                                                                                                                                       |                                                                             |
+| `config.sharedSecret`                                        | 256 bit key to secure service communication. [See more](https://www.pomerium.io/docs/reference/reference.html#shared-secret).                                                                                                                                                                      | 32 [random ascii chars][randAscii] (with `config.generateSharedSecrets`)    |
+| `config.cookieSecret`                                        | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                                                                                                                      | 32 [random ascii chars][randAscii] (with `config.generateSharedSecrets`)    |
+| `config.generateSharedSecrets`                               | Initialize `SHARED_SECRET` and `COOKIE_SECRET` with random ASCII values, if undefined.                                                                                                                                                                                                             | `true`                                                                      |
+| `config.lookupExistingSecrets`                               | Whether existing shared secret values, and values derived from generated secrets (ie. the Redis password), should be read from the cluster and reused.                                                                                                                                             | `true`                                                                      |
+| `config.forceGenerateSharedSecrets`                          | Force recreation of generated shared secrets. You will need to restart your deployments after running                                                                                                                                                                                              | `false`                                                                     |
+| `config.policy`                                              | List of routes and their policies. Accepts template values or string templates.  [See more](https://www.pomerium.com/reference/#policy).                                                                                                                                                           |                                                                             |
 | `config.extraOpts`                                           | Options Dictionary appended to the config file. May contain any additional config value that doesn't have its dedicated helm value counterpart.                                                                                                                                                    | {}                                                                          |
 | `databroker`                                                 | Databroker configuration options.  Supported in `v0.10+`                                                                                                                                                                                                                                           |                                                                             |
 | `databroker.clientTLS.ca`                                    | Base64 encoded CA certificate for verifying the storage backend                                                                                                                                                                                                                                    |                                                                             |
@@ -224,8 +251,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `databroker.clientTLS.existingSecretName`                    | Name of existing secret with client certificates for the storage backend.  Certificate is expected at `tls.crt` and key is expected at `tls.key`                                                                                                                                                   |                                                                             |
 | `databroker.clientTLS.existingCASecretKey`                   | Name of data key to load a CA certificate from when using `databroker.clientTLS.existingSecretName`                                                                                                                                                                                                |                                                                             |
 | `databroker.clientTLS.key`                                   | Base64 encoded TLS client key for connecting to the storage backend                                                                                                                                                                                                                                |                                                                             |
-| `databroker.storage.type`                                    | Databroker storage backend.  [See more](https://www.pomerium.io/reference/#cache-service)                                                                                                                                                                                                          | `memory`                                                                    |
-| `databroker.storage.connectionString`                        | Databroker connection string.  [See more](https://www.pomerium.io/reference/#data-broker-storage-connection-string)                                                                                                                                                                                |                                                                             |
+| `databroker.storage.type`                                    | Databroker storage backend.  [See more](https://www.pomerium.io/reference/#cache-service)                                                                                                                                                                                                          | `memory` (when `redis.enabled` is `false`)                                  |
+| `databroker.storage.autoconfigure`                           | Set environment variables to connect to non-memory databroker storage                                                                                                                                                                                                                              | `true`                                                                      |
+| `databroker.storage.connectionString`                        | Databroker connection string.  [See more](https://www.pomerium.io/reference/#data-broker-storage-connection-string)                                                                                                                                                                                | derived from config automatically (with `databroker.storage.autoconfigure`) |
 | `databroker.storage.tlsSkipVerify`                           | Disable TLS verfication of storage backend service                                                                                                                                                                                                                                                 | `false`                                                                     |
 | `extraEnv`                                                   | Set `env` variables on service pods                                                                                                                                                                                                                                                                | []                                                                          |
 | `extraEnvFrom`                                               | Sets `envFrom` on service pods.  Can be used to source ENV vars from existing secrets or configmaps.  [Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envfromsource-v1-core)                                                                                      | []                                                                          |
@@ -358,10 +386,16 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `redis.tls.certKeyFilename`                                  | Name of secret key containing private key for TLS connections. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                      | `tls.key`                                                                   |
 | `redis.tls.enabled`                                          | Require TLS communication with redis. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                               | `true`                                                                      |
 
-
-
+[randAscii]: http://masterminds.github.io/sprig/strings.html#randalphanum-randalpha-randnumeric-and-randascii
 
 ## Changelog
+
+### 14.0.0
+
+- `SHARED_SECRET` and `COOKIE_SECRET` are now defined via environment variables in a separate secret from the one containing `config.yaml`, are read back from the cluster (if auto-generated instead of being defined in config.yaml), and used to derive a password for connecting to Redis (when enabled). 
+- When non-memory (ie. Redis) databroker storage is enabled, `DATABROKER_STORAGE_CONNECTION_STRING `and `DATABROKER_STORAGE_TLS_SKIP_VERIFY` are now defined via environment variables in a separate secret from the one containing `config.yaml`.
+
+See [v14.0.0 Upgrade Nodes](#1400-1) to migrate.
 
 ### 13.0.0
 
@@ -430,6 +464,18 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 14.0.0
+
+- `SHARED_SECRET` and `COOKIE_SECRET` are now set via environment variables, in a separate secret from the one containing `config.yaml`.
+  - If you are defining these variables outside of `config.sharedSecret` and `config.cookieSecret` (ie. in `extraEnv` or `extraEnvFrom`), ensure that `config.generateSharedSecrets` is set to `false`.
+    - If you are using Redis, make sure that you set either `redis.password` or the `redis.existingSecretPasswordKey` in the secret defined by `redis.existingSecret`.
+- When a non-memory databroker storage type (ie. Redis) is enabled, `DATABROKER_STORAGE_CONNECTION_STRING` and `DATABROKER_STORAGE_TLS_SKIP_VERIFY` are defined in the cache deployment as environment variables via a separate secret.
+  - If you are defining these variables outside of `databroker.storage.connectionString` and `databroker.storage.tlsSkipVerify` (ie. in `cache.deployment.extraEnv` or `extraEnvFrom`), ensure that `databroker.storage.autoconfigure` is set to `false`.
+- When `redis.enabled` was set to `true` and `config.sharedSecret` was undefined, the previous version of this chart would generate a random ASCII value for `redis.password` that [usually contained URL-invalid characters][bug 167].
+  - If your release contains a `pomerium-redis-password` Secret with a non-hexadecimal value for `password`, you should delete it, so that a valid password derived from the (autogenerated) shared secret can be generated instead.
+
+[bug 167]: https://github.com/pomerium/pomerium-helm/issues/167
 
 ### 13.0.0
 

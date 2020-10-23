@@ -68,6 +68,7 @@ spec:
             secretKeyRef:
               name: {{ template "pomerium.signingKeySecret.name" . }}
               key: signing-key
+{{  include "pomerium.sharedEnv" . | indent 8 }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}

@@ -65,6 +65,7 @@ spec:
         env:
         - name: SERVICES
           value: proxy
+{{  include "pomerium.sharedEnv" . | indent 8 }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
