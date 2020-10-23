@@ -403,7 +403,7 @@ certificate_authority_file: "/pomerium/ca.pem"
 {{- end }}
 authenticate_service_url: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-cache_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
+databroker_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
 idp_provider: {{ .Values.authenticate.idp.provider }}
 idp_scopes: {{ .Values.authenticate.idp.scopes }}
 idp_provider_url: {{ .Values.authenticate.idp.url }}
@@ -460,7 +460,11 @@ databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify 
 {{- define "pomerium.config.dynamic" -}}
 {{- if .Values.config.policy }}
 policy:
-{{ tpl (toYaml .Values.config.policy) . | indent 2 }}
+{{-    if kindIs "string" .Values.config.policy }}
+{{       tpl .Values.config.policy . | indent 2 }}
+{{-    else }}
+{{       tpl (toYaml .Values.config.policy) . | indent 2 }}
+{{-    end  }}
 {{- end }}
 {{- end -}}
 
