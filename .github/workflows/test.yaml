@@ -33,7 +33,7 @@ jobs:
           install_local_path_provisioner: true
 
       - name: Install Ingress Controller
-        run: "helm install ingress-nginx/ingress-nginx --generate-name --set controller.service.type='NodePort'"
+        run: "helm install ingress-nginx/ingress-nginx --generate-name --set controller.service.type='NodePort' --set controller.admissionWebhooks.enabled=false"
 
       - name: Run chart-testing (install)
         uses: helm/chart-testing-action@v1.0.0
