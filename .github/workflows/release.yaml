@@ -31,9 +31,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: "Add stable repo"
-        run: "helm repo add stable https://kubernetes-charts.storage.googleapis.com"
-
       - name: Run chart-testing
         id: lint
         uses: helm/chart-testing-action@v1.0.0
