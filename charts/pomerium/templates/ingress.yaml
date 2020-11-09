@@ -22,8 +22,7 @@ spec:
     - host: {{ . | quote }}
       http:
         paths:
-          - paths:
-            backend:
+          - backend:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
     {{- end }}
@@ -32,8 +31,7 @@ spec:
     - host: {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       http:
         paths:
-          - paths:
-            backend:
+          - backend:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
     {{- end }}
@@ -42,8 +40,7 @@ spec:
     - host: {{ template "pomerium.forwardAuth.name" . }}
       http:
         paths:
-          - paths:
-            backend:
+          - backend:
               serviceName: {{ template "pomerium.proxy.fullname" . }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
     {{- end }}
@@ -51,16 +48,14 @@ spec:
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
       http:
         paths:
-          - paths:
-            backend:
+          - backend:
               serviceName: {{ template "pomerium.authorize.fullname" . }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
     {{- end }}
     - host: {{ printf "authenticate.%s" .Values.config.rootDomain }}
       http:
         paths:
-          - paths:
-            backend:
+          - backend:
               serviceName: {{ template "pomerium.authenticate.fullname" . }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
 {{- end }}
