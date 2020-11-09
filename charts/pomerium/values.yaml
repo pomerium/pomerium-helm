@@ -59,6 +59,7 @@ authenticate:
     minAvailable: 1
   service:
     annotations: {}
+    nodePort: ""
   deployment:
     annotations: {}
     extraEnv: {}
@@ -151,6 +152,7 @@ proxy:
   authorizeInternalUrl: ""
   service:
     annotations: {}
+    nodePort: ""
   deployment:
     annotations: {}
     extraEnv: {}

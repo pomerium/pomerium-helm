@@ -30,13 +30,13 @@ spec:
       targetPort: {{ template "pomerium.httpTrafficPort.name" . }}
       protocol: TCP
       name: {{ template "pomerium.httpTrafficPort.name" . }}
+{{- if and .Values.authenticate.service.nodePort ( eq .Values.service.type "NodePort" ) }}
+      nodePort: {{ .Values.authenticate.service.nodePort }}
+{{- end }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP
       targetPort: metrics
-{{- if hasKey .Values.service "nodePort" }}
-    nodePort: {{ .Values.service.nodePort }}
-{{- end }}
   selector:
     app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
