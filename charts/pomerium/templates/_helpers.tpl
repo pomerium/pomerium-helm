@@ -401,7 +401,7 @@ certificate_file: "/pomerium/cert.pem"
 certificate_key_file: "/pomerium/privkey.pem"
 certificate_authority_file: "/pomerium/ca.pem"
 {{- end }}
-authenticate_service_url: {{ default (printf "https://%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+authenticate_service_url: {{ default ( include "pomerium.authenticate.hostname" . ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
 databroker_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
 idp_provider: {{ .Values.authenticate.idp.provider }}
