@@ -381,7 +381,7 @@ grpc is used for insecure rather than http for istio compatibility
 {{/* Data Broker Storage Configuration */}}
 {{- define "pomerium.databroker.tlsEnv" -}}
 {{- if or .Values.databroker.storage.clientTLS.existingSecretName .Values.databroker.storage.clientTLS.cert  ( include "pomerium.redis.tlsCertsGenerated" . )}}
-- name: DATABROKER_STORAGE_CERT_FILE 
+- name: DATABROKER_STORAGE_CERT_FILE
   value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/tls.crt
 - name: DATABROKER_STORAGE_KEY_FILE
   value: {{ include "pomerium.databroker.storage.clientTLS.path" . }}/tls.key
@@ -401,7 +401,7 @@ certificate_file: "/pomerium/cert.pem"
 certificate_key_file: "/pomerium/privkey.pem"
 certificate_authority_file: "/pomerium/ca.pem"
 {{- end }}
-authenticate_service_url: {{ default (printf "https://authenticate.%s" .Values.config.rootDomain ) .Values.proxy.authenticateServiceUrl }}
+authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
 databroker_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
 idp_provider: {{ .Values.authenticate.idp.provider }}
@@ -578,7 +578,7 @@ true
 {{- if .Values.ingress.tls.hosts -}}
 {{ .Values.ingress.tls.hosts | toYaml }}
 {{- else -}}
-- {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
+- {{ template "pomerium.authenticate.hostname" . }}
   {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
 - {{ template "pomerium.forwardAuth.name" . }}
   {{ end }}
@@ -602,4 +602,11 @@ Return the appropriate apiVersion for ingress.
 {{- else -}}
 {{- print "extensions/v1beta1" -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Return the hostname of the authenticate service
+*/}}
+{{- define "pomerium.authenticate.hostname" -}}
+{{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain }}
 {{- end -}}

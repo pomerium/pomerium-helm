@@ -52,7 +52,7 @@ spec:
               serviceName: {{ template "pomerium.authorize.fullname" . }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
     {{- end }}
-    - host: {{ printf "authenticate.%s" .Values.config.rootDomain }}
+    - host: {{ template "pomerium.authenticate.hostname" . }}
       http:
         paths:
           - backend:

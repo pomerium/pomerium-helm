@@ -325,6 +325,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `ingress.hosts`                                              | Ingress accepted hostnames                                                                                                                                                                                                                                                                         | `[]`                                                                        |
 | `ingress.secretName`                                         | Ingress TLS certificate secret name                                                                                                                                                                                                                                                                | `[]`                                                                        |
 | `ingress.tls.hosts`                                          | Override automatic ingress tls hosts list                                                                                                                                                                                                                                                          | `[]`                                                                        |
+| `ingress.authenticate.name`                                  | Setting a custom authenticate url by setting a subdomain                                                                                                                                                                                                                                           | `authenticate`                                                              |
 | `metrics.enabled`                                            | Enable prometheus metrics endpoint                                                                                                                                                                                                                                                                 | `false`                                                                     |
 | `metrics.port`                                               | Prometheus metrics endpoint port                                                                                                                                                                                                                                                                   | `9090`                                                                      |
 | `cache.deployment.extraEnv`                                  | Set env variables on cache pods                                                                                                                                                                                                                                                                    | `[]`                                                                        |
@@ -375,7 +376,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 10.2.0
 
-- Update port names in insecure mode to address Istio protocol detection.  
+- Update port names in insecure mode to address Istio protocol detection.
 
 ### 10.0.0
 
@@ -445,19 +446,20 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 11.0.0
 
-- SigningKey is now under the `config` block.  
+- SigningKey is now under the `config` block.
   - If you are specifying `proxy.signingKeySecret` or `proxy.existingSigningKeySecret`, please change the values to be `config.signingKeySecret` or `config.existingSigningKeySecret`
   - If were relying on automatic signing key generation do one of the following:
     1. set `config.forceGenerateSigningKey` to `true` for the upgrade
-    2. replace [RELEASE NAME] with your release name and run: 
+    2. replace [RELEASE NAME] with your release name and run:
+
+      ```console
+      kubectl get secret [RELEASE NAME]-proxy-signing-key -o json | jq '. | .metadata.name = (.metadata.name | sub("(?<x>\\w+)-proxy-signing-key";"\(.x)-signing-key") )' | kubectl apply -f -
       ```
-      kubectl get secret [RELEASE NAME]-proxy-signing-key -o json | jq '. | .metadata.name = (.metadata.name | sub("(?<x>\\w+)-proxy-signing-key";"\(.x)-signing-key") )' | kubectl apply -f - 
-      ``` 
 
 ### 10.0.0
 
-- All shared configuration has been moved from ENV vars to a configuration file.  Users of `config.existingSecret` must specify **all** parameters in their secret or leverage `extraEnv` to pass in overrides.  
-  
+- All shared configuration has been moved from ENV vars to a configuration file.  Users of `config.existingSecret` must specify **all** parameters in their secret or leverage `extraEnv` to pass in overrides.
+
   Some of the impacted chart values and their equivilent settings are listed below:
 
   | Chart Value                    | Config Parameter                    |

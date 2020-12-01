@@ -40,12 +40,3 @@ jobs:
         with:
           command: install
           config: .ct.yaml
-
-      - name: Rebuild deps with helm 2
-        run: docker run -i -v $(pwd):/work quay.io/helmpack/chart-testing:v2.4.0 /bin/sh -c 'cd /work/charts/pomerium/ && helm init --client-only && helm repo add bitnami https://charts.bitnami.com/bitnami && helm dep update && helm dep build'
-
-      - name: Run chart-testing (helm2)
-        uses: helm/chart-testing-action@v1.0.0-alpha.3
-        with:
-          command: lint-and-install
-          config: .ct.yaml

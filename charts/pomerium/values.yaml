@@ -208,6 +208,8 @@ service:
     nameOverride: ""
 
 ingress:
+  authenticate:
+    name: ""
   secretName: ""
   secret:
     name: ""
