@@ -209,7 +209,7 @@ service:
 
 ingress:
   authenticate:
-    subdomain: "authenticate"
+    name: ""
   secretName: ""
   secret:
     name: ""
