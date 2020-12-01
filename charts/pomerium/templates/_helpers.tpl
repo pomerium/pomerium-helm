@@ -608,5 +608,5 @@ Return the appropriate apiVersion for ingress.
 Return the hostname of the authenticate service
 */}}
 {{- define "pomerium.authenticate.hostname" -}}
-{{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain | quote }}
+{{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain }}
 {{- end -}}
