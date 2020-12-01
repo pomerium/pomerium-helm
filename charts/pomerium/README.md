@@ -451,7 +451,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - If were relying on automatic signing key generation do one of the following:
     1. set `config.forceGenerateSigningKey` to `true` for the upgrade
     2. replace [RELEASE NAME] with your release name and run:
-      ```
+
+      ```console
       kubectl get secret [RELEASE NAME]-proxy-signing-key -o json | jq '. | .metadata.name = (.metadata.name | sub("(?<x>\\w+)-proxy-signing-key";"\(.x)-signing-key") )' | kubectl apply -f -
       ```
 
