@@ -578,7 +578,7 @@ true
 {{- if .Values.ingress.tls.hosts -}}
 {{ .Values.ingress.tls.hosts | toYaml }}
 {{- else -}}
-- {{ printf "authenticate.%s" .Values.config.rootDomain | quote }}
+- {{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain | quote }}
   {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
 - {{ template "pomerium.forwardAuth.name" . }}
   {{ end }}
