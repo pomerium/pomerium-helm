@@ -578,7 +578,7 @@ true
 {{- if .Values.ingress.tls.hosts -}}
 {{ .Values.ingress.tls.hosts | toYaml }}
 {{- else -}}
-- {{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain | quote }}
+- {{ template "pomerium.authenticate.hostname" . }}
   {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
 - {{ template "pomerium.forwardAuth.name" . }}
   {{ end }}
@@ -602,4 +602,11 @@ Return the appropriate apiVersion for ingress.
 {{- else -}}
 {{- print "extensions/v1beta1" -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Return the hostname of the authenticate service
+*/}}
+{{- define "pomerium.authenticate.hostname" -}}
+{{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain | quote }}
 {{- end -}}
