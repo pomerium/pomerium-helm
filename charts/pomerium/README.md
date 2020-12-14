@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [14.0.0](#1400)
     - [13.0.0](#1300)
     - [11.0.0](#1100)
     - [10.2.0](#1020)
@@ -34,6 +35,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [14.0.0](#1400-1)
     - [13.0.0](#1300-1)
     - [12.3.0](#1230)
     - [11.0.0](#1100-1)
@@ -366,6 +368,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 14.0.0
+
+- Update to Pomerium `v0.11`.  See [v0.11 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-10-0).
+
 ### 13.0.0
 
 - `config.existingSigningKeySecret` updated to have correct camelCase. Additionally uses of `authorize.existingsigningKeySecret` and `authorize.signingKey` have been updated to the correct `config.` block. See [v13.0.0 Upgrade Nodes](#1300-1) to migrate.
@@ -433,6 +439,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 14.0.0
+
+- No chart changes are required.  See Pomerium [v0.11 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-10-0).
 
 ### 13.0.0
 
