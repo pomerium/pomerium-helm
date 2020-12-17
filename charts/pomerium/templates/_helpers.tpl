@@ -442,8 +442,7 @@ forward_auth_url: {{ printf "%s://%s" ( include "pomerium.httpTrafficPort.name" 
 {{- else if .Values.forwardAuth.enabled }}
 forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" . ) }}
 {{- end }}
-cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
-shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
+{{- include "pomerium.config.static.sharedSecrets" . }}
 idp_client_id: {{ .Values.authenticate.idp.clientID }}
 idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
 {{- if or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML }}
@@ -609,4 +608,24 @@ Return the hostname of the authenticate service
 */}}
 {{- define "pomerium.authenticate.hostname" -}}
 {{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain }}
+{{- end -}}
+
+{{/* Expand application shared secrets config */}}
+{{- define "pomerium.config.static.sharedSecrets" -}}
+{{- $cookieSecretEnv := false -}}
+{{- $sharedSecretEnv := false -}}
+{{- range .Values.extraEnv -}}
+{{- if eq .name "COOKIE_SECRET" -}}
+{{- $cookieSecretEnv = true -}}
+{{- end -}}
+{{- if eq .name "SHARED_SECRET" -}}
+{{ $sharedSecretEnv = true }}
+{{- end -}}
+{{- end -}}
+{{- if not $cookieSecretEnv }}
+cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
+{{- end }}
+{{- if not $sharedSecretEnv }}
+shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
+{{- end }}
 {{- end -}}
