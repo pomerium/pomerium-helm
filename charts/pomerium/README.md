@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [15.0.0](#1500)
     - [14.0.0](#1400)
     - [13.0.0](#1300)
     - [11.0.0](#1100)
@@ -367,6 +368,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+### 15.0.0
+
+- Update to Pomerium `v0.12`.  See [v0.12 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-11-0).
 
 ### 14.0.0
 
