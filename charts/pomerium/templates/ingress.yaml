@@ -16,7 +16,7 @@ spec:
   tls:
     - secretName: {{ default .Values.ingress.secretName .Values.ingress.secret.name}}
       hosts:
-{{      include "pomerium.ingress.tls.hosts" . | indent 8 }}
+{{      include "pomerium.ingress.tls.hosts" . | uniq | indent 8 }}
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ . | quote }}
