@@ -480,6 +480,9 @@ policy:
 - mountPath: /pomerium/ca.pem
   name: ca-tls
   subPath: ca.crt
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts }}
+{{- end }}
 {{- end -}}
 
 {{/* Generates common volumes for all services */}}

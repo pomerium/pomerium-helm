@@ -262,6 +262,7 @@ extraEnv: {}
 extraEnvFrom: []
 extraArgs: {}
 extraVolumes: {}
+extraVolumeMounts: {}
 
 annotations: {}
 imagePullSecrets: ""
