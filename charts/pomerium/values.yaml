@@ -261,8 +261,8 @@ replicaCount: 1
 extraEnv: {}
 extraEnvFrom: []
 extraArgs: {}
-extraVolumes: {}
-extraVolumeMounts: {}
+extraVolumes: []
+extraVolumeMounts: []
 
 annotations: {}
 imagePullSecrets: ""
