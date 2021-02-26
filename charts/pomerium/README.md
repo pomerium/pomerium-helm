@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [16.0.0](#1600)
     - [15.0.0](#1500)
     - [14.0.0](#1400)
     - [13.0.0](#1300)
@@ -232,8 +233,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `databroker.storage.tlsSkipVerify`                           | Disable TLS verfication of storage backend service                                                                                                                                                                                                                                                 | `false`                                                                     |
 | `extraEnv`                                                   | Set `env` variables on service pods                                                                                                                                                                                                                                                                | []                                                                          |
 | `extraEnvFrom`                                               | Sets `envFrom` on service pods.  Can be used to source ENV vars from existing secrets or configmaps.  [Reference](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#envfromsource-v1-core)                                                                                      | []                                                                          |
-| `extraVolumes`                                               | Set volumes on service pods                                                                                                                                                                                                                                                                | []                                                                          |
-| `extraVolumeMounts`                                          | Set volumeMounts on service containers                                                                                                                                                                                                                                                          | []                                                                          |
+| `extraVolumes`                                               | Set volumes on service pods                                                                                                                                                                                                                                                                        | []                                                                          |
+| `extraVolumeMounts`                                          | Set volumeMounts on service containers                                                                                                                                                                                                                                                             | []                                                                          |
 | `apiProxy`                                                   | Kubernetes API Server proxy configuration options.  Supported in pomerium `v0.10+`                                                                                                                                                                                                                 |                                                                             |
 | `apiProxy.enabled`                                           | Create service account, RBAC and ingress rules to proxy to the kubernetes api server on this cluster                                                                                                                                                                                               | `false`                                                                     |
 | `apiProxy.ingress`                                           | When `apiProxy.enabled` is `true`, inject an entry into the pomerium ingress resource                                                                                                                                                                                                              | true                                                                        |
@@ -370,6 +371,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+### 16.0.0
+
+- Update to Pomerium `v0.13`.  See [v0.13 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-12-0).
+
 ### 15.0.0
 
 - Update to Pomerium `v0.12`.  See [v0.12 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-11-0).
