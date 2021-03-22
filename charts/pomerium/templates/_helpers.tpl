@@ -587,7 +587,9 @@ true
   {{ end }}
 {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
 {{- range .Values.config.policy }}
+{{- if hasPrefix "http" .from }}
 - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- range .Values.ingress.hosts }}

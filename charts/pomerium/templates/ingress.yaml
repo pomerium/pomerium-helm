@@ -28,12 +28,14 @@ spec:
     {{- end }}
     {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
     {{- range .Values.config.policy }}
+    {{- if hasPrefix "http" .from }}
     - host: {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       http:
         paths:
           - backend:
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
+    {{- end }}
     {{- end }}
     {{- end }}
     {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal)}}
