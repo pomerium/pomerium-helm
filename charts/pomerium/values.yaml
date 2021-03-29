@@ -219,6 +219,8 @@ ingress:
     hosts: []
   enabled: true
   hosts: []
+  # Support for ingressClassName
+  # className: ""
   annotations:
     {}
     # === nginx tweaks
