@@ -219,7 +219,8 @@ ingress:
     hosts: []
   enabled: true
   hosts: []
-  # Support for ingressClassName
+  # Sets Ingress/ingressClassName. This way ingress resources are able to bound specific ingress-controllers. Kubernetes version >=1.18 required.
+  # Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
   # className: ""
   annotations:
     {}
