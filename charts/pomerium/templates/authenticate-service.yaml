@@ -24,13 +24,13 @@ metadata:
   {{- end }}
 {{- end }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ coalesce .Values.service.type .Values.authenticate.service.type }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
       targetPort: {{ template "pomerium.httpTrafficPort.name" . }}
       protocol: TCP
       name: {{ template "pomerium.httpTrafficPort.name" . }}
-{{- if and .Values.authenticate.service.nodePort ( eq .Values.service.type "NodePort" ) }}
+{{- if and .Values.authenticate.service.nodePort ( or (eq .Values.service.type "NodePort" ) (eq .Values.authenticate.service.type "NodePort" ) )}}
       nodePort: {{ .Values.authenticate.service.nodePort }}
 {{- end }}
     - name: metrics

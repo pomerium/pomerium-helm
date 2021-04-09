@@ -11,7 +11,7 @@ metadata:
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
-{{- if or .Values.authenticate.service.annotations .Values.service.annotations }}
+{{- if or .Values.cache.service.annotations .Values.service.annotations }}
   annotations:
   {{- if .Values.cache.service.annotations }}
   {{- range $key, $value := .Values.cache.service.annotations }}
@@ -24,12 +24,10 @@ metadata:
   {{- end }}
 {{- end }}
 spec:
-{{- if .Values.service.cache.headless }}
-  clusterIP: None
-  type: ClusterIP
-{{- else }}
-  type: {{ .Values.service.type }}
+{{- if and .Values.service.cache.headless .Values.cache.service.clusterIP }}
+  clusterIP: {{ .Values.cache.service.clusterIP }}
 {{- end }}
+  type: {{ coalesce .Values.service.type .Values.cache.service.type }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
       targetPort: {{ template "pomerium.grpcTrafficPort.name" . }}
