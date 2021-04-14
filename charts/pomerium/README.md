@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [18.0.0](#1800)
     - [17.0.0](#1700)
     - [16.0.0](#1600)
     - [15.0.0](#1500)
@@ -38,6 +39,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [18.0.0](#1800-1)
     - [17.0.0](#1700-1)
     - [14.0.0](#1400-1)
     - [13.0.0](#1300-1)
@@ -380,6 +382,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+### 18.0.0
+
+- Removing Helm v2 support. See [v18.0.0 Upgrade Notes](#1800-1) to migrate.
 ### 17.0.0
 - Values for Service related settings have been deprecated.  See [v17.0.0 Upgrade Nodes](#1700-1) to migrate.
 - You may now specify `service.type` for each Pomerium service.
@@ -463,6 +468,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+### 18.0.0
+
+- This version deprecates Helm v2 support. To upgrade from Helm v2 to Helm v3 follow [this guide](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/)
 ### 17.0.0
 - If you are disabling headless service mode for `authorize` or `cache` via `service.headless.*`:
   - specify `authorize.service.clusterIP=""` to disable headless mode for authorize
