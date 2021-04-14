@@ -1,6 +1,6 @@
-apiVersion: v1
+apiVersion: v2
 name: pomerium
-version: 17.0.0
+version: 18.0.0
 appVersion: 0.13.4
 home: http://www.pomerium.io/
 icon: https://www.pomerium.com/img/logo-round.png
@@ -21,6 +21,11 @@ keywords:
 sources:
 - https://github.com/pomerium/pomerium
 engine: gotpl
+dependencies:
+- name: redis
+  version: ">= 10.9.0"
+  repository: https://charts.bitnami.com/bitnami
+  condition: redis.enabled
 
 maintainers:
 - name: desimone
