@@ -400,6 +400,13 @@ grpc_address: ":{{ template "pomerium.trafficPort.number" . }}"
 certificate_file: "/pomerium/cert.pem"
 certificate_key_file: "/pomerium/privkey.pem"
 certificate_authority_file: "/pomerium/ca.pem"
+{{- if .Values.extraTLSSecrets }}
+certificates:
+{{-   range .Values.extraTLSSecrets }}
+  - cert: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.crt
+    key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
+{{-   end }}
+{{- end }}
 {{- end }}
 authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
@@ -480,6 +487,10 @@ policy:
 - mountPath: /pomerium/ca.pem
   name: ca-tls
   subPath: ca.crt
+{{- range .Values.extraTLSSecrets }}
+- mountPath: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}
+  name: {{ . }}
+{{- end }}
 {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts }}
 {{- end }}
@@ -494,6 +505,11 @@ policy:
   secret:
     secretName: {{ template "pomerium.caSecret.name" . }}
     optional: true
+{{- range .Values.extraTLSSecrets }}
+- name: {{ . }}
+  secret:
+    secretName: {{ . }}
+{{- end }}
 {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes }}
 {{- end }}
@@ -615,3 +631,8 @@ Return the hostname of the authenticate service
 {{- define "pomerium.authenticate.hostname" -}}
 {{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain }}
 {{- end -}}
+
+{{/* Expand the extraTLSSecret file path */}}
+{{- define "pomerium.extraTLSSecret.path" }}
+{{- print "/etc/pomerium/tls/" }}
+{{- end }}

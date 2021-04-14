@@ -50,7 +50,7 @@ spec:
       - name: {{ .Chart.Name }}
         image: {{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}
         imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
-        args: 
+        args:
           - --base-config-file=/etc/pomerium/config.yaml
           - --ingress-class={{ .Values.operator.config.ingressClass }}
           - --service-class={{ .Values.operator.config.serviceClass }}

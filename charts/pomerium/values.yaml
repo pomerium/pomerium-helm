@@ -60,6 +60,7 @@ authenticate:
   service:
     annotations: {}
     nodePort: ""
+    type: ClusterIP
   deployment:
     annotations: {}
     extraEnv: {}
@@ -88,6 +89,8 @@ authorize:
     minAvailable: 1
   service:
     annotations: {}
+    type: ClusterIP
+    clusterIP: None
   deployment:
     annotations: {}
     extraEnv: {}
@@ -110,6 +113,8 @@ cache:
     minAvailable: 1
   service:
     annotations: {}
+    type: ClusterIP
+    clusterIP: None
   deployment:
     annotations: {}
     extraEnv: {}
@@ -153,6 +158,7 @@ proxy:
   service:
     annotations: {}
     nodePort: ""
+    type: ClusterIP
   deployment:
     annotations: {}
     extraEnv: {}
@@ -189,11 +195,14 @@ forwardAuth:
 
 service:
   # Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  # Deprecated.  Use authorize.service.clusterIP
   authorize:
     headless: true
+  # Deprecated.  Use cache.service.clusterIP
   cache:
     headless: true
-  type: ClusterIP
+  # Deprecated.  Use [service-name].service.type
+  type: ""
   # externalPort defaults to 80 or 443 depending on config.insecure
   externalPort: ""
   annotations:
@@ -266,13 +275,14 @@ extraEnvFrom: []
 extraArgs: {}
 extraVolumes: []
 extraVolumeMounts: []
+extraTLSSecrets: []
 
 annotations: {}
 imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.13.2"
+  tag: "v0.13.4"
   pullPolicy: "IfNotPresent"
 
 metrics:
