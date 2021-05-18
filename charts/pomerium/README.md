@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [19.0.0](#1900)
     - [18.0.0](#1800)
     - [17.0.0](#1700)
     - [16.0.0](#1600)
@@ -334,7 +335,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `tracing.jaeger.collector_endpoint`                          | The jaeger collector endpoint                                                                                                                                                                                                                                                                      | Required                                                                    |
 | `tracing.jaeger.agent_endpoint`                              | The jaeger agent endpoint                                                                                                                                                                                                                                                                          | Required                                                                    |
 | `ingress.enabled`                                            | Enables Ingress for pomerium                                                                                                                                                                                                                                                                       | `true`                                                                      |
-| `ingress.className`                                          | ingressClassName for ingress resource | Optional                                                                        |
+| `ingress.className`                                          | ingressClassName for ingress resource                                                                                                                                                                                                                                                              | Optional                                                                    |
 | `ingress.annotations`                                        | Ingress annotations.  Ensure you set appropriate annotations for TLS backend and large URLs if using Azure.                                                                                                                                                                                        | `{}`                                                                        |
 | `ingress.hosts`                                              | Ingress accepted hostnames                                                                                                                                                                                                                                                                         | `[]`                                                                        |
 | `ingress.secretName`                                         | Ingress TLS certificate secret name                                                                                                                                                                                                                                                                | `[]`                                                                        |
@@ -382,6 +383,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 19.0.0
+
+- Update to Pomerium `v0.14`.  See [v0.14 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-13-0).
 ### 18.0.0
 
 - Removing Helm v2 support. See [v18.0.0 Upgrade Notes](#1800-1) to migrate.
