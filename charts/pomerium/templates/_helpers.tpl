@@ -472,6 +472,12 @@ policy:
 {{-    else }}
 {{       tpl (toYaml .Values.config.policy) . | indent 2 }}
 {{-    end  }}
+{{- if and (not .Values.ingress.enabled) .Values.authenticate.proxied }}
+  - from: https://{{ include "pomerium.authenticate.hostname" . }}
+    to: {{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authenticate.name" .) .Release.Namespace }}
+    preserve_host_header: true
+    allow_public_unauthenticated_access: true
+{{- end }}
 {{- end }}
 {{- end -}}
 

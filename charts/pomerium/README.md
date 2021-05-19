@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [19.1.0](#1910)
     - [19.0.0](#1900)
     - [18.0.0](#1800)
     - [17.0.0](#1700)
@@ -275,6 +276,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `authenticate.tls.cert`                                      | TLS certificate for authenticate service                                                                                                                                                                                                                                                           |                                                                             |
 | `authenticate.tls.key`                                       | TLS key for authenticate service                                                                                                                                                                                                                                                                   |                                                                             |
 | `authenticate.cacheServiceUrl`                               | The internally accesible url for the cache service.                                                                                                                                                                                                                                                | `https://{{cache.name}}.{{config.rootDomain}}`                              |
+| `authenticate.proxied`                                       | When `ingress.enabled` is false, add a `policy` entry for the authenticate service.  This allows the proxy service to route traffic for `authenticate` directly                                                                                                                                    | `true`                                                                      |
 | `proxy.nameOverride`                                         | Name of the proxy service.                                                                                                                                                                                                                                                                         | `proxy`                                                                     |
 | `proxy.fullnameOverride`                                     | Full name of the proxy service.                                                                                                                                                                                                                                                                    | `proxy`                                                                     |
 | `proxy.authenticateServiceUrl`                               | The externally accessible url for the authenticate service.                                                                                                                                                                                                                                        | `https://{{authenticate.name}}.{{config.rootDomain}}`                       |
@@ -383,6 +385,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 19.1.0
+
+- Configure a route for the authenticate service if ingress is disabled.  This allows users to route all pomerium related traffic through the Pomerium proxy service in Loadbalancer or NodePort configuration.
 
 ### 19.0.0
 

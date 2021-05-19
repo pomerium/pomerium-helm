@@ -34,6 +34,7 @@ authenticate:
   existingTLSSecret: ""
   redirectUrl: ""
   cacheServiceUrl: ""
+  proxied: true
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
     provider: google
