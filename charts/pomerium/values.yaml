@@ -33,7 +33,6 @@ authenticate:
   nameOverride: ""
   existingTLSSecret: ""
   redirectUrl: ""
-  cacheServiceUrl: ""
   proxied: true
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
@@ -102,6 +101,10 @@ authorize:
 cache:
   fullnameOverride: ""
   nameOverride: ""
+
+databroker:
+  fullnameOverride: ""
+  nameOverride: ""
   existingTLSSecret: ""
   tls:
     cert: ""
@@ -122,8 +125,6 @@ cache:
   serviceAccount:
     annotations: {}
     nameOverride: ""
-
-databroker:
   storage:
     type: "memory"
     connectionString: ""
@@ -195,15 +196,6 @@ forwardAuth:
   internal: false
 
 service:
-  # Service type can be set to ClusterIP, NodePort or LoadBalancer.
-  # Deprecated.  Use authorize.service.clusterIP
-  authorize:
-    headless: true
-  # Deprecated.  Use cache.service.clusterIP
-  cache:
-    headless: true
-  # Deprecated.  Use [service-name].service.type
-  type: ""
   # externalPort defaults to 80 or 443 depending on config.insecure
   externalPort: ""
   annotations:
@@ -283,7 +275,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.14.2"
+  tag: "v0.14.4"
   pullPolicy: "IfNotPresent"
 
 metrics:

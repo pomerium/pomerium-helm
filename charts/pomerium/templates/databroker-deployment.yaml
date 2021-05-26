@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.databroker.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: cache
-  name: {{ template "pomerium.cache.fullname" . }}
+    app.kubernetes.io/component: databroker
+  name: {{ template "pomerium.databroker.fullname" . }}
   annotations:
- {{- if .Values.cache.deployment.annotations }}
- {{- range $key, $value := .Values.cache.deployment.annotations }}
+ {{- if .Values.databroker.deployment.annotations }}
+ {{- range $key, $value := .Values.databroker.deployment.annotations }}
    {{ $key }}: {{ $value | quote }}
  {{- end }}
 {{- else if .Values.annotations }}
@@ -19,10 +19,10 @@ metadata:
  {{- end }}
 {{- end }}
 spec:
-  replicas: {{ include "pomerium.cache.replicaCount" . }}
+  replicas: {{ include "pomerium.databroker.replicaCount" . }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
+      app.kubernetes.io/name: {{ template "pomerium.databroker.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
@@ -34,7 +34,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app.kubernetes.io/name: {{ template "pomerium.cache.name" . }}
+        app.kubernetes.io/name: {{ template "pomerium.databroker.name" . }}
         helm.sh/chart: {{ template "pomerium.chart" . }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -60,13 +60,13 @@ spec:
 {{- end }}
         env:
         - name: SERVICES
-          value: cache
+          value: databroker
 {{- include "pomerium.databroker.tlsEnv" . | indent 8 }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
-{{- range $name, $value := .Values.cache.deployment.extraEnv }}
+{{- range $name, $value := .Values.databroker.deployment.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
@@ -94,14 +94,14 @@ spec:
           - mountPath: {{ include "pomerium.databroker.storage.clientTLS.path" . }}
             name: databroker-client-tls
 {{ include "pomerium.volumeMounts" . | indent 10 }}
-      serviceAccountName: {{ template "pomerium.cache.serviceAccountName" . }}
+      serviceAccountName: {{ template "pomerium.databroker.serviceAccountName" . }}
       volumes:
         - name: databroker-client-tls
           secret:
             secretName: {{ include "pomerium.databroker.storage.clientTLS.secret" . }}
 {{ include "pomerium.volumes.shared" . | indent 8 }}
 {{- $ctx := . }}
-{{- $_ := set $ctx "currentServiceName" "cache" }}
+{{- $_ := set $ctx "currentServiceName" "databroker" }}
 {{ include "pomerium.volumes.service" $ctx | indent 8 }}
 {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

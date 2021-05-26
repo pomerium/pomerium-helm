@@ -20,7 +20,12 @@
 {{- default (printf "%s-authorize" .Chart.Name) .Values.authorize.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*Expand the name of the cache-service.*/}}
+{{/*Expand the name of the databroker-service.*/}}
+{{- define "pomerium.databroker.name" -}}
+{{- default (printf "%s-databroker" .Chart.Name) .Values.databroker.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*DEPRECATED Expand the name of the cache-service.*/}}
 {{- define "pomerium.cache.name" -}}
 {{- default (printf "%s-cache" .Chart.Name) .Values.cache.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -81,7 +86,21 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{/* cache services fully qualified name. Truncated at 63 chars. */}}
+{{/* databroker services fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.databroker.fullname" -}}
+{{- if .Values.databroker.fullnameOverride -}}
+{{- .Values.databroker.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-databroker" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-databroker" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* DEPRECATED cache services fully qualified name. Truncated at 63 chars. */}}
 {{- define "pomerium.cache.fullname" -}}
 {{- if .Values.cache.fullnameOverride -}}
 {{- .Values.cache.fullnameOverride | trunc 63 | trimSuffix "-" -}}
@@ -188,16 +207,16 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- end -}}
 {{- end -}}
 
-{{/* Determine secret name for cache TLS Cert */}}
-{{- define "pomerium.cache.tlsSecret.name" -}}
-{{- if .Values.cache.existingTLSSecret -}}
-{{- .Values.cache.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
+{{/* Determine secret name for databroker TLS Cert */}}
+{{- define "pomerium.databroker.tlsSecret.name" -}}
+{{- if .Values.databroker.existingTLSSecret -}}
+{{- .Values.databroker.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- printf "%s-cache-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-databroker-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s-cache-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s-databroker-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -273,9 +292,9 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- default (printf "%s-authorize" ( include "pomerium.fullname" .) ) .Values.authorize.serviceAccount.nameOverride -}}
 {{- end -}}
 
-{{/*Expand the serviceAccountName for the cache service */}}
-{{- define "pomerium.cache.serviceAccountName" -}}
-{{- default (printf "%s-cache" ( include "pomerium.fullname" .) ) .Values.cache.serviceAccount.nameOverride -}}
+{{/*Expand the serviceAccountName for the databroker service */}}
+{{- define "pomerium.databroker.serviceAccountName" -}}
+{{- default (printf "%s-databroker" ( include "pomerium.fullname" .) ) .Values.databroker.serviceAccount.nameOverride -}}
 {{- end -}}
 
 {{/*Expand the serviceAccountName for the proxy service */}}
@@ -410,7 +429,7 @@ certificates:
 {{- end }}
 authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
-databroker_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.cache.fullname" .) .Release.Namespace ) .Values.authenticate.cacheServiceUrl}}
+databroker_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.databroker.fullname" .) .Release.Namespace ) .Values.authenticate.databrokerServiceUrl}}
 idp_provider: {{ .Values.authenticate.idp.provider }}
 idp_scopes: {{ .Values.authenticate.idp.scopes }}
 idp_provider_url: {{ .Values.authenticate.idp.url }}
@@ -529,12 +548,12 @@ policy:
     optional: true
 {{- end -}}
 
-{{/* Limit cache replica count by storage backend */}}
-{{- define "pomerium.cache.replicaCount" -}}
+{{/* Limit databroker replica count by storage backend */}}
+{{- define "pomerium.databroker.replicaCount" -}}
 {{- if eq "memory" (include "pomerium.databroker.storage.type" . ) -}}
 1
 {{- else -}}
-{{ default .Values.replicaCount .Values.cache.replicaCount -}}
+{{ default .Values.replicaCount .Values.databroker.replicaCount -}}
 {{- end -}}
 {{- end -}}
 

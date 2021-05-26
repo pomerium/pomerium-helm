@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [20.0.0](#2000)
     - [19.1.0](#1910)
     - [19.0.0](#1900)
     - [18.0.0](#1800)
@@ -41,6 +42,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [20.0.0](#2000-1)
     - [18.0.0](#1800-1)
     - [17.0.0](#1700-1)
     - [14.0.0](#1400-1)
@@ -275,7 +277,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `authenticate.serviceAccount.nameOverride`                   | Override the name of the authenticate pod service account                                                                                                                                                                                                                                          | `pomerium-authenticate`                                                     |
 | `authenticate.tls.cert`                                      | TLS certificate for authenticate service                                                                                                                                                                                                                                                           |                                                                             |
 | `authenticate.tls.key`                                       | TLS key for authenticate service                                                                                                                                                                                                                                                                   |                                                                             |
-| `authenticate.cacheServiceUrl`                               | The internally accesible url for the cache service.                                                                                                                                                                                                                                                | `https://{{cache.name}}.{{config.rootDomain}}`                              |
 | `authenticate.proxied`                                       | When `ingress.enabled` is false, add a `policy` entry for the authenticate service.  This allows the proxy service to route traffic for `authenticate` directly                                                                                                                                    | `true`                                                                      |
 | `proxy.nameOverride`                                         | Name of the proxy service.                                                                                                                                                                                                                                                                         | `proxy`                                                                     |
 | `proxy.fullnameOverride`                                     | Full name of the proxy service.                                                                                                                                                                                                                                                                    | `proxy`                                                                     |
@@ -388,6 +389,14 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 20.0.0
+
+- Renamed all `cache` resources to `databroker`.  This keeps the terminology in the chart aligned with core Pomerium documentation.  See [upgrade notes](#2000-1) for details.  
+  Specific changes:
+  - Rename `cache` deployment, pdb, pod, and service account to `databroker`
+  - Add new `databroker` service pointing to the `databroker` pods.  The existing `cache` service will be removed in a future version.
+  - Move `cache` related values under `databroker` section in `values.yaml`
+- Remove deprecated `service.type` and related values
 ### 19.1.0
 
 - Configure a route for the authenticate service if ingress is disabled.  This allows users to route all pomerium related traffic through the Pomerium proxy service in Loadbalancer or NodePort configuration.
@@ -481,6 +490,21 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 20.0.0
+
+1. Update TLS settings
+   - If you are relying on `config.generateTLS=true` to automatically generate certificates, set `config.forceGenerateTLS=true` when upgrading.  This will update your certificates with the new service name.  You may set this back to false after the upgrade.
+   - If you are externally generating TLS certificates, _add_ the SAN `pomerium-databroker.[namespace].svc.cluster.local` to your cache certificate *before* upgrading.  The exact service name may vary if you've used service name overrides.
+   - You may delete the `pomerium-cache-tls` secret after upgrade.
+2. Update values
+   - Rename any values prefixed with `cache.*` to `databroker.*`.  Example: `cache.replicas` becomes `databroker.replicas`.  
+   - [yq](https://github.com/mikefarah/yq) can be used to automate this on an existing values file: 
+     ```shell
+     yq eval '. * {"databroker": .cache} | del(.cache)' pomerium-values.yaml
+     ```
+3. Name overrides
+   - To assist with the upgrade, the `cache` service will remain until a future version.  If you are using `cache.nameOverride` or `cache.fullnameOverride` to customize the service name, those settings will still be respected for the `cache` service.  
 ### 18.0.0
 
 - This version deprecates Helm v2 support. To upgrade from Helm v2 to Helm v3 follow [this guide](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/)
