@@ -60,7 +60,7 @@ spec:
           - --pomerium-deployments={{ template "pomerium.authenticate.fullname" . }}
           - --pomerium-deployments={{ template "pomerium.authorize.fullname" . }}
           - --pomerium-deployments={{ template "pomerium.proxy.fullname" . }}
-          - --pomerium-deployments={{ template "pomerium.cache.fullname" . }}
+          - --pomerium-deployments={{ template "pomerium.databroker.fullname" . }}
           - --debug={{ .Values.operator.config.debug }}
           - --election-configmap={{ template "pomerium.operator.electionConfigMap" . }}
           - --election-namespace={{ .Release.Namespace }}

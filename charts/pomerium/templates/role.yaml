@@ -33,7 +33,7 @@ rules:
       - {{ template "pomerium.authorize.fullname" . }}
       - {{ template "pomerium.proxy.fullname" . }}
       - {{ template "pomerium.operator.electionConfigMap" . }}
-      - {{ template "pomerium.cache.fullname" . }}
+      - {{ template "pomerium.databroker.fullname" . }}
     verbs:
       - get
       - list

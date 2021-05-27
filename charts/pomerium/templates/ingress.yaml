@@ -52,7 +52,7 @@ spec:
               serviceName: {{ template "pomerium.proxy.fullname" . }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
     {{- end }}
-    {{- if not .Values.service.authorize.headless }}
+    {{- if ne .Values.authorize.service.clusterIP "None" }}
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
       http:
         paths:

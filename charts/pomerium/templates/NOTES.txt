@@ -37,10 +37,3 @@ the official documentation:
 ####        Please only do this if you absolutely know what you are doing.
 ##############################################################################
 {{- end }}
-
-{{- if coalesce .Values.service.type (not .Values.service.authorize.headless) (not .Values.service.cache.headless) }}
-##############################################################################
-#           WARNING: You are using deprecated options in `service`
-#                    Please see v17.0.0 upgrade notes
-##############################################################################
-{{- end }}

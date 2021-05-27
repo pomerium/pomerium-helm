@@ -24,10 +24,10 @@ metadata:
   {{- end }}
 {{- end }}
 spec:
-{{- if and .Values.service.authorize.headless .Values.authorize.service.clusterIP }}
+{{- if .Values.authorize.service.clusterIP }}
   clusterIP: {{ .Values.authorize.service.clusterIP }}
 {{- end }}
-  type: {{ coalesce .Values.service.type .Values.authorize.service.type }}
+  type: {{ .Values.authorize.service.type }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
       targetPort: {{ template "pomerium.grpcTrafficPort.name" . }}
