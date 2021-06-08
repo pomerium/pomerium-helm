@@ -33,6 +33,12 @@ spec:
 {{- if and .Values.proxy.service.nodePort (eq .Values.proxy.service.type "NodePort" )}}
       nodePort: {{ .Values.proxy.service.nodePort }}
 {{- end }}
+{{- if and .Values.proxy.redirectServer (not .Values.config.insecure) }}
+    - name: http
+      targetPort: 80
+      protocol: TCP
+      port: 80
+{{- end }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP
