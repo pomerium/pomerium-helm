@@ -167,6 +167,7 @@ proxy:
   serviceAccount:
     annotations: {}
     nameOverride: ""
+  redirectServer: false
 
 apiProxy:
   enabled: false

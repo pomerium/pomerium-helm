@@ -426,6 +426,9 @@ certificates:
     key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{-   end }}
 {{- end }}
+{{- if .Values.proxy.redirectServer }}
+http_redirect_addr: :80
+{{- end }}
 {{- end }}
 authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}

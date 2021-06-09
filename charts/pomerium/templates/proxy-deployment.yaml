@@ -81,6 +81,11 @@ spec:
           - containerPort: {{ template "pomerium.trafficPort.number" . }}
             name: {{ template "pomerium.httpTrafficPort.name" . }}
             protocol: TCP
+{{- if and .Values.proxy.redirectServer (not .Values.config.insecure) }}
+          - name: http
+            containerPort: 80
+            protocol: TCP
+{{- end }}
           - containerPort: {{ .Values.metrics.port }}
             name: metrics
             protocol: TCP
