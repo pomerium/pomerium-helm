@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [21.0.0](#2100)
     - [20.0.0](#2000)
     - [19.1.0](#1910)
     - [19.0.0](#1900)
@@ -42,6 +43,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [21.0.0](#2100-1)
     - [20.0.0](#2000-1)
     - [18.0.0](#1800-1)
     - [17.0.0](#1700-1)
@@ -390,6 +392,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 21.0.0
+
+- Removed `subPath` from TLS `volumeMount`.  This allows changes to the underlying secret to be seen without recreating the pod.  If you are using `config.existingSecret` and directly managing your own configuration secret, see [upgrade notes](#2100-1) for details.
+
 ### 20.0.0
 
 - Renamed all `cache` resources to `databroker`.  This keeps the terminology in the chart aligned with core Pomerium documentation.  See [upgrade notes](#2000-1) for details.  
@@ -491,6 +497,13 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 21.0.0
+
+- Users of `config.existingSecret`:
+  - Change `certificate_file` to `/pomerium/tls/tls.crt`
+  - Change `certificate_key_file` to `/pomerium/tls/tls.key`
+  - Change `certificate_authority_file` to `/pomerium/ca/ca.crt`
 
 ### 20.0.0
 
