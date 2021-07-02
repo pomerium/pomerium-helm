@@ -416,9 +416,9 @@ grpc is used for insecure rather than http for istio compatibility
 address: ":{{ template "pomerium.trafficPort.number" . }}"
 grpc_address: ":{{ template "pomerium.trafficPort.number" . }}"
 {{- if not .Values.config.insecure }}
-certificate_file: "/pomerium/cert.pem"
-certificate_key_file: "/pomerium/privkey.pem"
-certificate_authority_file: "/pomerium/ca.pem"
+certificate_file: "/pomerium/tls/tls.crt"
+certificate_key_file: "/pomerium/tls/tls.key"
+certificate_authority_file: "/pomerium/ca/ca.crt"
 {{- if .Values.extraTLSSecrets }}
 certificates:
 {{-   range .Values.extraTLSSecrets }}
@@ -506,15 +506,10 @@ policy:
 {{- define "pomerium.volumeMounts" -}}
 - mountPath: /etc/pomerium/
   name: config
-- mountPath: /pomerium/cert.pem
+- mountPath: /pomerium/tls
   name: service-tls
-  subPath: tls.crt
-- mountPath: /pomerium/privkey.pem
-  name: service-tls
-  subPath: tls.key
-- mountPath: /pomerium/ca.pem
+- mountPath: /pomerium/ca
   name: ca-tls
-  subPath: ca.crt
 {{- range .Values.extraTLSSecrets }}
 - mountPath: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}
   name: {{ . }}
