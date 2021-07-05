@@ -392,6 +392,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 21.0.1
+
+- Fixed typo in `authenticate.serviceAccount.annotations` config
+
 ### 21.0.0
 
 - Removed `subPath` from TLS `volumeMount`.  This allows changes to the underlying secret to be seen without recreating the pod.  If you are using `config.existingSecret` and directly managing your own configuration secret, see [upgrade notes](#2100-1) for details.
