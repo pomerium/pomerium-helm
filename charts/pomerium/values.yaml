@@ -213,6 +213,8 @@ service:
 ingress:
   authenticate:
     name: ""
+  forwardAuth:
+    name: ""
   secretName: ""
   secret:
     name: ""

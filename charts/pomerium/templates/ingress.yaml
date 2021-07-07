@@ -45,7 +45,7 @@ spec:
     {{- end }}
     {{- end }}
     {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal)}}
-    - host: {{ template "pomerium.forwardAuth.name" . }}
+    - host: {{ template "pomerium.forwardAuth.hostname" . }}
       http:
         paths:
           - backend:
