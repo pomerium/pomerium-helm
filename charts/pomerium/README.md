@@ -275,7 +275,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `authenticate.service.annotations`                           | Annotations for the authenticate service. If none given, then use value of `service.annotations`                                                                                                                                                                                                   | `{}`                                                                        |
 | `authenticate.service.nodePort`                              | Specify the nodePort when using service type NodePort                                                                                                                                                                                                                                              |                                                                             |
 | `authenticate.service.type`                                  | Specify the service type (ClusterIP, NodePort or LoadBalancer) for the authenticate service                                                                                                                                                                                                        | `ClusterIP`                                                                 |
-| `authentiate.serviceAccount.annotations`                     | Annotations for the authenticate service account                                                                                                                                                                                                                                                   | `{}`                                                                        |
+| `authenticate.serviceAccount.annotations`                    | Annotations for the authenticate service account                                                                                                                                                                                                                                                   | `{}`                                                                        |
 | `authenticate.serviceAccount.nameOverride`                   | Override the name of the authenticate pod service account                                                                                                                                                                                                                                          | `pomerium-authenticate`                                                     |
 | `authenticate.tls.cert`                                      | TLS certificate for authenticate service                                                                                                                                                                                                                                                           |                                                                             |
 | `authenticate.tls.key`                                       | TLS key for authenticate service                                                                                                                                                                                                                                                                   |                                                                             |
@@ -391,6 +391,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 21.0.1
+
+- Fixed typo in `authenticate.serviceAccount.annotations` config
 
 ### 21.0.0
 
