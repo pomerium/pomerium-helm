@@ -467,9 +467,9 @@ tracing_jaeger_agent_endpoint: {{ required "agent_endpoint is required for jaege
 
 {{- end -}}
 {{- if and .Values.forwardAuth.enabled .Values.forwardAuth.internal }}
-forward_auth_url: {{ printf "%s://%s" ( include "pomerium.httpTrafficPort.name" . ) ( include "pomerium.forwardAuth.name" . ) }}
+forward_auth_url: {{ printf "%s://%s" ( include "pomerium.httpTrafficPort.name" . ) ( include "pomerium.forwardAuth.hostname" . ) }}
 {{- else if .Values.forwardAuth.enabled }}
-forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" . ) }}
+forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.hostname" . ) }}
 {{- end }}
 cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
 shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
@@ -622,7 +622,7 @@ true
 {{- else -}}
 - {{ template "pomerium.authenticate.hostname" . }}
   {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
-- {{ template "pomerium.forwardAuth.name" . }}
+- {{ template "pomerium.forwardAuth.hostname" . }}
   {{ end }}
 {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
 {{- range .Values.config.policy }}
@@ -653,6 +653,13 @@ Return the hostname of the authenticate service
 */}}
 {{- define "pomerium.authenticate.hostname" -}}
 {{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain }}
+{{- end -}}
+
+{{/*
+Return the hostname of the forward-auth service
+*/}}
+{{- define "pomerium.forwardAuth.hostname" -}}
+{{ printf "%s.%s" (.Values.ingress.forwardAuth.name | default "forward-auth") .Values.config.rootDomain }}
 {{- end -}}
 
 {{/* Expand the extraTLSSecret file path */}}
