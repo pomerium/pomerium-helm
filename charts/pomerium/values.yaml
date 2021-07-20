@@ -215,7 +215,7 @@ ingress:
     name: ""
   secretName: ""
   secret:
-    name: ""
+    name: "pomerium-tls"
     cert: ""
     key: ""
   tls:
