@@ -18,7 +18,7 @@ jobs:
           git config user.email "apparitor@users.noreply.github.com"
 
       - name: Run chart-releaser
-        uses: desimone/chart-releaser-action@master
+        uses: helm/chart-releaser-action@v1.2.1
         env:
           CR_TOKEN: "${{ secrets.CI_TOKEN }}"
         with:

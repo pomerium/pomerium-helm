@@ -276,7 +276,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.14.4"
+  tag: "v0.14.7"
   pullPolicy: "IfNotPresent"
 
 metrics:
@@ -302,8 +302,9 @@ rbac:
 
 redis:
   enabled: false
-  existingSecret: pomerium-redis-password
-  existingSecretPasswordKey: password
+  auth:
+    existingSecret: pomerium-redis-password
+    existingSecretPasswordKey: password
   generateTLS: true
   forceGenerateTLS: false
   cluster:

@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [22.0.0](#2200)
     - [21.0.1](#2101)
     - [21.0.0](#2100)
     - [20.0.0](#2000)
@@ -44,6 +45,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [22.0.0](#2200-1)
     - [21.0.0](#2100-1)
     - [20.0.0](#2000-1)
     - [18.0.0](#1800-1)
@@ -379,8 +381,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.deployment.annotations`                            | Annotations for the operator deployment.                                                                                                                                                                                                                                                           | `{}`                                                                        |
 | `redis.cluster.slaveCount`                                   | Number of slave replicas to run. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                                    | `1`                                                                         |
 | `redis.enabled`                                              | Enable a redis master-slave subchart deployment based on https://github.com/bitnami/charts/tree/master/bitnami/redis                                                                                                                                                                               | `false`                                                                     |
-| `redis.existingSecret`                                       | Secret used to store authentication password for redis.  This is shared between Pomerium and redis.  [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                | `pomerium-redis-password`                                                   |
-| `redis.existingSecretPasswordKey`                            | Name of key containing password in `redis.existingSecret`. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                          | `password`                                                                  |
+| `redis.auth.existingSecret`                                  | Secret used to store authentication password for redis.  This is shared between Pomerium and redis.  [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                | `pomerium-redis-password`                                                   |
+| `redis.auth.existingSecretPasswordKey`                       | Name of key containing password in `redis.existingSecret`. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                          | `password`                                                                  |
 | `redis.forceGenerateTLS`                                     | Force re-generation of TLS certificates used to communicate with redis                                                                                                                                                                                                                             | `false`                                                                     |
 | `redis.generateTLS`                                          | Automatically generate a new CA and certificate pair to communicate with redis                                                                                                                                                                                                                     | `true`                                                                      |
 | `redis.tls.certCAFilename`                                   | Name of secret key containing CA certificate for verify TLS certificates. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                           | `ca.crt`                                                                    |
@@ -393,6 +395,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 22.0.0
+- Explictly update redis dependency to v14.x.x.  See [upgrade notes](#2200-1) for details.
 
 ### 21.0.1
 
@@ -503,6 +508,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 22.0.0
+- Users of the redis subchart with password secret value overrides:
+  - rename `redis.existingSecretPasswordKey` to `redis.auth.existingSecret`
+  - rename `redis.existingSecret` to `redis.auth.existingSecretPasswordKey` 
 
 ### 21.0.0
 
