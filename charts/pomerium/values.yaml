@@ -27,6 +27,7 @@ config:
   policy: []
   existingSigningKeySecret: ""
   signingKey: ""
+  extraSecretLabels: {}
 
 authenticate:
   fullnameOverride: ""

@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [22.1.0](#2210)
     - [22.0.0](#2200)
     - [21.0.1](#2101)
     - [21.0.0](#2100)
@@ -235,6 +236,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `config.cookieSecret`                                        | Cookie secret is a 32 byte key used to encrypt user sessions.                                                                                                                                                                                                                                      | 32 [random ascii chars](http://masterminds.github.io/sprig/strings.html)    |
 | `config.policy`                                              | List of routes and their policies. Accepts template values or string templates.  [See more](https://www.pomerium.com/reference/#policy).                                                                                                                                                           |                                                                             |
 | `config.extraOpts`                                           | Options Dictionary appended to the config file. May contain any additional config value that doesn't have its dedicated helm value counterpart.                                                                                                                                                    | {}                                                                          |
+| `config.extraSecretLabels`                                   | Labels to be applied to the Pomerium config secret.                                                                                                                                                                                                                                                | {}                                                                          |
 | `databroker`                                                 | Databroker configuration options.  Supported in `v0.10+`                                                                                                                                                                                                                                           |                                                                             |
 | `databroker.clientTLS.ca`                                    | Base64 encoded CA certificate for verifying the storage backend                                                                                                                                                                                                                                    |                                                                             |
 | `databroker.clientTLS.cert`                                  | Base64 encoded TLS client certificate for connecting to the storage backend                                                                                                                                                                                                                        |                                                                             |
@@ -395,6 +397,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 22.1.0
+
+- Added `extraSecretLabels` option to configure additional labels to put on the Pomerium config secret.
 
 ### 22.0.0
 - Explictly update redis dependency to v14.x.x.  See [upgrade notes](#2200-1) for details.
