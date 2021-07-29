@@ -20,23 +20,22 @@ jobs:
       - name: "Add nginx ingress repo"
         run: "helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx"
 
-      - name: Run chart-testing (lint)
+      - name: Setup chart-testing
         id: lint
-        uses: helm/chart-testing-action@v2.0.1
-        with:
-          command: lint
-          config: .ct.yaml
+        uses: helm/chart-testing-action@v2.1.0
+
+      - name: Chart linting
+        run: |
+          ct lint --config .ct.yaml
 
       - name: Create kind cluster
-        uses: helm/kind-action@v1.0.0-alpha.3
+        uses: helm/kind-action@v1.2.0
         with:
           install_local_path_provisioner: true
 
       - name: Install Ingress Controller
         run: "helm install ingress-nginx/ingress-nginx --generate-name --set controller.service.type='NodePort' --set controller.admissionWebhooks.enabled=false"
 
-      - name: Run chart-testing (install)
-        uses: helm/chart-testing-action@v2.0.1
-        with:
-          command: install
-          config: .ct.yaml
+      - name: Chart install
+        run: |
+          ct install --config .ct.yaml
