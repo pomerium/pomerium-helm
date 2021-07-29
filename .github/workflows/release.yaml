@@ -39,9 +39,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Run chart-testing
+      - name: Setup chart-testing
         id: lint
-        uses: helm/chart-testing-action@v2.0.1
-        with:
-          command: lint
-          config: .ct-release.yaml
+        uses: helm/chart-testing-action@v2.1.0
+
+      - name: Chart linting
+        run: |
+          ct lint --config .ct-release.yaml

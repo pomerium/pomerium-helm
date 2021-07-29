@@ -1,6 +1,6 @@
 apiVersion: v2
 name: pomerium
-version: 22.0.0
+version: 22.1.0
 appVersion: 0.14.7
 home: http://www.pomerium.io/
 icon: https://www.pomerium.com/img/logo-round.png
