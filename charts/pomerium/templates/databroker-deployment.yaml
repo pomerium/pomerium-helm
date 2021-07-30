@@ -61,6 +61,7 @@ spec:
         env:
         - name: SERVICES
           value: databroker
+{{- include "pomerium.metrics.envVars" . | indent 8}}
 {{- include "pomerium.databroker.tlsEnv" . | indent 8 }}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}

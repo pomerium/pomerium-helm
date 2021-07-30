@@ -453,9 +453,6 @@ administrators: {{ .Values.config.administrators | quote }}
 
 {{ toYaml .Values.config.extraOpts -}}
 {{- end -}}
-{{- if .Values.metrics.enabled }}
-metrics_address: ":{{ .Values.metrics.port }}"
-{{- end -}}
 {{- if .Values.tracing.enabled }}
 tracing_debug: {{ .Values.tracing.debug }}
 tracing_provider: {{ required "tracing_provider is required for tracing" .Values.tracing.provider }}
@@ -658,4 +655,18 @@ Return the hostname of the authenticate service
 {{/* Expand the extraTLSSecret file path */}}
 {{- define "pomerium.extraTLSSecret.path" }}
 {{- print "/etc/pomerium/tls/" }}
+{{- end }}
+
+{{/* Return metrics env var block */}}
+{{- define "pomerium.metrics.envVars" }}
+{{- if .Values.metrics.enabled }}
+- name: POD_IP
+  valueFrom: 
+    fieldRef: 
+      fieldPath: status.podIP
+- name: METRICS_PORT
+  value: "{{ .Values.metrics.port }}"
+- name: METRICS_ADDRESS
+  value: "$(POD_IP):$(METRICS_PORT)"
+{{- end }}
 {{- end }}
