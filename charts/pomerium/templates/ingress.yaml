@@ -1,4 +1,5 @@
 {{- if .Values.ingress.enabled -}}
+{{- $ingressApiIsStable := eq (include "ingress.isStable" .) "true" -}}
 apiVersion: {{ include "ingress.apiVersion" . }}
 kind: Ingress
 metadata:
@@ -29,8 +30,15 @@ spec:
       http:
         paths:
           - backend:
+              {{- if $ingressApiIsStable }}
+              service:
+                name: {{ template "pomerium.proxy.fullname" $ }}
+                port:
+                  name: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- else }}
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- end }}
     {{- end }}
     {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
     {{- range .Values.config.policy }}
@@ -39,8 +47,15 @@ spec:
       http:
         paths:
           - backend:
+              {{- if $ingressApiIsStable }}
+              service:
+                name: {{ template "pomerium.proxy.fullname" $ }}
+                port:
+                  name: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- else }}
               serviceName: {{ template "pomerium.proxy.fullname" $ }}
               servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- end }}
     {{- end }}
     {{- end }}
     {{- end }}
@@ -49,21 +64,42 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ template "pomerium.proxy.fullname" . }}
-              servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
+              {{- if $ingressApiIsStable }}
+              service:
+                name: {{ template "pomerium.proxy.fullname" $ }}
+                port:
+                  name: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- else }}
+              serviceName: {{ template "pomerium.proxy.fullname" $ }}
+              servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- end }}
     {{- end }}
     {{- if ne .Values.authorize.service.clusterIP "None" }}
     - host:  {{ printf "authorize.%s" .Values.config.rootDomain }}
       http:
         paths:
           - backend:
-              serviceName: {{ template "pomerium.authorize.fullname" . }}
-              servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
+              {{- if $ingressApiIsStable }}
+              service:
+                name: {{ template "pomerium.authorize.fullname" $ }}
+                port:
+                  name: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- else }}
+              serviceName: {{ template "pomerium.authorize.fullname" $ }}
+              servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- end }}
     {{- end }}
     - host: {{ template "pomerium.authenticate.hostname" . }}
       http:
         paths:
           - backend:
-              serviceName: {{ template "pomerium.authenticate.fullname" . }}
-              servicePort: {{ template "pomerium.httpTrafficPort.name" . }}
+              {{- if $ingressApiIsStable }}
+              service:
+                name: {{ template "pomerium.authenticate.fullname" $ }}
+                port:
+                  name: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- else }}
+              serviceName: {{ template "pomerium.authenticate.fullname" $ }}
+              servicePort: {{ template "pomerium.httpTrafficPort.name" $ }}
+              {{- end }}
 {{- end }}
