@@ -264,8 +264,8 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{/*Expand the FQDN of the forward-auth endpoint.*/}}
 {{- define "pomerium.forwardAuth.name" -}}
-{{- if .Values.forwardAuth.nameOverride -}}
-{{- .Values.forwardAuth.nameOverride -}}
+{{- if .Values.forwardAuth.name -}}
+{{- .Values.forwardAuth.name -}}
 {{- else if .Values.forwardAuth.internal -}}
 {{- printf "%s.%s" (include "pomerium.proxy.fullname" .) ( .Release.Namespace ) -}}
 {{- else -}}
@@ -304,7 +304,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{/*Expand the serviceAccountName for the operator */}}
 {{- define "pomerium.operator.serviceAccountName" -}}
-{{- default (printf "%s-operator" ( include "pomerium.fullname" .) ) .Values.forwardAuth.nameOverride -}}
+{{- default (printf "%s-operator" ( include "pomerium.fullname" .) ) .Values.operator.serviceAccount.nameOverride -}}
 {{- end -}}
 
 {{/*Expand the configMap for operator election */}}
@@ -649,7 +649,7 @@ Return the appropriate apiVersion for ingress.
 Return the hostname of the authenticate service
 */}}
 {{- define "pomerium.authenticate.hostname" -}}
-{{ printf "%s.%s" (.Values.ingress.authenticate.name | default "authenticate") .Values.config.rootDomain }}
+{{ printf "%s.%s" (.Values.authenticate.name | default "authenticate") .Values.config.rootDomain }}
 {{- end -}}
 
 {{/* Expand the extraTLSSecret file path */}}

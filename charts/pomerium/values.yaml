@@ -33,7 +33,6 @@ authenticate:
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
-  redirectUrl: ""
   proxied: true
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
@@ -190,9 +189,12 @@ operator:
     debug: false
   deployment:
     annotations: {}
+  serviceAccount:
+    annotations: {}
+    nameOverride: ""
 
 forwardAuth:
-  nameOverride: ""
+  name: ""
   enabled: false
   # Will not create an ingress. ForwardAuth is ony accessible as internal service.
   internal: false
