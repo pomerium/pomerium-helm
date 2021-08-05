@@ -413,8 +413,8 @@ grpc is used for insecure rather than http for istio compatibility
 
 {{/*Creates static configuration yaml */}}
 {{- define "pomerium.config.static" -}}
-address: ":{{ template "pomerium.trafficPort.number" . }}"
-grpc_address: ":{{ template "pomerium.trafficPort.number" . }}"
+address: :{{ template "pomerium.trafficPort.number" . }}
+grpc_address: :{{ template "pomerium.trafficPort.number" . }}
 {{- if not .Values.config.insecure }}
 certificate_file: "/pomerium/tls/tls.crt"
 certificate_key_file: "/pomerium/tls/tls.key"
