@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [23.1.0](#2310)
     - [23.0.0](#2300)
     - [22.1.0](#2210)
     - [22.0.0](#2200)
@@ -400,6 +401,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 23.1.0
+
+- Removed unnecessary `"` (quotation mark) from the `address` and `grpc_address` config fields in the static config template.  
 
 ### 23.0.0
 - Rename `forwardAuth.nameOverride` for consistency
