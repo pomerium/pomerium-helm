@@ -1,0 +1,27 @@
+{{- if and .Values.prometheus.persistence.enabled (not .Values.prometheus.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "pomerium-console.fullname" . }}-prometheus
+  labels:
+    {{- include "pomerium-console.labels" . | nindent 4 }}
+  {{- with .Values.prometheus.persistence.annotations  }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with .Values.prometheus.persistence.finalizers  }}
+  finalizers:
+{{ toYaml . | indent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- range .Values.prometheus.persistence.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.prometheus.persistence.size | quote }}
+  {{- if .Values.prometheus.persistence.storageClassName }}
+  storageClassName: {{ .Values.prometheus.persistence.storageClassName }}
+  {{- end -}}
+{{- end -}}
