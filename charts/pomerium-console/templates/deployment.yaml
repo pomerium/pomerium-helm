@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pomerium-console.fullname" . }}
+  labels:
+    {{- include "pomerium-console.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "pomerium-console.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include "pomerium-console.config.checksum" . }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "pomerium-console.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- include "pomerium-console.deployment.pullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ include "pomerium-console.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "v%s" .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --config=/etc/pomerium/config.yaml
+            - serve
+          ports:
+            - name: {{ include "pomerium-console.web.scheme" . }}
+              containerPort: 8701
+              protocol: TCP
+            - name: {{ include "pomerium-console.grpc.name" . }}
+              containerPort: 8702
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ include "pomerium-console.web.scheme" . }}
+              scheme: {{ upper (include "pomerium-console.web.scheme" . ) }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ include "pomerium-console.web.scheme" . }}
+              scheme: {{ upper (include "pomerium-console.web.scheme" . ) }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+
+{{-       range $name, $value := .Values.extraEnv }}
+          - name: {{ $name }}
+            value: {{ quote $value }}
+{{-       end }}
+{{-       if .Values.extraEnvFrom }}
+          envFrom:
+{{-          toYaml .Values.extraEnvFrom | nindent 12 }}
+{{-       end }}
+          volumeMounts:
+            - mountPath: /etc/pomerium/
+              name: config
+            - mountPath: /mnt/storage
+              name: storage
+            - mountPath: /mnt/prometheus
+              name: prometheus
+            - mountPath: /pomerium/cert.pem
+              name: tls
+              subPath: tls.crt
+            - mountPath: /pomerium/key.pem
+              name: tls
+              subPath: tls.key
+            - mountPath: /pomerium/ca.pem
+              name: ca
+              subPath: {{ .Values.tls.caSecretKey }}
+            - mountPath: /pomerium/db-cert.pem
+              name: db-tls
+              subPath: tls.crt
+            - mountPath: /pomerium/db-key.pem
+              name: db-tls
+              subPath: tls.key
+            - mountPath: /pomerium/db-ca.pem
+              name: db-ca
+              subPath: {{ .Values.database.tls.caSecretKey }}
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ include "pomerium-console.secretName" . }}
+{{-     if and .Values.persistence.enabled }}
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "pomerium-console.fullname" .) }}
+{{-     else }}
+        - name: storage
+          emptyDir: {}
+{{-     end }}
+{{-     if and .Values.prometheus.persistence.enabled }}
+        - name: prometheus
+          persistentVolumeClaim:
+            claimName: {{ .Values.prometheus.persistence.existingClaim | default (printf "%s-prometheus" (include "pomerium-console.fullname" . )) }}
+{{-     else }}
+        - name: prometheus
+          emptyDir: {}
+{{-     end }}
+        - name: tls
+          secret:
+            secretName: {{ include "pomerium-console.tls.secret" . }}
+            optional: true
+        - name: ca
+          secret:
+            secretName: {{ include "pomerium-console.tls.ca.secret" . }}
+            optional: true
+        - name: db-tls
+          secret:
+            secretName: {{ include "pomerium-console.database.tls.secret" . }}
+            optional: true
+        - name: db-ca
+          secret:
+            secretName: {{ include "pomerium-console.database.tls.ca.secret" . }}
+            optional: true
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
