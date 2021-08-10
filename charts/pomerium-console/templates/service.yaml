@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pomerium-console.fullname" . }}
+  labels:
+    {{- include "pomerium-console.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ include "pomerium-console.web.port" . }}
+      targetPort: {{ include "pomerium-console.web.scheme" . }}
+      protocol: TCP
+      name: {{ include "pomerium-console.web.scheme" . }}
+    - port: {{ include "pomerium-console.grpc.port" . }}
+      targetPort: {{ include "pomerium-console.grpc.name" . }}
+      protocol: TCP
+      name: {{ include "pomerium-console.grpc.name" . }}
+  selector:
+    {{- include "pomerium-console.selectorLabels" . | nindent 4 }}

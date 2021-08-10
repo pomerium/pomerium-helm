@@ -38,4 +38,4 @@ jobs:
 
       - name: Chart install
         run: |
-          ct install --config .ct.yaml
+          ct install --config .ct.yaml --excluded-charts pomerium-console
