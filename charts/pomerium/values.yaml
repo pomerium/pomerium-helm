@@ -30,6 +30,7 @@ config:
   extraSecretLabels: {}
 
 authenticate:
+  name: ""
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
@@ -214,8 +215,6 @@ service:
     nameOverride: ""
 
 ingress:
-  authenticate:
-    name: ""
   secretName: ""
   secret:
     name: "pomerium-tls"
@@ -237,6 +236,8 @@ ingress:
     # ===  GKE load balancer tweaks; default on until I can figure out
     # how the hell to escape this string from the helm CLI
     # kubernetes.io/ingress.allow-http: "false"
+  # Ingress pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers
+  pathType: ImplementationSpecific
 
 resources:
   {}
