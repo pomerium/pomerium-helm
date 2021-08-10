@@ -352,7 +352,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `ingress.enabled`                                            | Enables Ingress for pomerium                                                                                                                                                                                                                                                                       | `true`                                                                      |
 | `ingress.className`                                          | ingressClassName for ingress resource                                                                                                                                                                                                                                                              | Optional                                                                    |
 | `ingress.annotations`                                        | Ingress annotations.  Ensure you set appropriate annotations for TLS backend and large URLs if using Azure.                                                                                                                                                                                        | `{}`                                                                        |
-| `ingress.pathType`                                           | ingressClassName for ingress resource                                                                                                                                                                                                                                                              | `ImplementationSpecific`                                                                    |
+| `ingress.pathType`                                           | Ingress pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers                                                                                                                                                                                                                                                              | `ImplementationSpecific`                                                                    |
 | `ingress.hosts`                                              | Ingress accepted hostnames                                                                                                                                                                                                                                                                         | `[]`                                                                        |
 | `ingress.secretName`                                         | Existing TLS certificate secret for Ingress                                                                                                                                                                                                                                                        | `[]`                                                                        |
 | `ingress.secret.cert`                                        | Base64 encoded TLS certificate for Ingress                                                                                                                                                                                                                                                         |                                                                             |
@@ -403,6 +403,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 23.2.0
+
+- Added support for newer Ingress API versions e.g. `networking.k8s.io/v1` as well as the `pathType` property required by such versions.
 
 ### 23.1.0
 
