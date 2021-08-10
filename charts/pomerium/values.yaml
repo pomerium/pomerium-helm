@@ -30,6 +30,7 @@ config:
   extraSecretLabels: {}
 
 authenticate:
+  name: ""
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
@@ -214,8 +215,6 @@ service:
     nameOverride: ""
 
 ingress:
-  authenticate:
-    name: ""
   secretName: ""
   secret:
     name: "pomerium-tls"
