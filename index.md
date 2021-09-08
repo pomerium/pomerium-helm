@@ -1,6 +1,6 @@
 # Pomerium Helm Repository
 
-![Pomerium](https://www.pomerium.io/img/logo_purple.svg)
+<img src="https://www.pomerium.io/img/logo_purple.svg" alt="Pomerium" width="400">
 
 ## Add the Pomerium Helm repository
 
