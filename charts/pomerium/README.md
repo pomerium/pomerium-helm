@@ -18,6 +18,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [24.0.0](#2400)
     - [23.2.0](#2320)
     - [23.1.0](#2310)
     - [23.0.0](#2300)
@@ -403,6 +404,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
+
+### 24.0.0
+- Update default Pomerium to v0.15. See [v0.15 Upgrade Notes](https://www.pomerium.com/docs/upgrading.html#since-0-14-0).
 
 ### 23.2.0
 
