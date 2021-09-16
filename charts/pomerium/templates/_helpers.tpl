@@ -267,7 +267,7 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- if .Values.forwardAuth.name -}}
 {{- .Values.forwardAuth.name -}}
 {{- else if .Values.forwardAuth.internal -}}
-{{- printf "%s.%s" (include "pomerium.proxy.fullname" .) ( .Release.Namespace ) -}}
+{{- printf "%s.%s.svc.cluster.local" (include "pomerium.proxy.fullname" .) ( .Release.Namespace ) -}}
 {{- else -}}
 {{- printf "forwardauth.%s" .Values.config.rootDomain -}}
 {{- end -}}
