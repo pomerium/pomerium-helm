@@ -31,9 +31,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- if not .Values.operator.enabled }}
-        checksum/secret: {{ include "pomerium.config.static" . | sha256sum }}
-        {{- end }}
+        checksum: {{ include "pomerium.static.checksum" . }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
@@ -63,6 +61,9 @@ spec:
 {{- end }}
 {{- end }}
         env:
+{{- if or ( and .Values.proxy.tls.cert .Values.proxy.tls.key ) .Values.proxy.existingTLSSecret }}
+{{- include "pomerium.tls.internal.envVars" . | indent 8 }}
+{{- end }}
         - name: SERVICES
           value: proxy
 {{- include "pomerium.metrics.envVars" . | indent 8}}
@@ -74,9 +75,11 @@ spec:
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
-{{- if .Values.extraEnvFrom }}
         envFrom:
-{{        toYaml .Values.extraEnvFrom | indent 8 }}
+          - secretRef:
+              name: {{ include "pomerium.sharedSecretName" . }}
+{{- if .Values.extraEnvFrom }}
+{{        toYaml .Values.extraEnvFrom | indent 10 }}
 {{- end }}
         ports:
           - containerPort: {{ template "pomerium.trafficPort.number" . }}

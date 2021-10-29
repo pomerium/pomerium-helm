@@ -1,0 +1,38 @@
+{{- if and .Values.ingressController.enabled (not .Values.ingressController.config.operatorMode) -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "pomerium.authenticate.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pomerium.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "pomerium.chart" . }}
+  annotations:
+    ingress.pomerium.io/preserve_host_header: "true"
+    ingress.pomerium.io/allow_public_unauthenticated_access: "true"
+    ingress.pomerium.io/tls_server_name: {{ include "pomerium.authenticate.hostname" . }}
+    ingress.pomerium.io/secure_upstream: "true"
+{{- with .Values.authenticate.ingress.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  ingressClassName: {{ .Values.ingressController.ingressClassResource.name }}
+{{- if .Values.authenticate.ingress.tls.secretName }}
+  tls:
+    - secretName: {{ .Values.authenticate.ingress.tls.secretName }}
+      hosts:
+        - {{ include "pomerium.authenticate.hostname" . }}
+{{- end }}
+  rules:
+    - host: {{ template "pomerium.authenticate.hostname" . }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ template "pomerium.authenticate.fullname" $ }}
+                port:
+                  name: {{ template "pomerium.httpTrafficPort.name" $ }}
+            pathType: Prefix
+            path: /
+{{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled -}}
+{{- if or (and .Values.ingress.enabled (not .Values.ingressController.enabled)) (and .Values.ingressController.enabled .Values.ingressController.config.operatorMode) -}}
 {{- $ingressApiIsStable := eq (include "ingress.isStable" .) "true" -}}
 {{- $ingressSupportsPathType := eq (include "ingress.supportsPathType" .) "true" -}}
 {{- $ingressPathType := .Values.ingress.pathType -}}
@@ -46,7 +46,7 @@ spec:
             {{- end }}
     {{- end }}
     {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
-    {{- range .Values.config.policy }}
+    {{- range .Values.config.routes }}
     {{- if hasPrefix "http" .from }}
     - host: {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
       http:

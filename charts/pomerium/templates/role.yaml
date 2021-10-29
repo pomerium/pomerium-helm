@@ -1,17 +1,16 @@
 {{- $secretName := include "pomerium.secretName" . }}
-{{- $baseSecretName := include "pomerium.baseSecretName" . }}
 
-{{- if and .Values.rbac.create .Values.operator.enabled -}}
+{{ if and .Values.rbac.create .Values.ingressController.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "pomerium.fullname" . }}
+  name: {{ template "pomerium.ingressController.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: operator
+    app.kubernetes.io/component: ingressController
 rules:
   - apiGroups:
       - ""
@@ -24,32 +23,9 @@ rules:
       - ""
       - "apps"
     resources:
-      - configmaps
-      - deployments
       - secrets
     resourceNames:
       - {{ $secretName | quote }}
-      - {{ template "pomerium.authenticate.fullname" . }}
-      - {{ template "pomerium.authorize.fullname" . }}
-      - {{ template "pomerium.proxy.fullname" . }}
-      - {{ template "pomerium.operator.electionConfigMap" . }}
-      - {{ template "pomerium.databroker.fullname" . }}
     verbs:
       - get
-      - list
-      - watch
-      - update
-      - create
-{{- if $baseSecretName }}
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    resourceNames:
-      - {{ $baseSecretName | quote }}
-    verbs:
-      - get
-      - list
-      - watch
-{{- end -}}
-{{- end -}}
+{{- end }}
