@@ -1,0 +1,37 @@
+{{- if .Values.ingressController.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "pomerium.ingressController.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ingressController
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+{{- if or .Values.ingressController.service.annotations .Values.service.annotations }}
+  annotations:
+  {{- if .Values.ingressController.service.annotations }}
+    {{- range $key, $value := .Values.ingressController.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- else if .Values.service.annotations }}
+    {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+spec:
+  type: {{ .Values.ingressController.service.type }}
+  ports:
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      protocol: TCP
+      targetPort: metrics
+  selector:
+    app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

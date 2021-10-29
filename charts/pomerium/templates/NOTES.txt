@@ -1,7 +1,7 @@
 {{- if eq (include "pomerium.providerOK" .) "true" }}
 {{- if .Values.ingress.enabled }}
 From outside the cluster, the route URL(s) are:
-{{- range .Values.config.policy }}
+{{- range .Values.config.routes }}
     {{ .from | quote}}
 {{- end }}
 {{- end }}

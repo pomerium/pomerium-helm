@@ -1,0 +1,22 @@
+{{- if and .Values.ingressController.ingressClassResource.enabled .Values.ingressController.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: {{ .Values.ingressController.ingressClassResource.name }}
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ingressController
+{{- if .Values.ingressController.ingressClassResource.default }}
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+{{- end }}
+spec:
+  controller: {{ .Values.ingressController.ingressClassResource.controllerName }}
+{{- if .Values.ingressController.ingressClassResource.parameters -}}
+  parameters:
+{{ toYaml .Values.ingressController.ingressClassResource.parameters | indent 4}}
+  {{ end }}
+{{- end }}

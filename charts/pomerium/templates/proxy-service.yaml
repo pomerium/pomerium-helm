@@ -24,7 +24,11 @@ metadata:
   {{- end }}
 {{- end }}
 spec:
-  type: {{ .Values.proxy.service.type }}
+  {{- if and .Values.ingressController.enabled (not .Values.ingressController.config.operatorMode ) }}
+  type: {{ coalesce .Values.proxy.service.type "LoadBalancer" }}
+  {{- else }}
+  type: {{ coalesce .Values.proxy.service.type "ClusterIP" }}
+  {{- end }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
       targetPort: {{ template "pomerium.httpTrafficPort.name" . }}
