@@ -431,6 +431,10 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 25.1.0
+
+- Updated Pomerium images to v0.15.6 to mitigate [CVE-2021-41230](https://github.com/pomerium/pomerium/security/advisories/GHSA-j6wp-3859-vxfg).
+
 ### 25.0.0
 - `config.policy` has been renamed to `config.routes` to match preferred upstream syntax.
 - Pomerium Operator has been replaced with [Pomerium Ingress Controller](https://github.com/pomerium/ingress-controller).
