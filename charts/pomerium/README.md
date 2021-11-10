@@ -431,7 +431,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
-### 25.1.0
+### 25.0.1
 
 - Updated Pomerium images to v0.15.6 to mitigate [CVE-2021-41230](https://github.com/pomerium/pomerium/security/advisories/GHSA-j6wp-3859-vxfg).
 
