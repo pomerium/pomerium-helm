@@ -1,7 +1,7 @@
 apiVersion: v2
 name: pomerium
-version: 25.0.1
-appVersion: 0.15.6
+version: 25.0.2
+appVersion: 0.15.7
 home: http://www.pomerium.com/
 icon: https://www.pomerium.com/img/icon.svg
 description: Pomerium is an identity-aware access proxy.
