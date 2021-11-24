@@ -1,5 +1,4 @@
 {
-  "extends": [
-    "config:base"
-  ]
+  "extends": ["config:base", ":gitSignOff"],
+  "schedule": ["before 3pm every Weekday"]
 }
