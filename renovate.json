@@ -1,4 +1,5 @@
 {
   "extends": ["config:base", ":gitSignOff"],
-  "schedule": ["before 3pm every Weekday"]
+  "schedule": ["before 3pm every Weekday"],
+  "bumpVersion": "patch"
 }
