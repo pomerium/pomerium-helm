@@ -61,7 +61,9 @@ spec:
 {{- end }}
 {{- end }}
         env:
+{{- if or ( and .Values.authorize.tls.cert .Values.authorize.tls.key ) .Values.authorize.existingTLSSecret }}
 {{- include "pomerium.tls.internal.envVars" . | indent 8 }}
+{{- end }}
         - name: SERVICES
           value: authorize
         - name: SIGNING_KEY

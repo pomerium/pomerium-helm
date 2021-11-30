@@ -57,7 +57,9 @@ spec:
 {{- end }}
 {{- end }}
         env:
+{{- if or ( and .Values.databroker.tls.cert .Values.databroker.tls.key ) .Values.databroker.existingTLSSecret }}
 {{- include "pomerium.tls.internal.envVars" . | indent 8 }}
+{{- end }}
         - name: SERVICES
           value: databroker
         - name: DATABROKER_STORAGE_TYPE
