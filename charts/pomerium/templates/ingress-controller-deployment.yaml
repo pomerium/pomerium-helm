@@ -53,7 +53,7 @@ spec:
         args:
           - --name={{ .Values.ingressController.config.ingressClass }}
           {{ if .Values.ingressController.config.namespaces -}}
-          - --namespaces={{ .Values.ingressController.config.namespaces }}
+          - --namespaces={{ .Values.ingressController.config.namespaces | join "," }}
           {{ end -}}
           - --databroker-service-url={{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.databroker.fullname" .) .Release.Namespace }}
           - --databroker-tls-ca-file=/pomerium/ca/ca.crt
