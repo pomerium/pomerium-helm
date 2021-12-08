@@ -1,20 +1,20 @@
-{{- if and .Values.rbac.create .Values.operator.enabled -}}
+{{ if and .Values.rbac.create .Values.ingressController.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: operator
-  name: {{ template "pomerium.fullname" . }}
+    app.kubernetes.io/component: ingressController
+  name: {{ template "pomerium.ingressController.fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "pomerium.fullname" . }}
+  name: {{ template "pomerium.ingressController.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "pomerium.operator.serviceAccountName" . }}
+    name: {{ template "pomerium.ingressController.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
-{{- end -}}
+{{- end }}
