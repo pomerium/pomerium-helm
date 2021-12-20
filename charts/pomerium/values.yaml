@@ -302,7 +302,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.15.7"
+  tag: "v0.15.8"
   pullPolicy: "IfNotPresent"
 
 metrics:
