@@ -13,6 +13,6 @@ config:
     - from: https://weirdlyssl.corp.pomerium.io
       to: http://neverssl.com
       allowed_users:
-        - bdd@pomerium.io
+        - user@example.com
     - from: https://hello.corp.pomerium.io
       to: http://hello:8080
