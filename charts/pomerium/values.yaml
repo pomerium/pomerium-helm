@@ -25,6 +25,7 @@ config:
   extraOpts: {}
   existingPolicy: ""
   insecure: false
+  insecureProxy: false
   administrators: ""
   routes: []
   existingSigningKeySecret: ""
@@ -69,6 +70,7 @@ authenticate:
   deployment:
     annotations: {}
     extraEnv: {}
+    podAnnotations: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""
@@ -107,6 +109,7 @@ authorize:
   deployment:
     annotations: {}
     extraEnv: {}
+    podAnnotations: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""
@@ -135,6 +138,7 @@ databroker:
   deployment:
     annotations: {}
     extraEnv: {}
+    podAnnotations: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""
@@ -177,6 +181,7 @@ proxy:
   deployment:
     annotations: {}
     extraEnv: {}
+    podAnnotations: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""

@@ -348,6 +348,25 @@ https
 {{- end -}}
 {{- end -}}
 
+{{/*Expand the proxy's http port scheme for secure or insecure mode */}}
+{{- define "pomerium.proxy.httpTrafficPort.scheme" -}}
+{{- if (include "pomerium.proxy.insecure" .) -}}
+http
+{{- else -}}
+https
+{{- end -}}
+{{- end -}}
+
+{{/*Expand the proxy's port number for secure or insecure mode */}}
+{{- define "pomerium.proxy.trafficPort.number" -}}
+{{- if (include "pomerium.proxy.insecure" .) -}}
+80
+{{- else -}}
+443
+{{- end -}}
+{{- end -}}
+
+
 {{/*
 Expand the grpc port name for secure or insecure mode
 
@@ -690,8 +709,8 @@ Return the hostname of the authenticate service
 {{- define "pomerium.metrics.envVars" }}
 {{- if .Values.metrics.enabled }}
 - name: POD_IP
-  valueFrom: 
-    fieldRef: 
+  valueFrom:
+    fieldRef:
       fieldPath: status.podIP
 - name: METRICS_PORT
   value: "{{ .Values.metrics.port }}"
@@ -703,4 +722,11 @@ Return the hostname of the authenticate service
 {{/* Returns checksum for values that you should restart pods for */}}
 {{- define "pomerium.static.checksum" }}
 {{- print .Values.config.sharedSecret .Values.config.cookieSecret (toString .Values.authenticate.idp) .Values.config.forceGenerateServiceSecrets (toString .Values.databroker.storage) | sha256sum }}
+{{- end }}
+
+{{/* Determine if the downstream edge of Pomerium Proxy should be secure */}}
+{{- define "pomerium.proxy.insecure" }}
+{{- if or (and .Values.config.insecure (and .Values.ingressController.enabled (.Values.ingressController.config.operatorMode))) (or (and .Values.config.insecure .Values.config.insecureProxy) (and .Values.config.insecure (not .Values.ingressController.enabled))) -}}
+true
+{{- end -}}
 {{- end }}

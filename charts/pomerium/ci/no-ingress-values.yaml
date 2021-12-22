@@ -1,3 +1,5 @@
+ingress:
+  enabled: false
 config:
   routes:
     - from: https://httpbin.corp.pomerium.io

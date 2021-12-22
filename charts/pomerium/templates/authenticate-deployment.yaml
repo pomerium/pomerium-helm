@@ -41,6 +41,9 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
+{{- if .Values.authenticate.deployment.podAnnotations }}
+{{ toYaml .Values.authenticate.deployment.podAnnotations | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -59,7 +62,9 @@ spec:
 {{- end }}
 {{- end }}
         env:
+{{- if or ( or ( and .Values.authenticate.tls.cert .Values.authenticate.tls.key ) .Values.authenticate.existingTLSSecret ) .Values.config.generateTLS }}
 {{- include "pomerium.tls.internal.envVars" . | indent 8 }}
+{{- end }}
         - name: SERVICES
           value: authenticate
         - name: SIGNING_KEY
