@@ -20,6 +20,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [27.0.0](#2700)
     - [26.0.0](#2600)
     - [25.0.1](#2501)
     - [25.0.0](#2500)
@@ -55,7 +56,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
-    - [26.0.0](#2600-1)
+    - [27.0.0](#2700-1)
     - [25.0.0](#2500-1)
     - [23.0.0](#2300-1)
     - [22.0.0](#2200-1)
@@ -439,11 +440,15 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
-### 26.0.0
+### 27.0.0
 
 - Add better support for terminating TLS at the edge of a service mesh via `config.insecureProxy` and additional logic when `config.insecure` is set.
 - Add `[service].deployment.podAnnotations`.
 - See https://github.com/pomerium/pomerium-helm/pull/238 for additional details.
+
+### 26.0.0
+
+- Updated Pomerium to v0.16.0
 
 ### 25.0.1
 
@@ -589,7 +594,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Upgrading
 
-### 26.0.0
+### 27.0.0
 
 - Users of `config.insecure=true` in a service mesh:
   - If you set `ingressController.enabled=true`, the proxy will run in secure mode (terminating TLS) with the rest of the services insecure.  Set `config.insecureProxy=true` to restore previous behavior.
