@@ -449,7 +449,7 @@ certificates:
     key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{- end }}
 {{- end }}
-{{- if and (not (include "pomerium.proxy.insecure")) .Values.proxy.redirectServer }}
+{{- if and (not (include "pomerium.proxy.insecure" .)) .Values.proxy.redirectServer }}
 http_redirect_addr: :80
 {{- end }}
 authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
