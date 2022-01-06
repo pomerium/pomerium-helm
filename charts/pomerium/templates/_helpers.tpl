@@ -448,9 +448,9 @@ certificates:
   - cert: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.crt
     key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{- end }}
-{{- if .Values.proxy.redirectServer }}
-http_redirect_addr: :80
 {{- end }}
+{{- if and (not (include "pomerium.proxy.insecure")) .Values.proxy.redirectServer }}
+http_redirect_addr: :80
 {{- end }}
 authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
