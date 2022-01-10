@@ -200,7 +200,7 @@ ingressController:
   nameOverride: ""
   image:
     repository: "pomerium/ingress-controller"
-    tag: "v0.15.2"
+    tag: "v0.16.0"
   deployment:
     annotations: {}
     extraEnv: {}
@@ -302,7 +302,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.15.7"
+  tag: "v0.16.0"
   pullPolicy: "IfNotPresent"
 
 metrics:
