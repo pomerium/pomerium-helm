@@ -66,6 +66,10 @@ spec:
         env:
         - name: INSECURE_SERVER
           value: "{{ ternary "true" "false" (eq (include "pomerium.proxy.insecure" .) "true") }}"
+{{- if and (not (include "pomerium.proxy.insecure" .)) .Values.proxy.redirectServer }}
+        - name: HTTP_REDIRECT_ADDR
+          value: :80
+{{- end }}
         - name: ADDRESS
           value: {{ printf ":%s" (include "pomerium.proxy.trafficPort.number" . ) }}
 {{- if or ( and .Values.proxy.tls.cert .Values.proxy.tls.key ) .Values.proxy.existingTLSSecret }}
