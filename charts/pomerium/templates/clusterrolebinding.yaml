@@ -1,26 +1,3 @@
-{{- if and .Values.rbac.create .Values.operator.enabled }}
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/name: {{ template "pomerium.operator.name" . }}
-    helm.sh/chart: {{ template "pomerium.chart" . }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: operator
-  name: {{ template "pomerium.fullname" . }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: {{ template "pomerium.fullname" . }}
-subjects:
-  - kind: ServiceAccount
-    name: {{ template "pomerium.operator.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
-{{- end }}
-
----
-
 {{- if and .Values.rbac.create .Values.apiProxy.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -38,5 +15,26 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ template "pomerium.authorize.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+---
+{{ if and .Values.rbac.create .Values.ingressController.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ingressController
+  name: {{ template "pomerium.ingressController.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "pomerium.ingressController.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "pomerium.ingressController.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}

@@ -30,9 +30,9 @@
 {{- default (printf "%s-cache" .Chart.Name) .Values.cache.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*Expand the name of the operator .*/}}
-{{- define "pomerium.operator.name" -}}
-{{- default (printf "%s-operator" .Chart.Name) .Values.operator.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{/*Expand the name of the ingressController .*/}}
+{{- define "pomerium.ingressController.name" -}}
+{{- default (printf "%s-ingress-controller" .Chart.Name) .Values.ingressController.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*Expand the name of the redis subchart .*/}}
@@ -128,16 +128,16 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{/* operator fully qualified name. Truncated at 63 chars. */}}
-{{- define "pomerium.operator.fullname" -}}
-{{- if .Values.operator.fullnameOverride -}}
-{{- .Values.operator.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{/* ingressController fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.ingressController.fullname" -}}
+{{- if .Values.ingressController.fullnameOverride -}}
+{{- .Values.ingressController.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- printf "%s-operator" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-ingress-controller" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s-operator" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s-ingress-controller" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -302,29 +302,22 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- default (printf "%s-proxy" ( include "pomerium.fullname" .) ) .Values.proxy.serviceAccount.nameOverride -}}
 {{- end -}}
 
-{{/*Expand the serviceAccountName for the operator */}}
-{{- define "pomerium.operator.serviceAccountName" -}}
-{{- default (printf "%s-operator" ( include "pomerium.fullname" .) ) .Values.operator.serviceAccount.nameOverride -}}
-{{- end -}}
-
-{{/*Expand the configMap for operator election */}}
-{{- define "pomerium.operator.electionConfigMap" -}}
-{{- printf "%s-election" ( include "pomerium.operator.name" .) -}}
+{{/*Expand the serviceAccountName for the ingressController */}}
+{{- define "pomerium.ingressController.serviceAccountName" -}}
+{{- default (printf "%s-ingress-controller" ( include "pomerium.fullname" .) ) .Values.ingressController.serviceAccount.nameOverride -}}
 {{- end -}}
 
 {{/*Expand the name of the config secret */}}
 {{- define "pomerium.secretName" -}}
-{{- if and .Values.config.existingSecret (not .Values.operator.enabled) -}}
-{{- .Values.config.existingSecret -}}
-{{- else -}}
-{{- include "pomerium.fullname" . -}}
-{{- end -}}
+{{- default (include "pomerium.fullname" .) .Values.config.existingSecret -}}
 {{- end -}}
 
-{{/*Expand the name of the config secret */}}
-{{- define "pomerium.baseSecretName" -}}
-{{- if .Values.operator.enabled -}}
-{{- default (printf "%s-base" (include "pomerium.fullname" .)) .Values.config.existingSecret -}}
+{{/*Expand the name of the shared parameters secret */}}
+{{- define "pomerium.sharedSecretName" -}}
+{{- if and .Values.config.existingSharedSecret -}}
+{{- .Values.config.existingSharedSecret -}}
+{{- else -}}
+{{- printf "%s-shared" (include "pomerium.fullname" .) -}}
 {{- end -}}
 {{- end -}}
 
@@ -411,20 +404,30 @@ grpc is used for insecure rather than http for istio compatibility
 {{- end  }}
 {{- end -}}
 
+{{/* Pomerium internal TLS certificate env var*/}}
+{{- define "pomerium.tls.internal.envVars" }}
+- name: CERTIFICATE_FILE
+  value: /pomerium/tls/tls.crt
+- name: CERTIFICATE_KEY_FILE
+  value: /pomerium/tls/tls.key
+{{- end }}
+
 {{/*Creates static configuration yaml */}}
 {{- define "pomerium.config.static" -}}
+autocert: false
+dns_lookup_family: V4_ONLY
 address: :{{ template "pomerium.trafficPort.number" . }}
 grpc_address: :{{ template "pomerium.trafficPort.number" . }}
 {{- if not .Values.config.insecure }}
-certificate_file: "/pomerium/tls/tls.crt"
-certificate_key_file: "/pomerium/tls/tls.key"
 certificate_authority_file: "/pomerium/ca/ca.crt"
-{{- if .Values.extraTLSSecrets }}
 certificates:
 {{-   range .Values.extraTLSSecrets }}
   - cert: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.crt
     key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{-   end }}
+{{- with .Values.authenticate.existingExternalTLSSecret }}
+  - cert: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.crt
+    key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{- end }}
 {{- if .Values.proxy.redirectServer }}
 http_redirect_addr: :80
@@ -443,8 +446,8 @@ grpc_insecure: true
 {{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
 {{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
 {{- end }}
-{{- if and .Values.config.existingPolicy .Values.config.policy }}
-{{ fail "Cannot use config.policy with config.existingPolicy" }}
+{{- if and .Values.config.existingPolicy .Values.config.routes }}
+{{ fail "Cannot use .Values.config.routes with config.existingPolicy" }}
 {{- end }}
 {{- if .Values.config.administrators }}
 administrators: {{ .Values.config.administrators | quote }}
@@ -475,27 +478,28 @@ idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
 {{- if or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML }}
 idp_service_account: {{ include "pomerium.idp.serviceAccount" . }}
 {{- end }}
-databroker_storage_type: {{ include "pomerium.databroker.storage.type" . }}
 {{- if ne (include "pomerium.databroker.storage.type" . ) "memory" }}
-databroker_storage_connection_string: {{ include "pomerium.databroker.storage.connectionString" . }}
 databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify }}
 {{- end  }}
 {{- end -}}
 
 {{/* Creates dynamic configuration yaml */}}
 {{- define "pomerium.config.dynamic" -}}
-{{- if .Values.config.policy }}
-policy:
-{{-    if kindIs "string" .Values.config.policy }}
-{{       tpl .Values.config.policy . | indent 2 }}
+{{- if or .Values.config.routes .Values.authenticate.proxied }}
+routes:
+{{-   if .Values.config.routes }}
+{{-    if kindIs "string" .Values.config.routes }}
+{{       tpl .Values.config.routes . | indent 2 }}
 {{-    else }}
-{{       tpl (toYaml .Values.config.policy) . | indent 2 }}
+{{       tpl (toYaml .Values.config.routes) . | indent 2 }}
 {{-    end  }}
-{{- if and (not .Values.ingress.enabled) .Values.authenticate.proxied }}
+{{-   end }}
+{{- if and .Values.authenticate.proxied (not .Values.ingressController.enabled) }}
   - from: https://{{ include "pomerium.authenticate.hostname" . }}
     to: {{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authenticate.name" .) .Release.Namespace }}
     preserve_host_header: true
     allow_public_unauthenticated_access: true
+    tls_server_name: {{ include "pomerium.authenticate.hostname" . }}
 {{- end }}
 {{- end }}
 {{- end -}}
@@ -508,6 +512,10 @@ policy:
 - mountPath: /pomerium/ca
   name: ca-tls
 {{- range .Values.extraTLSSecrets }}
+- mountPath: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}
+  name: {{ . }}
+{{- end }}
+{{- with .Values.authenticate.existingExternalTLSSecret }}
 - mountPath: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}
   name: {{ . }}
 {{- end }}
@@ -526,6 +534,11 @@ policy:
     secretName: {{ template "pomerium.caSecret.name" . }}
     optional: true
 {{- range .Values.extraTLSSecrets }}
+- name: {{ . }}
+  secret:
+    secretName: {{ . }}
+{{- end }}
+{{- with .Values.authenticate.existingExternalTLSSecret }}
 - name: {{ . }}
   secret:
     secretName: {{ . }}
@@ -622,7 +635,7 @@ true
 - {{ template "pomerium.forwardAuth.name" . }}
   {{ end }}
 {{- if not (or .Values.ingress.hosts .Values.forwardAuth.enabled) }}
-{{- range .Values.config.policy }}
+{{- range .Values.config.routes }}
 {{- if hasPrefix "http" .from }}
 - {{ .from | trimPrefix "https://" | trimPrefix "http://" | quote }}
 {{- end }}
@@ -638,11 +651,27 @@ true
 Return the appropriate apiVersion for ingress.
 */}}
 {{- define "ingress.apiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" -}}
-{{- print "networking.k8s.io/v1beta1" -}}
-{{- else -}}
-{{- print "extensions/v1beta1" -}}
+  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
+      {{- print "networking.k8s.io/v1" -}}
+  {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" -}}
+    {{- print "networking.k8s.io/v1beta1" -}}
+  {{- else -}}
+    {{- print "extensions/v1beta1" -}}
+  {{- end -}}
 {{- end -}}
+
+{{/*
+Return if ingress is stable.
+*/}}
+{{- define "ingress.isStable" -}}
+  {{- eq (include "ingress.apiVersion" .) "networking.k8s.io/v1" -}}
+{{- end -}}
+
+{{/*
+Return if ingress supports pathType.
+*/}}
+{{- define "ingress.supportsPathType" -}}
+  {{- or (eq (include "ingress.isStable" .) "true") (and (eq (include "ingress.apiVersion" .) "networking.k8s.io/v1beta1") (semverCompare ">= 1.18-0" .Capabilities.KubeVersion.Version)) -}}
 {{- end -}}
 
 {{/*
@@ -669,4 +698,9 @@ Return the hostname of the authenticate service
 - name: METRICS_ADDRESS
   value: "$(POD_IP):$(METRICS_PORT)"
 {{- end }}
+{{- end }}
+
+{{/* Returns checksum for values that you should restart pods for */}}
+{{- define "pomerium.static.checksum" }}
+{{- print .Values.config.sharedSecret .Values.config.cookieSecret (toString .Values.authenticate.idp) .Values.config.forceGenerateServiceSecrets (toString .Values.databroker.storage) | sha256sum }}
 {{- end }}

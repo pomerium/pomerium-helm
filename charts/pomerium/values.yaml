@@ -15,6 +15,8 @@ config:
     key: ""
   sharedSecret: ""
   cookieSecret: ""
+  forceGenerateServiceSecrets: false
+  existingSharedSecret: ""
   generateTLS: true
   generateTLSAnnotations: {}
   forceGenerateTLS: false
@@ -24,15 +26,18 @@ config:
   existingPolicy: ""
   insecure: false
   administrators: ""
-  policy: []
+  routes: []
   existingSigningKeySecret: ""
   signingKey: ""
   extraSecretLabels: {}
+  extraSharedSecretLabels: {}
 
 authenticate:
+  name: ""
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
+  existingExternalTLSSecret: ""
   proxied: true
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
@@ -67,6 +72,14 @@ authenticate:
   serviceAccount:
     annotations: {}
     nameOverride: ""
+  ingress:
+    # cert-manager example
+    # annotations:
+    #   cert-manager.io/cluster-issuer: letsencrypt-prod
+    annotations: {}
+    tls:
+      secretName: ""
+      # secretName: authenticate-ingress-tls
 
 authorize:
   fullnameOverride: ""
@@ -160,14 +173,14 @@ proxy:
   service:
     annotations: {}
     nodePort: ""
-    type: ClusterIP
+    type: ""
   deployment:
     annotations: {}
     extraEnv: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""
-  redirectServer: false
+  redirectServer: true
 
 apiProxy:
   enabled: false
@@ -175,23 +188,33 @@ apiProxy:
   fullNameOverride: ""
   name: "kubernetes"
 
-operator:
+ingressController:
   enabled: false
+  ingressClassResource:
+    enabled: true
+    default: false
+    name: pomerium
+    controllerName: pomerium.io/ingress-controller
+    parameters: {}
   fullnameOverride: ""
   nameOverride: ""
-  replicaCount: 1
   image:
-    repository: "pomerium/pomerium-operator"
-    tag: "v0.0.5"
-  config:
-    ingressClass: pomerium
-    serviceClass: pomerium
-    debug: false
+    repository: "pomerium/ingress-controller"
+    tag: "v0.16.0"
   deployment:
     annotations: {}
+    extraEnv: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""
+  config:
+    namespaces: []
+    ingressClass: pomerium.io/ingress-controller
+    updateStatus: true
+    operatorMode: false
+  service:
+    annotations: {}
+    type: ClusterIP
 
 forwardAuth:
   name: ""
@@ -214,8 +237,6 @@ service:
     nameOverride: ""
 
 ingress:
-  authenticate:
-    name: ""
   secretName: ""
   secret:
     name: "pomerium-tls"
@@ -237,6 +258,8 @@ ingress:
     # ===  GKE load balancer tweaks; default on until I can figure out
     # how the hell to escape this string from the helm CLI
     # kubernetes.io/ingress.allow-http: "false"
+  # Ingress pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers
+  pathType: ImplementationSpecific
 
 resources:
   {}
@@ -279,7 +302,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.14.7"
+  tag: "v0.16.0"
   pullPolicy: "IfNotPresent"
 
 metrics:

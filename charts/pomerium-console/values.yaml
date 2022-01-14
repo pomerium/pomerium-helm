@@ -1,0 +1,207 @@
+# Default values for pomerium-console.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# replicaCount -- Sets the number of pod replicas deployed
+replicaCount: 1
+
+image:
+  # image.pullUsername -- Set to automatically generate an image pull secret
+  pullUsername: ""
+  # image.pullPassword -- Set to automatically generate an image pull secret
+  pullPassword: ""
+  # image.repository -- The image repository source
+  repository: docker.cloudsmith.io/pomerium/enterprise/pomerium-console
+  # image.pullPolicy -- The iamge pull policy
+  pullPolicy: IfNotPresent
+  # image.tag -- Override the image tag from the chart appVersion
+  tag: ""
+
+serviceAccount:
+  # serviceAccount.create -- Specifies whether a service account should be created
+  create: true
+  # serviceAccount.annotations - Annotations to add to the service account
+  annotations: {}
+  # serviceAccount.name -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# imagePullSecrets -- Reference a list secrets containing image pull credentials for the deployment
+imagePullSecrets: []
+# nameOverride -- Override the name of the chart
+nameOverride: ""
+# fullnameOverride -- Override full release name
+fullnameOverride: ""
+
+# podAnnotations -- Set annotations on all pods
+podAnnotations: {}
+# podSecurityContext -- Set security context on all pods
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+# securityContext -- Set security context on all containers
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  # service.type -- Set service type.  This should be ClusterIP unless your Pomerium Core deployment
+  # is running on a separate cluster.
+  type: ClusterIP
+
+ingress:
+  # ingress.enabled -- Enable an Ingress resource for the deployment.  This should be disabled unless your
+  # Pomerium core deployment is running outside the cluster.
+  enabled: false
+  # ingress.annotations -- Set custom annoations on the Ingress resource
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # ingress.hosts -- Specify host and path matching for the Ingress resource.  Required if setting
+  # `ingress.enabled` to true
+  hosts:
+    - host: chart-example.local
+      paths: []
+  # ingress.tls -- Set a list of Ingress TLS secrets
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# resources -- Specify the kubernetes resources for the pods.  Minimal `requests` have been set and
+# should be adjusted for your environment.
+resources:
+  requests:
+    cpu: 500m
+    memory: 500Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  # autoscaling.enable -- Enable horizontal pod autoscaler
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# nodeSelector -- Specify node `selector` parameters for the deployment
+nodeSelector: {}
+# tolerations -- Specify node `tolerations` for the deployment
+tolerations: []
+# affinity -- Specify node `affinity` for the deployment
+affinity: {}
+
+tls:
+  # tls.enabled -- Enable TLS server support (strongly recommended)
+  enabled: true
+  # tls.generate -- Automatically generate a CA and certificates for TLS termination when chart is initially installed.
+  generate: true
+  # tls.forceGenerate -- Regenerate certificates.  Enable if you need to recreate your certificates after initial chart install, or
+  # want to enable `tls.generate` after the chart has already been installed.
+  forceGenerate: false
+  # tls.existingSecret -- Use an existing secret for TLS certificates
+  existingSecret: ""
+  # tls.existingCASecret -- Use an existing secret for a CA certificate when communicating with Pomerium Core
+  existingCASecret: ""
+  # tls.caSecretKey -- Set the key name containing the CA certificate in the existingCASecret
+  caSecretKey: tls.crt
+  # tls.ca -- A custom CA certificate when communicating with Pomerium Core
+  ca: ""
+  # tls.key -- TLS server key
+  key: ""
+  # tls.cert -- TLS server cert
+  cert: ""
+
+# persistence -- FOR TESTING ONLY.  There is no migration path
+# from embedded (sqlite) to an external RDBMS.
+persistence:
+  # persistence.enable -- Enable a PVC for the embedded database engine
+  enabled: false
+  # storageClassName: default
+  accessModes:
+    - ReadWriteOnce
+  size: 1Gi
+  # annotations: {}
+  finalizers:
+    - kubernetes.io/pvc-protection
+  # existingClaim:
+
+database:
+  # database.type -- **Required** Set database driver type.  This can be `pg`, `my` or sqlite for postgres, mysql or sqlite respectively
+  type: ""
+  # database.username -- Set the database username
+  username: ""
+  # database.password -- Set the database password
+  password: ""
+  # database.host -- Set the database hostname
+  host: ""
+  # database.name -- Set the name of the database or schema
+  name: ""
+  # database.sslmode -- Set appropriately for your database driver
+  sslmode: ""
+  # database.additionalDSNOptions -- Set custom DSN connection options
+  additionalDSNOptions: ""
+  tls:
+    # database.tls.existingSecret -- Use an existing secret containing the client TLS keypair for the database connection
+    existingSecret: ""
+    # database.tls.existingCASecret -- Use an existing secret containing the CA certificate for the database connection
+    existingCASecret: ""
+    # database.tls.caSecretKey -- Set the key name containing the CA certificate in the existingCASecret
+    caSecretKey: tls.crt
+    # database.tls.ca -- A custom CA certificate when communicating with the database
+    ca: ""
+    # database.tls.key -- Set a TLS client key for the database connection
+    key: ""
+    # database.tls.cert -- Set a TLS client certificate for the database connection
+    cert: ""
+
+config:
+  # config.administrators -- Set to boostrap permissions to the console or recover from a misconfiguration.  Overrides permissions
+  # in the database.
+  administrators: ""
+  # config.customerId -- Override default customerId
+  customerId: ""
+  # config.databrokerServiceUrl -- Override the URL default to the Pomerium Cache service
+  # @default -- `https://pomerium-databroker.[release namespace].svc.cluster.local`
+  databrokerServiceUrl: ""
+  # config.sharedSecret -- **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter.
+  sharedSecret: ""
+  # config.signingKey -- **Required** Set the public key for verifying the Pomerium attestation JWT header
+  signingKey: ""
+  # config.databaseEncryptionKey -- **Required** encryption key for protecting sensitive data in the database
+  databaseEncryptionKey: ""
+  # -- Set URL for external prometheus server.  An embedded server is used if left unset.
+  prometheusUrl: ""
+  # -- **Required** console's external URL.  This should match the `from` in Pomerium Core's config.
+  audience: ""
+
+prometheus:
+  # -- Enable using an embedded prometheus service if no external URL is provided
+  enabled: true
+  persistence:
+    # -- Enable storage persistence for embedded prometheus
+    enabled: false
+    storageClassName: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+    finalizers:
+      - kubernetes.io/pvc-protection
+    existingClaim: ""

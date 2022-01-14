@@ -3,3 +3,4 @@ target-branch: master
 all: true
 chart-repos:
   - redis=https://charts.bitnami.com/bitnami
+validate-maintainers: false

@@ -19,9 +19,9 @@ helm install pomerium/pomerium
 - Create a GitHub Pull Request for your change, following the instructions in the pull request template.
 - Perform a Code Review with the project maintainers on the pull request.
 
-## Sign your work
+## Contributor License Agreement
 
-As with many other projects, Pomerium requires all commits to this repository be [DCO](https://developercertificate.org/)
+As with many other projects, Pomerium requires a signed CLA before merging your first pull request.
 
 ## Versioning
 
