@@ -41,12 +41,14 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  host: "" # Change this to match your external route.
+
+  # -- set this to your public hostname
+  host: "host.example"```
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
