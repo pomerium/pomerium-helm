@@ -3477,4 +3477,15 @@ entries:
     urls:
     - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-console-7.0.0/pomerium-console-7.0.0.tgz
     version: 7.0.0
-generated: "2022-01-20T18:54:05.683004787Z"
+  pomerium-verify:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-01-20T19:36:48.834044587Z"
+    description: A basic upstream service against which to test your Pomerium configuration.
+    digest: 9405f4b50a43e161b34601817f51e52cb4761f775abd998a490931e2e00e965a
+    name: pomerium-verify
+    type: application
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-verify-0.1.0/pomerium-verify-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-01-20T19:36:48.835388696Z"
