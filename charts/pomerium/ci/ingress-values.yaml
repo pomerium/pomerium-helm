@@ -1,0 +1,5 @@
+ingressController:
+  enabled: true
+proxy:
+  service:
+    type: NodePort

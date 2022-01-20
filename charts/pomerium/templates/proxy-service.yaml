@@ -30,14 +30,14 @@ spec:
   type: {{ coalesce .Values.proxy.service.type "ClusterIP" }}
   {{- end }}
   ports:
-    - port: {{ template "pomerium.service.externalPort" . }}
-      targetPort: {{ template "pomerium.httpTrafficPort.name" . }}
+    - port: {{ template "pomerium.proxy.trafficPort.number" . }}
+      targetPort: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
       protocol: TCP
-      name: {{ template "pomerium.httpTrafficPort.name" . }}
+      name: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
 {{- if and .Values.proxy.service.nodePort (eq .Values.proxy.service.type "NodePort" )}}
       nodePort: {{ .Values.proxy.service.nodePort }}
 {{- end }}
-{{- if and .Values.proxy.redirectServer (not .Values.config.insecure) }}
+{{- if and .Values.proxy.redirectServer (not (include "pomerium.proxy.insecure" .)) }}
     - name: http
       targetPort: 80
       protocol: TCP
