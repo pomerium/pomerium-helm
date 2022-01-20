@@ -1,0 +1,3 @@
+{{- if and (and .Values.ingressController.enabled (not .Values.ingressController.operatorMode)) .Values.config.insecureProxy -}}
+{{ fail "`ingressController.enabled` is not compatible with `config.insecureProxy`" }}
+{{- end -}}
