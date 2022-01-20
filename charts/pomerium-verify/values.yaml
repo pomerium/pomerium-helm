@@ -48,7 +48,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
 
   # -- set this to your public hostname
-  host: "host.example"```
+  host: "host.example"
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
