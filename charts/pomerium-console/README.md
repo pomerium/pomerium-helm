@@ -41,6 +41,7 @@ helm install pomerium-enterprise/pomerium-console \
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | config.administrators | string | `""` | Set to boostrap permissions to the console or recover from a misconfiguration.  Overrides permissions in the database. |
 | config.audience | string | `""` | **Required** console's external URL.  This should match the `from` in Pomerium Core's config. |
+| config.authenticateServiceUrl | string | `""` | **Required** for device identity enrollment.  If set, you do not need to set signingKey. |
 | config.customerId | string | `""` | Override default customerId |
 | config.databaseEncryptionKey | string | `""` | **Required** encryption key for protecting sensitive data in the database |
 | config.databrokerServiceUrl | string | `https://pomerium-databroker.[release namespace].svc.cluster.local` | Override the URL default to the Pomerium Databroker service |
