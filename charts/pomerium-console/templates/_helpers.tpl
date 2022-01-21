@@ -14,7 +14,7 @@ Expand the name of the chart.
 {{- required "config.sharedSecret must be set" .Values.config.sharedSecret }}
 {{- required "config.databaseEncryptionKey must be set" .Values.config.databaseEncryptionKey }}
 {{- required "config.audience must be set" .Values.config.audience }}
-{{ if not or .Values.config.signingKey .Values.config.authenticateServiceUrl }}
+{{ if not (or .Values.config.signingKey .Values.config.authenticateServiceUrl)}}
 {{ fail "config.signingKey or config.authenticateServiceUrl must be set" }}
 {{- end }}
 {{- end }}
