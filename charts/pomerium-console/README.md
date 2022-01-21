@@ -1,6 +1,6 @@
 # pomerium-console
 
-![Version: 7.0.2](https://img.shields.io/badge/Version-7.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.3](https://img.shields.io/badge/AppVersion-0.15.3-informational?style=flat-square)
+![Version: 7.1.0](https://img.shields.io/badge/Version-7.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.16.0](https://img.shields.io/badge/AppVersion-0.16.0-informational?style=flat-square)
 
 Pomerium Enterprise Console
 
@@ -26,7 +26,7 @@ helm install pomerium-enterprise/pomerium-console \
     --set database.name=pomerium-console \
     --set config.sharedSecret=ZGVhZGJlZWZkZWFkYmVlZmRlYWRiZWVmCg== \
     --set config.databaseEncryptionKey=hDiBsQ6MJFr2y9jhT6c2Uu3lHw9/IpULfBJyesjPWpE= \
-    --set config.signingKey=LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUtGcE1UV0JBOWpCZ2R0SWo5ajZYZ08vRDEvVENtUlM4a3gydjc2Z3V4dFdvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFUVROeU1VaGVFbmY1VFFidnhKdkNtR3VHbzduL1lFaWFvR0luQWNEWkkxdGxoek1ON05ONwp4b3ZWUkZlbEkzc29ZM04xbElwVEdObkpkQWQyWmZwWWJRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo= \
+    --set config.authenticateServiceUrl=https://authenticate.localhost.pomerium.io \
     --set config.audience=console.localhost.pomerium.io
 ```
 
@@ -35,7 +35,7 @@ helm install pomerium-enterprise/pomerium-console \
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Specify node `affinity` for the deployment |
-| autoscaling.enabled | bool | `false` |  |
+| autoscaling.enabled | bool | `false` | Enable horizontal pod autoscaler |
 | autoscaling.maxReplicas | int | `3` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
@@ -47,7 +47,7 @@ helm install pomerium-enterprise/pomerium-console \
 | config.databrokerServiceUrl | string | `https://pomerium-databroker.[release namespace].svc.cluster.local` | Override the URL default to the Pomerium Databroker service |
 | config.prometheusUrl | string | `""` | Set URL for external prometheus server.  An embedded server is used if left unset. |
 | config.sharedSecret | string | `""` | **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter. |
-| config.signingKey | string | `""` | **Required** Set the public key for verifying the Pomerium attestation JWT header |
+| config.signingKey | string | `""` | **Required** if `config.authenticateServiceUrl` is unset.  Set the public key for verifying the Pomerium attestation JWT header |
 | database.additionalDSNOptions | string | `""` | Set custom DSN connection options |
 | database.host | string | `""` | Set the database hostname |
 | database.name | string | `""` | Set the name of the database or schema |
@@ -70,11 +70,13 @@ helm install pomerium-enterprise/pomerium-console \
 | imagePullSecrets | list | `[]` | Reference a list secrets containing image pull credentials for the deployment |
 | ingress.annotations | object | `{}` | Set custom annoations on the Ingress resource |
 | ingress.enabled | bool | `false` | Enable an Ingress resource for the deployment.  This should be disabled unless your Pomerium core deployment is running outside the cluster. |
-| ingress.hosts | list | `[{"host":"chart-example.local","paths":[]}]` | Specify host and path matching for the Ingress resource.  Required if setting `ingress.enabled` to true |
+| ingress.hosts[0].host | string | `"chart-example.local"` |  |
+| ingress.hosts[0].paths | list | `[]` |  |
 | ingress.tls | list | `[]` | Set a list of Ingress TLS secrets |
 | nameOverride | string | `""` | Override the name of the chart |
 | nodeSelector | object | `{}` | Specify node `selector` parameters for the deployment |
 | persistence | object | `{"accessModes":["ReadWriteOnce"],"enabled":false,"finalizers":["kubernetes.io/pvc-protection"],"size":"1Gi"}` | FOR TESTING ONLY.  There is no migration path from embedded (sqlite) to an external RDBMS. |
+| persistence.enabled | bool | `false` | Enable a PVC for the embedded database engine |
 | podAnnotations | object | `{}` | Set annotations on all pods |
 | podSecurityContext | object | `{}` | Set security context on all pods |
 | prometheus.enabled | bool | `true` | Enable using an embedded prometheus service if no external URL is provided |
