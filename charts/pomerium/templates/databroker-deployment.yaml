@@ -83,6 +83,7 @@ spec:
 {{- if or .Values.redis.enabled .Values.databroker.storage.connectionString }}
           - secretRef:
               name: {{ include "pomerium.databroker.storage.secret" . }}
+{{- end }}
 {{- if .Values.extraEnvFrom }}
 {{        toYaml .Values.extraEnvFrom | indent 10 }}
 {{- end }}
