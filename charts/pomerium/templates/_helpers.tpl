@@ -727,3 +727,12 @@ Return the hostname of the authenticate service
 true
 {{- end -}}
 {{- end }}
+
+{{/* Render secret name for databroker storage secret */}}
+{{- define "pomerium.databroker.storage.secret" }}
+{{- if .Values.redis.enabled -}}
+{{ .Values.redis.auth.existingSecret }}
+{{- else -}}
+{{- printf "%s-storage" (include "pomerium.databroker.name" .) -}}
+{{- end -}}
+{{- end }}
