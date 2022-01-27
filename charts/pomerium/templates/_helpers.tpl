@@ -25,11 +25,6 @@
 {{- default (printf "%s-databroker" .Chart.Name) .Values.databroker.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*DEPRECATED Expand the name of the cache-service.*/}}
-{{- define "pomerium.cache.name" -}}
-{{- default (printf "%s-cache" .Chart.Name) .Values.cache.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{/*Expand the name of the ingressController .*/}}
 {{- define "pomerium.ingressController.name" -}}
 {{- default (printf "%s-ingress-controller" .Chart.Name) .Values.ingressController.nameOverride | trunc 63 | trimSuffix "-" -}}
@@ -96,20 +91,6 @@ If release name contains chart name it will be used as a full name.
 {{- printf "%s-databroker" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s-databroker" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/* DEPRECATED cache services fully qualified name. Truncated at 63 chars. */}}
-{{- define "pomerium.cache.fullname" -}}
-{{- if .Values.cache.fullnameOverride -}}
-{{- .Values.cache.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- printf "%s-cache" .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s-cache" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

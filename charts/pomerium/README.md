@@ -20,6 +20,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [28.0.0](#2800)
     - [27.0.0](#2700)
     - [26.0.0](#2600)
     - [25.0.1](#2501)
@@ -56,6 +57,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [28.0.0](#2800-1)
     - [27.0.0](#2700-1)
     - [25.0.0](#2500-1)
     - [23.0.0](#2300-1)
@@ -440,6 +442,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 28.0.0
+
+- A previous breaking change from 25.0.0 was fully completed.
+- The deprecated `cache` service has been completely removed.
+
 ### 27.0.0
 
 - Add better support for terminating TLS at the edge of a service mesh via `config.insecureProxy` and additional logic when `config.insecure` is set.
@@ -593,6 +600,15 @@ A full listing of Pomerium's configuration variables can be found on the [config
   - You must run pomerium v0.3.0+ to support this feature correctly
 
 ## Upgrading
+
+### 28.0.0
+
+- Users should ensure they no longer depend on the `pomerium-cache` service name for telemetry or other operations.  Migrate any configuration referencing the `pomerium-cache` service to consume the `pomerium-databroker` service.  `pomerium-cache` has been deprecated since (#2000-1)
+- Ensure the upgrade steps for (#2500-1) were fully completed.  This chart version includes breaking changes that were unintentionally omitted from 25.0.0.
+
+  Specifically:
+
+  Users of `config.existingSecret` should move `cookie_secret` and `shared_secret` to be explicitly set in your helm values OR put into a secondary secret as `COOKIE_SECRET` and `SHARED_SECRET` and referenced by `config.existingSharedSecret`.  As a third option, you may remove the values from your current secret and let new ones be generated and persisted for you.
 
 ### 27.0.0
 

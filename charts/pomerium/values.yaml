@@ -114,10 +114,6 @@ authorize:
     annotations: {}
     nameOverride: ""
 
-cache:
-  fullnameOverride: ""
-  nameOverride: ""
-
 databroker:
   fullnameOverride: ""
   nameOverride: ""
