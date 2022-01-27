@@ -80,9 +80,9 @@ spec:
         envFrom:
           - secretRef:
               name: {{ include "pomerium.sharedSecretName" . }}
-{{- if .Values.redis.enabled }}
+{{- if or .Values.redis.enabled .Values.databroker.storage.connectionString }}
           - secretRef:
-              name: {{ .Values.redis.auth.existingSecret }}
+              name: {{ include "pomerium.databroker.storage.secret" . }}
 {{- end }}
 {{- if .Values.extraEnvFrom }}
 {{        toYaml .Values.extraEnvFrom | indent 10 }}
