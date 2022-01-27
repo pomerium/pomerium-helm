@@ -487,8 +487,6 @@ forward_auth_url: {{ printf "%s://%s" ( include "pomerium.httpTrafficPort.name" 
 {{- else if .Values.forwardAuth.enabled }}
 forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" . ) }}
 {{- end }}
-cookie_secret: {{ default (randAscii 32 | b64enc) .Values.config.cookieSecret }}
-shared_secret: {{ default (randAscii 32 | b64enc) .Values.config.sharedSecret }}
 idp_client_id: {{ .Values.authenticate.idp.clientID }}
 idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
 {{- if or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML }}
