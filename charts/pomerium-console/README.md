@@ -1,6 +1,6 @@
 # pomerium-console
 
-![Version: 7.0.0](https://img.shields.io/badge/Version-7.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.0](https://img.shields.io/badge/AppVersion-0.15.0-informational?style=flat-square)
+![Version: 7.0.2](https://img.shields.io/badge/Version-7.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.15.3](https://img.shields.io/badge/AppVersion-0.15.3-informational?style=flat-square)
 
 Pomerium Enterprise Console
 
@@ -43,7 +43,7 @@ helm install pomerium-enterprise/pomerium-console \
 | config.audience | string | `""` | **Required** console's external URL.  This should match the `from` in Pomerium Core's config. |
 | config.customerId | string | `""` | Override default customerId |
 | config.databaseEncryptionKey | string | `""` | **Required** encryption key for protecting sensitive data in the database |
-| config.databrokerServiceUrl | string | `https://pomerium-databroker.[release namespace].svc.cluster.local` | Override the URL default to the Pomerium Cache service |
+| config.databrokerServiceUrl | string | `https://pomerium-databroker.[release namespace].svc.cluster.local` | Override the URL default to the Pomerium Databroker service |
 | config.prometheusUrl | string | `""` | Set URL for external prometheus server.  An embedded server is used if left unset. |
 | config.sharedSecret | string | `""` | **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter. |
 | config.signingKey | string | `""` | **Required** Set the public key for verifying the Pomerium attestation JWT header |

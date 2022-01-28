@@ -177,7 +177,7 @@ config:
   administrators: ""
   # config.customerId -- Override default customerId
   customerId: ""
-  # config.databrokerServiceUrl -- Override the URL default to the Pomerium Cache service
+  # config.databrokerServiceUrl -- Override the URL default to the Pomerium Databroker service
   # @default -- `https://pomerium-databroker.[release namespace].svc.cluster.local`
   databrokerServiceUrl: ""
   # config.sharedSecret -- **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter.
