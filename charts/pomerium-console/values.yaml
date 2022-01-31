@@ -2,45 +2,45 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# replicaCount -- Sets the number of pod replicas deployed
+# -- Sets the number of pod replicas deployed
 replicaCount: 1
 
 image:
-  # image.pullUsername -- Set to automatically generate an image pull secret
+  # -- Set to automatically generate an image pull secret
   pullUsername: ""
-  # image.pullPassword -- Set to automatically generate an image pull secret
+  # -- Set to automatically generate an image pull secret
   pullPassword: ""
-  # image.repository -- The image repository source
+  # -- The image repository source
   repository: docker.cloudsmith.io/pomerium/enterprise/pomerium-console
-  # image.pullPolicy -- The iamge pull policy
+  # -- The iamge pull policy
   pullPolicy: IfNotPresent
-  # image.tag -- Override the image tag from the chart appVersion
+  # -- Override the image tag from the chart appVersion
   tag: ""
 
 serviceAccount:
-  # serviceAccount.create -- Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
   # serviceAccount.annotations - Annotations to add to the service account
   annotations: {}
-  # serviceAccount.name -- The name of the service account to use.
+  # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# imagePullSecrets -- Reference a list secrets containing image pull credentials for the deployment
+# -- Reference a list secrets containing image pull credentials for the deployment
 imagePullSecrets: []
-# nameOverride -- Override the name of the chart
+# -- Override the name of the chart
 nameOverride: ""
-# fullnameOverride -- Override full release name
+# -- Override full release name
 fullnameOverride: ""
 
-# podAnnotations -- Set annotations on all pods
+# -- Set annotations on all pods
 podAnnotations: {}
-# podSecurityContext -- Set security context on all pods
+# -- Set security context on all pods
 podSecurityContext:
   {}
   # fsGroup: 2000
 
-# securityContext -- Set security context on all containers
+# -- Set security context on all containers
 securityContext:
   {}
   # capabilities:
@@ -51,32 +51,29 @@ securityContext:
   # runAsUser: 1000
 
 service:
-  # service.type -- Set service type.  This should be ClusterIP unless your Pomerium Core deployment
+  # -- Set service type.  This should be ClusterIP unless your Pomerium Core deployment
   # is running on a separate cluster.
   type: ClusterIP
 
 ingress:
-  # ingress.enabled -- Enable an Ingress resource for the deployment.  This should be disabled unless your
-  # Pomerium core deployment is running outside the cluster.
+  # -- Enable an Ingress resource for the deployment.  This should be disabled unless your Pomerium core deployment is running outside the cluster.
   enabled: false
-  # ingress.annotations -- Set custom annoations on the Ingress resource
+  # -- Set custom annoations on the Ingress resource
   annotations:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  # ingress.hosts -- Specify host and path matching for the Ingress resource.  Required if setting
-  # `ingress.enabled` to true
+  # -- Specify host and path matching for the Ingress resource.  Required if setting `ingress.enabled` to true
   hosts:
     - host: chart-example.local
       paths: []
-  # ingress.tls -- Set a list of Ingress TLS secrets
+  # -- Set a list of Ingress TLS secrets
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-# resources -- Specify the kubernetes resources for the pods.  Minimal `requests` have been set and
-# should be adjusted for your environment.
+# -- Specify the kubernetes resources for the pods.  Minimal `requests` have been set and should be adjusted for your environment.
 resources:
   requests:
     cpu: 500m
@@ -93,45 +90,44 @@ resources:
   #   memory: 128Mi
 
 autoscaling:
-  # autoscaling.enable -- Enable horizontal pod autoscaler
+  # -- Enable horizontal pod autoscaler
   enabled: false
   minReplicas: 1
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-# nodeSelector -- Specify node `selector` parameters for the deployment
+# -- Specify node `selector` parameters for the deployment
 nodeSelector: {}
-# tolerations -- Specify node `tolerations` for the deployment
+# -- Specify node `tolerations` for the deployment
 tolerations: []
-# affinity -- Specify node `affinity` for the deployment
+# -- Specify node `affinity` for the deployment
 affinity: {}
 
 tls:
-  # tls.enabled -- Enable TLS server support (strongly recommended)
+  # -- Enable TLS server support (strongly recommended)
   enabled: true
-  # tls.generate -- Automatically generate a CA and certificates for TLS termination when chart is initially installed.
+  # -- Automatically generate a CA and certificates for TLS termination when chart is initially installed.
   generate: true
-  # tls.forceGenerate -- Regenerate certificates.  Enable if you need to recreate your certificates after initial chart install, or
+  # -- Regenerate certificates.  Enable if you need to recreate your certificates after initial chart install, or
   # want to enable `tls.generate` after the chart has already been installed.
   forceGenerate: false
-  # tls.existingSecret -- Use an existing secret for TLS certificates
+  # -- Use an existing secret for TLS certificates
   existingSecret: ""
-  # tls.existingCASecret -- Use an existing secret for a CA certificate when communicating with Pomerium Core
+  # -- Use an existing secret for a CA certificate when communicating with Pomerium Core
   existingCASecret: ""
-  # tls.caSecretKey -- Set the key name containing the CA certificate in the existingCASecret
+  # -- Set the key name containing the CA certificate in the existingCASecret
   caSecretKey: tls.crt
-  # tls.ca -- A custom CA certificate when communicating with Pomerium Core
+  # -- A custom CA certificate when communicating with Pomerium Core
   ca: ""
-  # tls.key -- TLS server key
+  # -- TLS server key
   key: ""
-  # tls.cert -- TLS server cert
+  # -- TLS server cert
   cert: ""
 
-# persistence -- FOR TESTING ONLY.  There is no migration path
-# from embedded (sqlite) to an external RDBMS.
+# -- FOR TESTING ONLY.  There is no migration path from embedded (sqlite) to an external RDBMS.
 persistence:
-  # persistence.enable -- Enable a PVC for the embedded database engine
+  # -- Enable a PVC for the embedded database engine
   enabled: false
   # storageClassName: default
   accessModes:
@@ -143,54 +139,55 @@ persistence:
   # existingClaim:
 
 database:
-  # database.type -- **Required** Set database driver type.  This can be `pg`, `my` or sqlite for postgres, mysql or sqlite respectively
+  # -- **Required** Set database driver type.  This can be `pg`, `my` or sqlite for postgres, mysql or sqlite respectively
   type: ""
-  # database.username -- Set the database username
+  # -- Set the database username
   username: ""
-  # database.password -- Set the database password
+  # -- Set the database password
   password: ""
-  # database.host -- Set the database hostname
+  # -- Set the database hostname
   host: ""
-  # database.name -- Set the name of the database or schema
+  # -- Set the name of the database or schema
   name: ""
-  # database.sslmode -- Set appropriately for your database driver
+  # -- Set appropriately for your database driver
   sslmode: ""
-  # database.additionalDSNOptions -- Set custom DSN connection options
+  # -- Set custom DSN connection options
   additionalDSNOptions: ""
   tls:
-    # database.tls.existingSecret -- Use an existing secret containing the client TLS keypair for the database connection
+    # -- Use an existing secret containing the client TLS keypair for the database connection
     existingSecret: ""
-    # database.tls.existingCASecret -- Use an existing secret containing the CA certificate for the database connection
+    # -- Use an existing secret containing the CA certificate for the database connection
     existingCASecret: ""
-    # database.tls.caSecretKey -- Set the key name containing the CA certificate in the existingCASecret
+    # -- Set the key name containing the CA certificate in the existingCASecret
     caSecretKey: tls.crt
-    # database.tls.ca -- A custom CA certificate when communicating with the database
+    # -- A custom CA certificate when communicating with the database
     ca: ""
-    # database.tls.key -- Set a TLS client key for the database connection
+    # -- Set a TLS client key for the database connection
     key: ""
-    # database.tls.cert -- Set a TLS client certificate for the database connection
+    # -- Set a TLS client certificate for the database connection
     cert: ""
 
 config:
-  # config.administrators -- Set to boostrap permissions to the console or recover from a misconfiguration.  Overrides permissions
+  # -- Set to boostrap permissions to the console or recover from a misconfiguration.  Overrides permissions
   # in the database.
   administrators: ""
-  # config.customerId -- Override default customerId
+  # -- Override default customerId
   customerId: ""
-  # config.databrokerServiceUrl -- Override the URL default to the Pomerium Databroker service
+  # -- Override the URL default to the Pomerium Cache service
   # @default -- `https://pomerium-databroker.[release namespace].svc.cluster.local`
   databrokerServiceUrl: ""
-  # config.sharedSecret -- **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter.
+  # -- **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter.
   sharedSecret: ""
-  # config.signingKey -- **Required** Set the public key for verifying the Pomerium attestation JWT header
+  # -- **Required** if `config.authenticateServiceUrl` is unset.  Set the public key for verifying the Pomerium attestation JWT header
   signingKey: ""
-  # config.databaseEncryptionKey -- **Required** encryption key for protecting sensitive data in the database
+  # -- **Required** encryption key for protecting sensitive data in the database
   databaseEncryptionKey: ""
   # -- Set URL for external prometheus server.  An embedded server is used if left unset.
   prometheusUrl: ""
   # -- **Required** console's external URL.  This should match the `from` in Pomerium Core's config.
   audience: ""
-
+  # -- **Required** for device identity enrollment.  If set, you do not need to set signingKey.
+  authenticateServiceUrl: ""
 prometheus:
   # -- Enable using an embedded prometheus service if no external URL is provided
   enabled: true

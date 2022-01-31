@@ -1,0 +1,2 @@
+config:
+  authenticateServiceUrl: https://console.localhost.pomerium.io
