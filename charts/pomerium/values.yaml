@@ -201,7 +201,7 @@ ingressController:
   nameOverride: ""
   image:
     repository: "pomerium/ingress-controller"
-    tag: "v0.16.0"
+    tag: "v0.16.1"
   deployment:
     annotations: {}
     extraEnv: {}
