@@ -31,6 +31,9 @@ spec:
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
+{{- if .Values.databroker.deployment.podAnnotations }}
+{{ toYaml .Values.databroker.deployment.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app.kubernetes.io/name: {{ template "pomerium.databroker.name" . }}
         helm.sh/chart: {{ template "pomerium.chart" . }}
@@ -38,9 +41,6 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
-{{- end }}
-{{- if .Values.databroker.deployment.podAnnotations }}
-{{ toYaml .Values.databroker.deployment.podAnnotations | indent 8 }}
 {{- end }}
     spec:
 {{- if .Values.priorityClassName }}
