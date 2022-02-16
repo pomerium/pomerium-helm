@@ -20,6 +20,8 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [30.0.0](#3000)
+    - [29.0.0](#2900)
     - [28.0.0](#2800)
     - [27.0.0](#2700)
     - [26.0.0](#2600)
@@ -57,6 +59,8 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [30.0.0](#3000-1)
+    - [29.0.0](#2900-1)
     - [28.0.0](#2800-1)
     - [27.0.0](#2700-1)
     - [25.0.0](#2500-1)
@@ -442,6 +446,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 30.0.0
+- Revert breaking config changes in 29.0.0
+### 29.0.0
+- Allow specifying an existing secret for redis authentication
+- Update redis subchart from v14 to v16
 ### 28.0.0
 
 - A previous breaking change from 25.0.0 was fully completed.
@@ -601,6 +610,13 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Upgrading
 
+### 30.0.0
+
+- Rename `redis.auth.secret` to `redis.auth.existingSecret` in your values file
+### 29.0.0
+
+- Rename `redis.auth.existingSecret` to `redis.auth.secret` in your values file
+- Follow the [upstream guide](https://github.com/bitnami/charts/tree/master/bitnami/redis#to-1600) for redis
 ### 28.0.0
 
 - Users should ensure they no longer depend on the `pomerium-cache` service name for telemetry or other operations.  Migrate any configuration referencing the `pomerium-cache` service to consume the `pomerium-databroker` service.  `pomerium-cache` has been deprecated since (#2000-1)
