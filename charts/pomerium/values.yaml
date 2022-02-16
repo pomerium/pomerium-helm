@@ -330,8 +330,7 @@ rbac:
 redis:
   enabled: false
   auth:
-    secret: pomerium-redis-password
-    existingSecret: ""
+    existingSecret: pomerium-redis-password
     existingSecretPasswordKey: password
   generateTLS: true
   forceGenerateTLS: false

@@ -20,7 +20,6 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
-    - [29.0.0](#2900)
     - [28.0.0](#2800)
     - [27.0.0](#2700)
     - [26.0.0](#2600)
@@ -58,7 +57,6 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
-    - [29.0.0](#2900-1)
     - [28.0.0](#2800-1)
     - [27.0.0](#2700-1)
     - [25.0.0](#2500-1)
@@ -417,9 +415,8 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `operator.serviceAccount.nameOverride`                       | Override the name of the operator pod service account                                                                                                                                                                                                                                                                                                                 | `pomerium-operator`                                                         |
 | `redis.cluster.slaveCount`                                   | Number of slave replicas to run. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                                                                                                       | `1`                                                                         |
 | `redis.enabled`                                              | Enable a redis master-slave subchart deployment based on https://github.com/bitnami/charts/tree/master/bitnami/redis                                                                                                                                                                                                                                                  | `false`                                                                     |
-| `redis.auth.existingSecret`                                  | Specify an existing secret containing the authentication password for redis.  This is shared between Pomerium and redis.  [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                              | ``                                                                          |
+| `redis.auth.existingSecret`                                  | Secret used to store authentication password for redis.  This is shared between Pomerium and redis.  [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                                   | `pomerium-redis-password`                                                   |
 | `redis.auth.existingSecretPasswordKey`                       | Name of key containing password in `redis.existingSecret`. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                                                                             | `password`                                                                  |
-| `redis.auth.secret`                                          | Default secret to store authentication password for redis.  This is shared between Pomerium and redis.  [More](https://github.com/bitnami/charts/tree/master/bitnami/                                                                                                                                                                                                 | `pomerium-redis-password`                                                   |
 | `redis.forceGenerateTLS`                                     | Force re-generation of TLS certificates used to communicate with redis                                                                                                                                                                                                                                                                                                | `false`                                                                     |
 | `redis.generateTLS`                                          | Automatically generate a new CA and certificate pair to communicate with redis                                                                                                                                                                                                                                                                                        | `true`                                                                      |
 | `redis.tls.certCAFilename`                                   | Name of secret key containing CA certificate for verify TLS certificates. [More](https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters)                                                                                                                                                                                                              | `ca.crt`                                                                    |
@@ -444,10 +441,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 
 ## Changelog
-
-### 29.0.0
-- Allow specifying an existing secret for redis authentication
-- Update redis subchart from v14 to v16
 
 ### 28.0.0
 
@@ -608,10 +601,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Upgrading
 
-### 29.0.0
-
-- Rename `redis.auth.existingSecret` to `redis.auth.secret` in your values file
-- Follow the [upstream guide](https://github.com/bitnami/charts/tree/master/bitnami/redis#to-1600) for redis
 ### 28.0.0
 
 - Users should ensure they no longer depend on the `pomerium-cache` service name for telemetry or other operations.  Migrate any configuration referencing the `pomerium-cache` service to consume the `pomerium-databroker` service.  `pomerium-cache` has been deprecated since (#2000-1)

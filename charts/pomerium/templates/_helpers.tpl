@@ -710,7 +710,7 @@ true
 {{/* Render secret name for databroker storage secret */}}
 {{- define "pomerium.databroker.storage.secret" }}
 {{- if .Values.redis.enabled -}}
-{{ default .Values.redis.auth.secret .Values.redis.auth.existingSecret }}
+{{ .Values.redis.auth.existingSecret }}
 {{- else -}}
 {{- printf "%s-storage" (include "pomerium.databroker.name" .) -}}
 {{- end -}}

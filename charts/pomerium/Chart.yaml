@@ -23,7 +23,7 @@ sources:
 engine: gotpl
 dependencies:
   - name: redis
-    version: '~16'
+    version: '~14'
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
 
