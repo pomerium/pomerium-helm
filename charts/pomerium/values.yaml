@@ -332,6 +332,7 @@ redis:
   auth:
     existingSecret: pomerium-redis-password
     existingSecretPasswordKey: password
+    createSecret: true
   generateTLS: true
   forceGenerateTLS: false
   cluster:
