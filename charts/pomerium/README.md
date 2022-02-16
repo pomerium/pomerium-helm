@@ -450,9 +450,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ### 30.0.0
 - Revert breaking config changes in 29.0.0
 - Add `redis.auth.createSecret` flag
+
 ### 29.0.0
 - Allow specifying an existing secret for redis authentication
 - Update redis subchart from v14 to v16
+
 ### 28.0.0
 
 - A previous breaking change from 25.0.0 was fully completed.
