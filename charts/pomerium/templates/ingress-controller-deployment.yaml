@@ -34,6 +34,9 @@ spec:
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
+{{- if .Values.ingressController.deployment.podAnnotations }}
+{{ toYaml .Values.ingressController.deployment.podAnnotations | indent 8 }}
+{{- end }}
       labels:
         app.kubernetes.io/name: {{ template "pomerium.ingressController.name" . }}
         helm.sh/chart: {{ template "pomerium.chart" . }}
