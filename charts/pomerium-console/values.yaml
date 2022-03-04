@@ -188,6 +188,8 @@ config:
   audience: ""
   # -- **Required** for device identity enrollment.  If set, you do not need to set signingKey.
   authenticateServiceUrl: ""
+  # -- **Required** license key for your Pomerium Enterprise install.
+  licenseKey: ""
 prometheus:
   # -- Enable using an embedded prometheus service if no external URL is provided
   enabled: true
