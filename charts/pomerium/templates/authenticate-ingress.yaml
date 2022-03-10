@@ -9,9 +9,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "pomerium.chart" . }}
   annotations:
-    ingress.pomerium.io/preserve_host_header: "true"
     ingress.pomerium.io/allow_public_unauthenticated_access: "true"
-    ingress.pomerium.io/tls_server_name: {{ include "pomerium.authenticate.hostname" . }}
 {{- if not .Values.config.insecure }}
     ingress.pomerium.io/secure_upstream: "true"
 {{- end }}

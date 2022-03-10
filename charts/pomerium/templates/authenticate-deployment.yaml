@@ -72,6 +72,8 @@ spec:
             secretKeyRef:
               name: {{ template "pomerium.signingKeySecret.name" . }}
               key: signing-key
+        - name: AUTHENTICATE_INTERNAL_SERVICE_URL
+          value: {{ (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authenticate.fullname" .) .Release.Namespace ) }}
 {{- include "pomerium.metrics.envVars" . | indent 8}}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
