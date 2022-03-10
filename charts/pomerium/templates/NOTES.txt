@@ -14,6 +14,7 @@ This deployment will be incomplete until you configure a valid identity provider
 
 Currently supported providers:
 
+    - Auth0
     - Azure Active Directory
     - AWS Cognito
     - GitHub
@@ -21,6 +22,7 @@ Currently supported providers:
     - Google
     - Okta
     - OneLogin
+    - Ping
 
 See the values.yaml file to see what values are required for each provider.
 
