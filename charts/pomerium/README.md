@@ -20,6 +20,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [31.0.0](#3100)
     - [30.0.0](#3000)
     - [29.0.0](#2900)
     - [28.0.0](#2800)
@@ -59,6 +60,7 @@
     - [3.0.0](#300)
     - [2.0.0](#200)
   - [Upgrading](#upgrading)
+    - [31.0.0](#3100-1)
     - [30.0.0](#3000-1)
     - [29.0.0](#2900-1)
     - [28.0.0](#2800-1)
@@ -447,6 +449,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 31.0.0
+- Update to v0.17 of Pomerium
+- Require `authenticate.ingress.tls.secretName` if `config.generateTLS` is not enabled
 ### 30.0.0
 - Revert breaking config changes in 29.0.0
 - Add `redis.auth.createSecret` flag
@@ -614,6 +619,9 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Upgrading
 
+### 31.0.0
+- See [v0.17 upgrade guide](https://www.pomerium.com/docs/upgrading.html#since-0-16-0)
+- If you have set `config.generateTLS=false` and are using the Ingress Controller, be sure you have provied a proper external certificate via `authenticate.ingress.tls.secretName`
 ### 30.0.0
 
 - Rename `redis.auth.secret` to `redis.auth.existingSecret` in your values file

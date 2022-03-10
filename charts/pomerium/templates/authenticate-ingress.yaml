@@ -20,12 +20,10 @@ metadata:
 {{- end }}
 spec:
   ingressClassName: {{ .Values.ingressController.ingressClassResource.name }}
-{{- if .Values.authenticate.ingress.tls.secretName }}
   tls:
-    - secretName: {{ .Values.authenticate.ingress.tls.secretName }}
+    - secretName: {{ default (include "pomerium.authenticate.tlsSecret.name" .) .Values.authenticate.ingress.tls.secretName }}
       hosts:
         - {{ include "pomerium.authenticate.hostname" . }}
-{{- end }}
   rules:
     - host: {{ template "pomerium.authenticate.hostname" . }}
       http:
