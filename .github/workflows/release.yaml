@@ -45,7 +45,7 @@ jobs:
 
       - name: Setup chart-testing
         id: lint
-        uses: helm/chart-testing-action@v2.2.0
+        uses: helm/chart-testing-action@v2.2.1
 
       - name: Chart linting
         run: |
