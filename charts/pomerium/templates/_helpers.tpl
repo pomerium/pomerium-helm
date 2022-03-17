@@ -492,9 +492,7 @@ routes:
 {{- if and .Values.authenticate.proxied (not .Values.ingressController.enabled) }}
   - from: https://{{ include "pomerium.authenticate.hostname" . }}
     to: {{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authenticate.fullname" .) .Release.Namespace }}
-    preserve_host_header: true
     allow_public_unauthenticated_access: true
-    tls_server_name: {{ include "pomerium.authenticate.hostname" . }}
 {{- end }}
 {{- end }}
 {{- end -}}
