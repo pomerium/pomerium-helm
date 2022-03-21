@@ -3939,6 +3939,21 @@ entries:
     version: 4.0.0
   pomerium-console:
   - apiVersion: v2
+    appVersion: 0.17.0
+    created: "2022-03-21T12:39:03.959578254Z"
+    description: Pomerium Enterprise Console
+    digest: 15b8a3e48f2cf2040a5dd7dafdd2c3e7c3a41ab8dc0e92b1d6b2a28421f81cc0
+    home: https://www.pomerium.com
+    icon: https://www.pomerium.com/img/icon.svg
+    maintainers:
+    - name: Pomerium Developers
+      url: https://www.pomerium.com
+    name: pomerium-console
+    type: application
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-console-8.0.0/pomerium-console-8.0.0.tgz
+    version: 8.0.0
+  - apiVersion: v2
     appVersion: 0.16.0
     created: "2022-01-31T16:17:50.422477084Z"
     description: Pomerium Enterprise Console
@@ -4008,4 +4023,4 @@ entries:
     urls:
     - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-verify-0.1.0/pomerium-verify-0.1.0.tgz
     version: 0.1.0
-generated: "2022-03-17T13:24:28.899174335Z"
+generated: "2022-03-21T12:39:03.960647096Z"
