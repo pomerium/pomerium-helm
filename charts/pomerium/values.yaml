@@ -197,11 +197,12 @@ ingressController:
     name: pomerium
     controllerName: pomerium.io/ingress-controller
     parameters: {}
+    defaultCertSecret: ""
   fullnameOverride: ""
   nameOverride: ""
   image:
     repository: "pomerium/ingress-controller"
-    tag: "v0.16.1"
+    tag: "v0.17.0"
   deployment:
     annotations: {}
     extraEnv: {}
@@ -303,7 +304,7 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.16.4"
+  tag: "v0.17.0"
   pullPolicy: "IfNotPresent"
 
 metrics:

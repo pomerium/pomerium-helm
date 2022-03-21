@@ -9,9 +9,12 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: ingressController
-{{- if .Values.ingressController.ingressClassResource.default }}
   annotations:
+{{- if .Values.ingressController.ingressClassResource.default }}
     ingressclass.kubernetes.io/is-default-class: "true"
+{{- end }}
+{{- with .Values.ingressController.ingressClassResource.defaultCertSecret }}
+    ingress.pomerium.io/default-cert-secret: {{ . }}
 {{- end }}
 spec:
   controller: {{ .Values.ingressController.ingressClassResource.controllerName }}
