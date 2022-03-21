@@ -28,7 +28,8 @@ helm install pomerium-enterprise/pomerium-console \
     --set config.sharedSecret=ZGVhZGJlZWZkZWFkYmVlZmRlYWRiZWVmCg== \
     --set config.databaseEncryptionKey=hDiBsQ6MJFr2y9jhT6c2Uu3lHw9/IpULfBJyesjPWpE= \
     --set config.authenticateServiceUrl=https://authenticate.localhost.pomerium.io \
-    --set config.audience=console.localhost.pomerium.io
+    --set config.audience=console.localhost.pomerium.io \
+    --set config.licenseKey=XXXXXXXXXXXXXXXXX
 ```
 
 {{ template "chart.valuesSection" . }}

@@ -1,6 +1,6 @@
 # pomerium-console
 
-![Version: 7.1.0](https://img.shields.io/badge/Version-7.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.16.0](https://img.shields.io/badge/AppVersion-0.16.0-informational?style=flat-square)
+![Version: 8.0.0](https://img.shields.io/badge/Version-8.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.17.0](https://img.shields.io/badge/AppVersion-0.17.0-informational?style=flat-square)
 
 Pomerium Enterprise Console
 
@@ -27,7 +27,8 @@ helm install pomerium-enterprise/pomerium-console \
     --set config.sharedSecret=ZGVhZGJlZWZkZWFkYmVlZmRlYWRiZWVmCg== \
     --set config.databaseEncryptionKey=hDiBsQ6MJFr2y9jhT6c2Uu3lHw9/IpULfBJyesjPWpE= \
     --set config.authenticateServiceUrl=https://authenticate.localhost.pomerium.io \
-    --set config.audience=console.localhost.pomerium.io
+    --set config.audience=console.localhost.pomerium.io \
+    --set config.licenseKey=XXXXXXXXXXXXXXXXX
 ```
 
 ## Values
@@ -44,7 +45,8 @@ helm install pomerium-enterprise/pomerium-console \
 | config.authenticateServiceUrl | string | `""` | **Required** for device identity enrollment.  If set, you do not need to set signingKey. |
 | config.customerId | string | `""` | Override default customerId |
 | config.databaseEncryptionKey | string | `""` | **Required** encryption key for protecting sensitive data in the database |
-| config.databrokerServiceUrl | string | `https://pomerium-databroker.[release namespace].svc.cluster.local` | Override the URL default to the Pomerium Databroker service |
+| config.databrokerServiceUrl | string | `https://pomerium-databroker.[release namespace].svc.cluster.local` | Override the URL default to the Pomerium Cache service |
+| config.licenseKey | string | `""` | **Required** license key for your Pomerium Enterprise install. |
 | config.prometheusUrl | string | `""` | Set URL for external prometheus server.  An embedded server is used if left unset. |
 | config.sharedSecret | string | `""` | **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter. |
 | config.signingKey | string | `""` | **Required** if `config.authenticateServiceUrl` is unset.  Set the public key for verifying the Pomerium attestation JWT header |
