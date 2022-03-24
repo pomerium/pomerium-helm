@@ -4,3 +4,6 @@
 {{- if and .Values.ingressController.enabled (not (or .Values.config.generateTLS .Values.authenticate.ingress.tls.secretName )) -}}
 {{ fail "A TLS certificate must be available for Authenticate when using the ingress controller.  Please set `config.generateTLS` or `authenticate.ingress.tls.secretName"}}
 {{- end -}}
+{{- if and (and .Values.ingressController.enabled (not .Values.ingressController.operatorMode)) .Values.ingress -}}
+{{ fail "`ingressController.enabled` is not compatible with `ingress.enabled` unless legacy `ingressController.operatorMode`" }}
+{{- end -}}
