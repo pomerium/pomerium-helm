@@ -1,4 +1,4 @@
-{{- if .Values.proxy.autoscaling.enabled }}
+{{- if and .Values.proxy.enabled .Values.proxy.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:

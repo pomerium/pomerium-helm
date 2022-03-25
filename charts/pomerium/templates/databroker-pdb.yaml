@@ -1,4 +1,4 @@
-{{- if .Values.databroker.pdb.enabled -}}
+{{- if and .Values.databroker.enabled .Values.databroker.pdb.enabled -}}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:

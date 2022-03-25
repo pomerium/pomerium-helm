@@ -1,0 +1,14 @@
+allInOne:
+  enabled: true
+authenticate:
+  enabled: false
+authorize:
+  enabled: false
+databroker:
+  enabled: false
+proxy:
+  enabled: false
+ingressController:
+  enabled: true
+ingress:
+  enabled: false

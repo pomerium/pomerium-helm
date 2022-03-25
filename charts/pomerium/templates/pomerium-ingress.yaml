@@ -1,8 +1,8 @@
-{{- if and .Values.authenticate.enabled .Values.ingressController.enabled (not .Values.ingressController.config.operatorMode) -}}
+{{- if and .Values.allInOne.enabled .Values.ingressController.enabled (not .Values.ingressController.config.operatorMode) -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "pomerium.authenticate.fullname" . }}
+  name: {{ include "pomerium.allInOne.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "pomerium.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
@@ -13,22 +13,22 @@ metadata:
 {{- if not .Values.config.insecure }}
     ingress.pomerium.io/secure_upstream: "true"
 {{- end }}
-{{- with .Values.authenticate.ingress.annotations }}
+{{- with .Values.allInOne.ingress.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
   ingressClassName: {{ .Values.ingressController.ingressClassResource.name }}
   tls:
-    - secretName: {{ default (include "pomerium.authenticate.tlsSecret.name" .) .Values.authenticate.ingress.tls.secretName }}
+    - secretName: {{ default (include "pomerium.allInOne.tlsSecret.name" .) .Values.allInOne.ingress.tls.secretName }}
       hosts:
-        - {{ include "pomerium.authenticate.hostname" . }}
+        - {{ include "pomerium.allInOne.hostname" . }}
   rules:
-    - host: {{ template "pomerium.authenticate.hostname" . }}
+    - host: {{ template "pomerium.allInOne.hostname" . }}
       http:
         paths:
           - backend:
               service:
-                name: {{ template "pomerium.authenticate.fullname" $ }}
+                name: {{ template "pomerium.allInOne.fullname" $ }}
                 port:
                   name: {{ template "pomerium.httpTrafficPort.name" $ }}
             pathType: Prefix

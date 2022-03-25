@@ -23,7 +23,6 @@ config:
   generateSigningKey: true
   forceGenerateSigningKey: false
   extraOpts: {}
-  existingPolicy: ""
   insecure: false
   insecureProxy: false
   administrators: ""
@@ -33,7 +32,59 @@ config:
   extraSecretLabels: {}
   extraSharedSecretLabels: {}
 
+allInOne:
+  enabled: false
+  name: ""
+  fullnameOverride: ""
+  nameOverride: ""
+  existingTLSSecret: ""
+  existingExternalTLSSecret: ""
+  proxied: true
+  idp:
+    provider: google
+    clientID: "REPLACE_ME"
+    clientSecret: "REPLACE_ME"
+    url: ""
+    scopes: ""
+    serviceAccount: ""
+  tls:
+    cert: ""
+    key: ""
+    defaultSANList: []
+    defaultIPList: []
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+  pdb:
+    enabled: false
+    minAvailable: 1
+  service:
+    annotations: {}
+    nodePort: ""
+    type: ClusterIP
+  deployment:
+    annotations: {}
+    extraEnv: {}
+    podAnnotations: {}
+  serviceAccount:
+    enabled: false
+    annotations: {}
+    nameOverride: ""
+  ingress:
+    # cert-manager example
+    # annotations:
+    #   cert-manager.io/cluster-issuer: letsencrypt-prod
+    annotations: {}
+    tls:
+      secretName: ""
+      # secretName: authenticate-ingress-tls
+
 authenticate:
+  enabled: true
   name: ""
   fullnameOverride: ""
   nameOverride: ""
@@ -84,6 +135,7 @@ authenticate:
       # secretName: authenticate-ingress-tls
 
 authorize:
+  enabled: true
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
@@ -115,6 +167,7 @@ authorize:
     nameOverride: ""
 
 databroker:
+  enabled: true
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""
@@ -150,6 +203,7 @@ databroker:
       ca: ""
 
 proxy:
+  enabled: true
   fullnameOverride: ""
   nameOverride: ""
   existingTLSSecret: ""

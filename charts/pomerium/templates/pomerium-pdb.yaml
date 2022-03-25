@@ -1,0 +1,17 @@
+{{- if and .Values.allInOne.enabled .Values.allInOne.pdb.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
+    helm.sh/chart: {{ template "pomerium.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  name: {{ template "pomerium.allInOne.fullname" . }}-pdp
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  minAvailable: {{ .Values.allInOne.pdb.minAvailable }}
+{{- end }}

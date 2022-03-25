@@ -10,6 +10,11 @@
 {{- default (printf "%s-proxy" .Chart.Name) .Values.proxy.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*Expand the name of the allInOne-service.*/}}
+{{- define "pomerium.allInOne.name" -}}
+{{- default .Chart.Name .Values.allInOne.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*Expand the name of the authenticate-service.*/}}
 {{- define "pomerium.authenticate.name" -}}
 {{- default (printf "%s-authenticate" .Chart.Name) .Values.authenticate.nameOverride | trunc 63 | trimSuffix "-" -}}
@@ -95,6 +100,20 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{/* allInOne services fully qualified name. Truncated at 63 chars. */}}
+{{- define "pomerium.allInOne.fullname" -}}
+{{- if .Values.allInOne.fullnameOverride -}}
+{{- .Values.allInOne.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 {{/* authenticate services fully qualified name. Truncated at 63 chars. */}}
 {{- define "pomerium.authenticate.fullname" -}}
 {{- if .Values.authenticate.fullnameOverride -}}
@@ -141,22 +160,36 @@ Check if a valid identity provider has been set
 Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates/_provider-envs.yaml
 */}}
 {{- define "pomerium.providerOK" -}}
-{{- if .Values.authenticate.idp -}}
+{{- if or .Values.authenticate.idp .Values.allInOne.idp -}}
   {{- if .Values.config.existingSecret -}}
   true
-  {{- else if and .Values.authenticate.deployment.extraEnv.IDP_CLIENT_ID .Values.authenticate.deployment.extraEnv.IDP_CLIENT_SECRET -}}
+  {{- else if or (and .Values.authenticate.enabled .Values.authenticate.deployment.extraEnv.IDP_CLIENT_ID .Values.authenticate.deployment.extraEnv.IDP_CLIENT_SECRET) (and .Values.allInOne.enabled .Values.allInOne.deployment.extraEnv.IDP_CLIENT_ID .Values.allInOne.deployment.extraEnv.IDP_CLIENT_SECRET) -}}
   true
-  {{- else if eq .Values.authenticate.idp.clientID "" -}}
+  {{- else if or (and .Values.authenticate.enabled (eq .Values.authenticate.idp.clientID "")) (and .Values.allInOne.enabled (eq .Values.allInOne.idp.clientID "")) -}}
   false
-  {{- else if eq .Values.authenticate.idp.clientSecret "" -}}
+  {{- else if or (and .Values.authenticate.enabled (eq .Values.authenticate.idp.clientSecret "")) (and .Values.allInOne.enabled (eq .Values.allInOne.idp.clientSecret "")) -}}
   false
-  {{- else if eq .Values.authenticate.idp.clientID "REPLACE_ME" -}}
+  {{- else if or (and .Values.authenticate.enabled (eq .Values.authenticate.idp.clientID "REPLACE_ME")) (and .Values.allInOne.enabled (eq .Values.allInOne.idp.clientID "REPLACE_ME")) -}}
   false
-  {{- else if eq .Values.authenticate.idp.clientSecret "REPLACE_ME" -}}
+  {{- else if or (and .Values.authenticate.enabled (eq .Values.authenticate.idp.clientSecret "REPLACE_ME")) (and .Values.allInOne.enabled (eq .Values.allInOne.idp.clientSecret "REPLACE_ME")) -}}
   false
   {{- else -}}
   true
   {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Determine secret name for AllInOne TLS Cert */}}
+{{- define "pomerium.allInOne.tlsSecret.name" -}}
+{{- if .Values.allInOne.existingTLSSecret -}}
+{{- .Values.allInOne.existingTLSSecret | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-tls" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-tls" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -261,6 +294,11 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 {{- else -}}
 {{- printf "%s.%s" .Values.apiProxy.name .Values.config.rootDomain -}}
 {{- end -}}
+{{- end -}}
+
+{{/*Expand the serviceAccountName for the allInOne service */}}
+{{- define "pomerium.allInOne.serviceAccountName" -}}
+{{- default (printf "%s" ( include "pomerium.fullname" .) ) .Values.allInOne.serviceAccount.nameOverride -}}
 {{- end -}}
 
 {{/*Expand the serviceAccountName for the authenticate service */}}
@@ -429,22 +467,24 @@ certificates:
   - cert: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.crt
     key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{- end }}
+{{- with .Values.allInOne.existingExternalTLSSecret }}
+  - cert: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.crt
+    key: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}/tls.key
 {{- end }}
+{{- end }}
+{{- if .Values.allInOne.enabled }}
+authenticate_service_url: {{ printf "https://%s" ( include "pomerium.allInOne.hostname" . ) }}
+{{- else }}
 authenticate_service_url: {{ default (printf "https://%s" ( include "pomerium.authenticate.hostname" . ) ) .Values.proxy.authenticateServiceUrl }}
+{{- end }}
 authorize_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authorize.fullname" .) .Release.Namespace ) .Values.proxy.authorizeInternalUrl}}
 databroker_service_url: {{ default (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.databroker.fullname" .) .Release.Namespace ) .Values.authenticate.databrokerServiceUrl}}
-idp_provider: {{ .Values.authenticate.idp.provider }}
-idp_scopes: {{ .Values.authenticate.idp.scopes }}
-idp_provider_url: {{ .Values.authenticate.idp.url }}
+idp_provider: {{ if .Values.allInOne.enabled }} {{ .Values.allInOne.idp.provider }} {{- else -}} {{ .Values.authenticate.idp.provider }} {{- end }}
+idp_scopes: {{ if .Values.allInOne.enabled }} {{ .Values.allInOne.idp.scopes }} {{- else -}} {{ .Values.authenticate.idp.scopes }} {{- end }}
+idp_provider_url: {{ if .Values.allInOne.enabled }} {{ .Values.allInOne.idp.url }} {{- else -}} {{ .Values.authenticate.idp.url }} {{- end }}
 {{- if .Values.config.insecure }}
 insecure_server: true
 grpc_insecure: true
-{{- end }}
-{{- if and .Values.config.existingPolicy .Values.config.extraOpts }}
-{{ fail "Cannot use config.extraOpts with config.existingPolicy" }}
-{{- end }}
-{{- if and .Values.config.existingPolicy .Values.config.routes }}
-{{ fail "Cannot use .Values.config.routes with config.existingPolicy" }}
 {{- end }}
 {{- if .Values.config.administrators }}
 administrators: {{ .Values.config.administrators | quote }}
@@ -468,9 +508,9 @@ forward_auth_url: {{ printf "%s://%s" ( include "pomerium.httpTrafficPort.name" 
 {{- else if .Values.forwardAuth.enabled }}
 forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" . ) }}
 {{- end }}
-idp_client_id: {{ .Values.authenticate.idp.clientID }}
-idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
-{{- if or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML }}
+idp_client_id: {{ if .Values.allInOne.enabled }} {{ .Values.allInOne.idp.clientID }} {{- else -}} {{ .Values.authenticate.idp.clientID }} {{- end }}
+idp_client_secret: {{ if .Values.allInOne.enabled }} {{ .Values.allInOne.idp.clientSecret }} {{- else -}} {{ .Values.authenticate.idp.clientSecret }} {{- end }}
+{{- if or (and .Values.authenticate.enabled (or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML)) (and .Values.allInOne.enabled .Values.allInOne.serviceAccount.enabled) }}
 idp_service_account: {{ include "pomerium.idp.serviceAccount" . }}
 {{- end }}
 {{- if ne (include "pomerium.databroker.storage.type" . ) "memory" }}
@@ -480,7 +520,7 @@ databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify 
 
 {{/* Creates dynamic configuration yaml */}}
 {{- define "pomerium.config.dynamic" -}}
-{{- if or .Values.config.routes .Values.authenticate.proxied }}
+{{- if or .Values.config.routes (and .Values.authenticate.enabled .Values.authenticate.proxied) }}
 routes:
 {{-   if .Values.config.routes }}
 {{-    if kindIs "string" .Values.config.routes }}
@@ -489,8 +529,12 @@ routes:
 {{       tpl (toYaml .Values.config.routes) . | indent 2 }}
 {{-    end  }}
 {{-   end }}
-{{- if and .Values.authenticate.proxied (not .Values.ingressController.enabled) }}
+{{- if and .Values.authenticate.enabled .Values.authenticate.proxied (not .Values.ingressController.enabled) }}
   - from: https://{{ include "pomerium.authenticate.hostname" . }}
+    to: {{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authenticate.fullname" .) .Release.Namespace }}
+    allow_public_unauthenticated_access: true
+{{- else if and .Values.allInOne.enabled .Values.allInOne.proxied (not .Values.ingressController.enabled) }}
+  - from: https://{{ include "pomerium.allInOne.hostname" . }}
     to: {{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.authenticate.fullname" .) .Release.Namespace }}
     allow_public_unauthenticated_access: true
 {{- end }}
@@ -509,6 +553,10 @@ routes:
   name: {{ . }}
 {{- end }}
 {{- with .Values.authenticate.existingExternalTLSSecret }}
+- mountPath: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}
+  name: {{ . }}
+{{- end }}
+{{- with .Values.allInOne.existingExternalTLSSecret }}
 - mountPath: {{include "pomerium.extraTLSSecret.path" . }}{{ . }}
   name: {{ . }}
 {{- end }}
@@ -532,6 +580,11 @@ routes:
     secretName: {{ . }}
 {{- end }}
 {{- with .Values.authenticate.existingExternalTLSSecret }}
+- name: {{ . }}
+  secret:
+    secretName: {{ . }}
+{{- end }}
+{{- with .Values.allInOne.existingExternalTLSSecret }}
 - name: {{ . }}
   secret:
     secretName: {{ . }}
@@ -560,10 +613,18 @@ routes:
 
 {{/* Render idp_service_account */}}
 {{- define "pomerium.idp.serviceAccount" -}}
+{{- if and .Values.allInOne.enabled .Values.allInOne.serviceAccount.enabled -}}
+{{- if .Values.allInOne.idp.serviceAccount -}}
+{{- .Values.allInOne.idp.serviceAccount -}}
+{{- else -}}
+{{- .Values.allInOne.idp.serviceAccountYAML | toJson | b64enc -}}
+{{- end -}}
+{{- else if .Values.authenticate.enabled -}}
 {{- if .Values.authenticate.idp.serviceAccount -}}
 {{- .Values.authenticate.idp.serviceAccount -}}
 {{- else -}}
 {{- .Values.authenticate.idp.serviceAccountYAML | toJson | b64enc -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -623,7 +684,11 @@ true
 {{- if .Values.ingress.tls.hosts -}}
 {{ .Values.ingress.tls.hosts | toYaml }}
 {{- else -}}
+{{- if .Values.allInOne.enabled }}
+- {{ template "pomerium.allInOne.hostname" . }}
+{{- else -}}
 - {{ template "pomerium.authenticate.hostname" . }}
+{{- end }}
   {{- if and (.Values.forwardAuth.enabled) (not .Values.forwardAuth.internal) }}
 - {{ template "pomerium.forwardAuth.name" . }}
   {{ end }}
@@ -665,6 +730,13 @@ Return if ingress supports pathType.
 */}}
 {{- define "ingress.supportsPathType" -}}
   {{- or (eq (include "ingress.isStable" .) "true") (and (eq (include "ingress.apiVersion" .) "networking.k8s.io/v1beta1") (semverCompare ">= 1.18-0" .Capabilities.KubeVersion.Version)) -}}
+{{- end -}}
+
+{{/*
+Return the hostname of the allInOne service
+*/}}
+{{- define "pomerium.allInOne.hostname" -}}
+{{ printf "%s.%s" (.Values.allInOne.name | default "pomerium") .Values.config.rootDomain }}
 {{- end -}}
 
 {{/*

@@ -1,33 +1,30 @@
-{{- if .Values.proxy.enabled -}}
+{{- if .Values.allInOne.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: proxy
-  name: {{ template "pomerium.proxy.fullname" . }}
-{{- if or .Values.proxy.deployment.annotations .Values.annotations }}
+  name: {{ template "pomerium.allInOne.fullname" . }}
   annotations:
-  {{- if .Values.proxy.deployment.annotations }}
-    {{- range $key, $value := .Values.proxy.deployment.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
-  {{- else if .Values.annotations }}
-    {{- range $key, $value := .Values.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
-  {{- end }}
+ {{- if .Values.allInOne.deployment.annotations }}
+ {{- range $key, $value := .Values.allInOne.deployment.annotations }}
+   {{ $key }}: {{ $value | quote }}
+ {{- end }}
+{{- else if .Values.annotations }}
+ {{- range $key, $value := .Values.annotations }}
+   {{ $key }}: {{ $value | quote }}
+ {{- end }}
 {{- end }}
 spec:
-  {{- if (ne .Values.proxy.autoscaling.enabled true) }}
-  replicas: {{ default .Values.replicaCount .Values.proxy.replicaCount }}
+  {{- if (ne .Values.allInOne.autoscaling.enabled true) }}
+  replicas: {{ default .Values.replicaCount .Values.allInOne.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
+      app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
@@ -36,11 +33,11 @@ spec:
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
-{{- if .Values.proxy.deployment.podAnnotations }}
-{{ toYaml .Values.proxy.deployment.podAnnotations | indent 8 }}
+{{- if .Values.allInOne.deployment.podAnnotations }}
+{{ toYaml .Values.allInOne.deployment.podAnnotations | indent 8 }}
 {{- end }}
       labels:
-        app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
+        app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
         helm.sh/chart: {{ template "pomerium.chart" . }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -65,25 +62,26 @@ spec:
 {{- end }}
 {{- end }}
         env:
-        - name: INSECURE_SERVER
-          value: "{{ ternary "true" "false" (eq (include "pomerium.proxy.insecure" .) "true") }}"
-{{- if and (not (include "pomerium.proxy.insecure" .)) .Values.proxy.redirectServer }}
-        - name: HTTP_REDIRECT_ADDR
-          value: :80
-{{- end }}
-        - name: ADDRESS
-          value: {{ printf ":%s" (include "pomerium.proxy.trafficPort.number" . ) }}
-{{- if or ( and .Values.proxy.tls.cert .Values.proxy.tls.key ) .Values.proxy.existingTLSSecret }}
+{{- if or ( or ( and .Values.allInOne.tls.cert .Values.allInOne.tls.key ) .Values.allInOne.existingTLSSecret ) .Values.config.generateTLS }}
 {{- include "pomerium.tls.internal.envVars" . | indent 8 }}
 {{- end }}
-        - name: SERVICES
-          value: proxy
+{{- if .Values.config.signingKey -}}
+        - name: SIGNING_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "pomerium.signingKeySecret.name" . }}
+              key: signing-key
+{{- end -}}
+{{- if not .Values.ingress.enabled }}
+        - name: allInOne_INTERNAL_SERVICE_URL
+          value: {{ (printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.allInOne.fullname" .) .Release.Namespace ) }}
+{{- end }}
 {{- include "pomerium.metrics.envVars" . | indent 8}}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
-{{- range $name, $value := .Values.proxy.deployment.extraEnv }}
+{{- range $name, $value := .Values.allInOne.deployment.extraEnv }}
         - name: {{ $name }}
           value: {{ quote $value }}
 {{- end }}
@@ -94,36 +92,33 @@ spec:
 {{        toYaml .Values.extraEnvFrom | indent 10 }}
 {{- end }}
         ports:
-          - containerPort: {{ template "pomerium.proxy.trafficPort.number" . }}
-            name: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
+          - containerPort: {{ template "pomerium.trafficPort.number" . }}
+            name: {{ template "pomerium.httpTrafficPort.name" . }}
             protocol: TCP
-{{- if and .Values.proxy.redirectServer (not (include "pomerium.proxy.insecure" .)) }}
-          - name: http
-            containerPort: 80
-            protocol: TCP
-{{- end }}
           - containerPort: {{ .Values.metrics.port }}
             name: metrics
             protocol: TCP
         livenessProbe:
           httpGet:
             path: /ping
-            port: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
-            scheme: {{ upper ( include "pomerium.proxy.httpTrafficPort.scheme" . ) }}
+            port: {{ template "pomerium.httpTrafficPort.name" . }}
+            scheme: {{ upper (include "pomerium.httpTrafficPort.scheme" .) }}
         readinessProbe:
           httpGet:
             path: /ping
-            port: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
-            scheme: {{ upper ( include "pomerium.proxy.httpTrafficPort.scheme" . ) }}
+            port: {{ template "pomerium.httpTrafficPort.name" . }}
+            scheme: {{ upper (include "pomerium.httpTrafficPort.scheme" .) }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
 {{ include "pomerium.volumeMounts" . | indent 10 }}
-      serviceAccountName: {{ template "pomerium.proxy.serviceAccountName" . }}
+{{- if .Values.allInOne.serviceAccount.enabled }}
+      serviceAccountName: {{ template "pomerium.allInOne.serviceAccountName" . }}
+{{- end }}
       volumes:
 {{ include "pomerium.volumes.shared" . | indent 8 }}
 {{- $ctx := . }}
-{{- $_ := set $ctx "currentServiceName" "proxy" }}
+{{- $_ := set $ctx "currentServiceName" "allInOne" }}
 {{ include "pomerium.volumes.service" $ctx | indent 8 }}
 {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -141,4 +136,4 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
-{{- end }}
+{{- end -}}

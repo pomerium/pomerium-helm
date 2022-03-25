@@ -1,21 +1,20 @@
-{{- if .Values.authenticate.enabled -}}
+{{- if .Values.allInOne.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "pomerium.authenticate.fullname" . }}
+  name: {{ template "pomerium.allInOne.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
     helm.sh/chart: {{ template "pomerium.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: authenticate
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
-{{- if or .Values.authenticate.service.annotations .Values.service.annotations }}
+{{- if or .Values.allInOne.service.annotations .Values.service.annotations }}
   annotations:
-  {{- if .Values.authenticate.service.annotations }}
-    {{- range $key, $value := .Values.authenticate.service.annotations }}
+  {{- if .Values.allInOne.service.annotations }}
+    {{- range $key, $value := .Values.allInOne.service.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   {{- else if .Values.service.annotations }}
@@ -25,20 +24,20 @@ metadata:
   {{- end }}
 {{- end }}
 spec:
-  type: {{ .Values.authenticate.service.type }}
+  type: {{ .Values.allInOne.service.type }}
   ports:
     - port: {{ template "pomerium.service.externalPort" . }}
       targetPort: {{ template "pomerium.httpTrafficPort.name" . }}
       protocol: TCP
       name: {{ template "pomerium.httpTrafficPort.name" . }}
-{{- if and .Values.authenticate.service.nodePort (eq .Values.authenticate.service.type "NodePort" )}}
-      nodePort: {{ .Values.authenticate.service.nodePort }}
+{{- if and .Values.allInOne.service.nodePort (eq .Values.allInOne.service.type "NodePort" )}}
+      nodePort: {{ .Values.allInOne.service.nodePort }}
 {{- end }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP
       targetPort: metrics
   selector:
-    app.kubernetes.io/name: {{ template "pomerium.authenticate.name" . }}
+    app.kubernetes.io/name: {{ template "pomerium.allInOne.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
