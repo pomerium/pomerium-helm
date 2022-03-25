@@ -3,3 +3,5 @@ ingressController:
 proxy:
   service:
     type: NodePort
+ingress:
+  enabled: false
