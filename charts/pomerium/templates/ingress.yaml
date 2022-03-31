@@ -22,10 +22,12 @@ spec:
   {{- end }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
+  {{ if  (or .Values.ingress.secret.name .Values.ingress.secretName) }}
   tls:
     - secretName: {{ default .Values.ingress.secret.name .Values.ingress.secretName }}
       hosts:
 {{      include "pomerium.ingress.tls.hosts" . | indent 8 }}
+  {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ . | quote }}
