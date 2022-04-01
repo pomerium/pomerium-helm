@@ -3,6 +3,41 @@ entries:
   pomerium:
   - apiVersion: v2
     appVersion: 0.17.0
+    created: "2022-04-01T15:15:56.645738074Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.3.0
+    description: Pomerium is an identity-aware access proxy.
+    digest: d8e41840ae04cc927fd33a5b4fdf96bdc2b063f676465e11854459f78046e16e
+    home: http://www.pomerium.com/
+    icon: https://www.pomerium.com/img/icon.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    - auth0
+    maintainers:
+    - email: bdd@pomerium.io
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-31.0.3/pomerium-31.0.3.tgz
+    version: 31.0.3
+  - apiVersion: v2
+    appVersion: 0.17.0
     created: "2022-03-29T19:50:40.438458775Z"
     dependencies:
     - condition: redis.enabled
@@ -4128,4 +4163,4 @@ entries:
     urls:
     - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-verify-0.1.0/pomerium-verify-0.1.0.tgz
     version: 0.1.0
-generated: "2022-03-29T19:50:40.44003406Z"
+generated: "2022-04-01T15:15:56.647840322Z"
