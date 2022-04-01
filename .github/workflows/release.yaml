@@ -1,4 +1,6 @@
 name: Release
+permissions:
+  contents: read
 on:
   push:
     branches:
@@ -6,6 +8,8 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -28,7 +32,7 @@ jobs:
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.3.0
+        uses: helm/chart-releaser-action@v1.4.0
         env:
           CR_TOKEN: "${{ secrets.CI_TOKEN }}"
         with:
