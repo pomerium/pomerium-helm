@@ -336,8 +336,8 @@ redis:
     createSecret: true
   generateTLS: true
   forceGenerateTLS: false
-  cluster:
-    slaveCount: 1
+  replica:
+    replicaCount: 1
   tls:
     enabled: true
     certificatesSecret: pomerium-redis-tls
