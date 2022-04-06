@@ -29,6 +29,9 @@ spec:
   {{- else }}
   type: {{ coalesce .Values.proxy.service.type "ClusterIP" }}
   {{- end }}
+  {{- if .Values.proxy.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.proxy.service.externalTrafficPolicy }}
+  {{- end }}
   ports:
     - port: {{ template "pomerium.proxy.trafficPort.number" . }}
       targetPort: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
