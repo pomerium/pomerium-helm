@@ -206,6 +206,7 @@ ingressController:
   deployment:
     annotations: {}
     extraEnv: {}
+    podAnnotations: {}
   serviceAccount:
     annotations: {}
     nameOverride: ""
