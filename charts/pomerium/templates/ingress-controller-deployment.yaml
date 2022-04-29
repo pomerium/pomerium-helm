@@ -62,6 +62,9 @@ spec:
           - --databroker-tls-ca-file=/pomerium/ca/ca.crt
           - --metrics-bind-address=:8080
           - --health-probe-bind-address=:8081
+          {{- if (include "pomerium.proxy.insecure" .) -}}
+          - --disable-cert-check
+          {{- end -}}
           {{- if and .Values.ingressController.config.updateStatus (not .Values.ingressController.config.operatorMode) }}
           - --update-status-from-service={{ .Release.Namespace}}/{{ template "pomerium.proxy.fullname" . }}
           {{- end }}
