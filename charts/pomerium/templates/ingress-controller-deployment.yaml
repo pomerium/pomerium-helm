@@ -55,13 +55,16 @@ spec:
         imagePullPolicy: {{ .Values.ingressController.image.pullPolicy }}
         args:
           - --name={{ .Values.ingressController.config.ingressClass }}
-          {{ if .Values.ingressController.config.namespaces -}}
+          {{- if .Values.ingressController.config.namespaces }}
           - --namespaces={{ .Values.ingressController.config.namespaces | join "," }}
-          {{ end -}}
+          {{- end }}
           - --databroker-service-url={{ printf "%s://%s.%s.svc.cluster.local" (include "pomerium.httpTrafficPort.name" .) (include "pomerium.databroker.fullname" .) .Release.Namespace }}
           - --databroker-tls-ca-file=/pomerium/ca/ca.crt
           - --metrics-bind-address=:8080
           - --health-probe-bind-address=:8081
+          {{- if or .Values.config.insecure .Values.config.insecureProxy }}
+          - --disable-cert-check
+          {{- end }}
           {{- if and .Values.ingressController.config.updateStatus (not .Values.ingressController.config.operatorMode) }}
           - --update-status-from-service={{ .Release.Namespace}}/{{ template "pomerium.proxy.fullname" . }}
           {{- end }}
