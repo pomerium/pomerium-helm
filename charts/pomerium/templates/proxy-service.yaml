@@ -34,7 +34,7 @@ spec:
   {{- end }}
   {{- if .Values.proxy.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
+{{ toYaml .Values.proxy.service.loadBalancerSourceRanges | indent 4 }}
   {{- end }}
   ports:
     - port: {{ template "pomerium.proxy.trafficPort.number" . }}
