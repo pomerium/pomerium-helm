@@ -29,6 +29,9 @@ spec:
   {{- else }}
   type: {{ coalesce .Values.proxy.service.type "ClusterIP" }}
   {{- end }}
+  {{- if .Values.proxy.service.externalIPs }}
+  externalIPs: {{ toYaml .Values.proxy.service.externalIPs | nindent 4}}
+  {{- end }}
   {{- if .Values.proxy.service.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.proxy.service.externalTrafficPolicy }}
   {{- end }}
