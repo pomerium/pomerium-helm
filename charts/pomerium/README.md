@@ -131,7 +131,7 @@ See https://github.com/pomerium/pomerium-operator#using for information on how t
 
 ## Pomerium Ingress Controller
 
-Use Pomerium as a first class secure-by-default Ingress Controller.  Dynamicaly provision routes from `Ingress` resources and set policy based on `annotations`.  
+Use Pomerium as a first class secure-by-default Ingress Controller.  Dynamicaly provision routes from `Ingress` resources and set policy based on `annotations`.
 
 The Pomerium Ingress Controller functions similarly to the legacy Operator, but **does not** use forward auth or a third party ingress controller to function.  For more details see the [Project Page](https://github.com/pomerium/ingress-controller) or [docs](https://www.pomerium.com/docs#TODO).
 
@@ -338,6 +338,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `proxy.service.externalTrafficPolicy`                        | Sets `service.spec.externalTrafficPolicy` for the pomerium proxy service.  Set to `Local` to ensure the proxy is able to see client IPs accurately.  [See more](https://kubernetes.io/docs/tutorials/services/source-ip/).                                                                                                                                            |                                                                             |
 | `proxy.service.nodePort`                                     | Specify the nodePort when using service type NodePort                                                                                                                                                                                                                                                                                                                 |                                                                             |
 | `proxy.service.type`                                         | Specify the service type (ClusterIP, NodePort or LoadBalancer) for the proxy service                                                                                                                                                                                                                                                                                  | `ClusterIP`                                                                 |
+| `proxy.service.externalIPs`                                  | Specify the ExternalIPs that are routed to the proxy service                                                                                                                                                                                                                                                                                  | `ClusterIP`                                                                 |
 | `proxy.serviceAccount.annotations`                           | Annotations for the proxy service account                                                                                                                                                                                                                                                                                                                             | `{}`                                                                        |
 | `proxy.serviceAccount.nameOverride`                          | Override the name of the proxy pod service account                                                                                                                                                                                                                                                                                                                    | `pomerium-authenticate`                                                     |
 | `proxy.tls.cert`                                             | TLS certificate for proxy service                                                                                                                                                                                                                                                                                                                                     |                                                                             |
@@ -457,9 +458,13 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 31.2.0
+- Allow Proxy Service to use ExteralIPs
+
 ### 31.0.0
 - Update to v0.17 of Pomerium
 - Require `authenticate.ingress.tls.secretName` if `config.generateTLS` is not enabled
+
 ### 30.0.0
 - Revert breaking config changes in 29.0.0
 - Add `redis.auth.createSecret` flag
@@ -502,7 +507,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 23.1.0
 
-- Removed unnecessary `"` (quotation mark) from the `address` and `grpc_address` config fields in the static config template.  
+- Removed unnecessary `"` (quotation mark) from the `address` and `grpc_address` config fields in the static config template.
 
 ### 23.0.0
 - Rename `forwardAuth.nameOverride` for consistency
@@ -527,7 +532,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ### 20.0.0
 
-- Renamed all `cache` resources to `databroker`.  This keeps the terminology in the chart aligned with core Pomerium documentation.  See [upgrade notes](#2000-1) for details.  
+- Renamed all `cache` resources to `databroker`.  This keeps the terminology in the chart aligned with core Pomerium documentation.  See [upgrade notes](#2000-1) for details.
   Specific changes:
   - Rename `cache` deployment, pdb, pod, and service account to `databroker`
   - Add new `databroker` service pointing to the `databroker` pods.  The existing `cache` service will be removed in a future version.
@@ -669,7 +674,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ### 22.0.0
 - Users of the redis subchart with password secret value overrides:
   - rename `redis.existingSecretPasswordKey` to `redis.auth.existingSecret`
-  - rename `redis.existingSecret` to `redis.auth.existingSecretPasswordKey` 
+  - rename `redis.existingSecret` to `redis.auth.existingSecretPasswordKey`
 
 ### 21.0.0
 
@@ -685,13 +690,13 @@ A full listing of Pomerium's configuration variables can be found on the [config
    - If you are externally generating TLS certificates, _add_ the SAN `pomerium-databroker.[namespace].svc.cluster.local` to your cache certificate *before* upgrading.  The exact service name may vary if you've used service name overrides.
    - You may delete the `pomerium-cache-tls` secret after upgrade.
 2. Update values
-   - Rename any values prefixed with `cache.*` to `databroker.*`.  Example: `cache.replicas` becomes `databroker.replicas`.  
-   - [yq](https://github.com/mikefarah/yq) can be used to automate this on an existing values file: 
+   - Rename any values prefixed with `cache.*` to `databroker.*`.  Example: `cache.replicas` becomes `databroker.replicas`.
+   - [yq](https://github.com/mikefarah/yq) can be used to automate this on an existing values file:
      ```shell
      yq eval '. * {"databroker": .cache} | del(.cache)' pomerium-values.yaml
      ```
 3. Name overrides
-   - To assist with the upgrade, the `cache` service will remain until a future version.  If you are using `cache.nameOverride` or `cache.fullnameOverride` to customize the service name, those settings will still be respected for the `cache` service.  
+   - To assist with the upgrade, the `cache` service will remain until a future version.  If you are using `cache.nameOverride` or `cache.fullnameOverride` to customize the service name, those settings will still be respected for the `cache` service.
 ### 18.0.0
 
 - This version deprecates Helm v2 support. To upgrade from Helm v2 to Helm v3 follow [this guide](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/)
