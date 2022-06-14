@@ -33,7 +33,7 @@ jobs:
           ct lint --config .ct.yaml
 
       - name: Create kind cluster
-        uses: helm/kind-action@v1.2.0
+        uses: helm/kind-action@v1.3.0
         with:
           install_local_path_provisioner: true
 
