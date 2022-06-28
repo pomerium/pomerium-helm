@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         id: install
         with:
           version: v3.5.1
