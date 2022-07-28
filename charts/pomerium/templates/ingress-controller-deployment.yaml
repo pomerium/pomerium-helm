@@ -54,6 +54,7 @@ spec:
         image: {{ .Values.ingressController.image.repository }}:{{ .Values.ingressController.image.tag }}
         imagePullPolicy: {{ .Values.ingressController.image.pullPolicy }}
         args:
+          - controller
           - --name={{ .Values.ingressController.config.ingressClass }}
           {{- if .Values.ingressController.config.namespaces }}
           - --namespaces={{ .Values.ingressController.config.namespaces | join "," }}

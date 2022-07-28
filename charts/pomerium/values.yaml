@@ -191,7 +191,7 @@ apiProxy:
   name: "kubernetes"
 
 ingressController:
-  enabled: false
+  enabled: true
   ingressClassResource:
     enabled: true
     default: false
@@ -203,7 +203,8 @@ ingressController:
   nameOverride: ""
   image:
     repository: "pomerium/ingress-controller"
-    tag: "v0.17.3"
+    tag: "sha-c34791e"
+    pullPolicy: IfNotPresent
   deployment:
     annotations: {}
     extraEnv: {}
@@ -248,7 +249,7 @@ ingress:
     key: ""
   tls:
     hosts: []
-  enabled: true
+  enabled: false
   hosts: []
   # Sets Ingress/ingressClassName. This way ingress resources are able to bound specific ingress-controllers. Kubernetes version >=1.18 required.
   # Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class
@@ -306,8 +307,8 @@ imagePullSecrets: ""
 
 image:
   repository: "pomerium/pomerium"
-  tag: "v0.17.3"
-  pullPolicy: "IfNotPresent"
+  tag: "v0.18.0"
+  pullPolicy: IfNotPresent
 
 metrics:
   enabled: false
