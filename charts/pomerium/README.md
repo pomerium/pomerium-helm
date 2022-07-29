@@ -20,7 +20,7 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
-    - [32.0.0]()
+    - [32.0.0](#3200)
     - [31.0.0](#3100)
     - [30.0.0](#3000)
     - [29.0.0](#2900)
@@ -462,6 +462,7 @@ A full listing of Pomerium's configuration variables can be found on the [config
 ### 32.0.0
 
 - Update to v0.18 of Pomerium
+- option `--disable-cert-check` is no longer required, as certificates are not enforced
 
 ### 31.2.0
 
@@ -880,8 +881,8 @@ metrics:
   port: 9090 # default
 service:
   annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9090'
 ```
 
 Example prometheus discovery config:
