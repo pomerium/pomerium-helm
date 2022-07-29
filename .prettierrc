@@ -1,0 +1,11 @@
+{
+  "bracketSpacing": true,
+  "printWidth": 80,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "tabWidth": 2,
+  "useTabs": false,
+  "importOrder": ["^[./]", "^src/(.*)$"],
+  "importOrderSeparation": true,
+  "overrides": [{ "files": "src/pb/*", "options": { "parser": "babel-ts" } }]
+}

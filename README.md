@@ -29,5 +29,4 @@ Please version your changes according to SemVer.
 
 ## Branches
 
-Please rebase/squash your commit history before marking a PR ready for review.  
-
+Please rebase/squash your commit history before marking a PR ready for review.
