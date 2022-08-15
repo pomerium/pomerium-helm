@@ -49,10 +49,12 @@ spec:
       protocol: TCP
       port: 80
 {{- end }}
+{{- if .Values.metrics.enabled }}
     - name: metrics
       port: {{ .Values.metrics.port }}
       protocol: TCP
       targetPort: metrics
+{{- end }}
   selector:
     app.kubernetes.io/name: {{ template "pomerium.proxy.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
