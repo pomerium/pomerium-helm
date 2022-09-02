@@ -1,56 +1,56 @@
 # For detailed explanation of each of the configuration settings see
 # https://www.pomerium.io/reference/
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 # settings that are shared by all services
 config:
   # routes under this wildcard domain are handled by pomerium
   rootDomain: corp.beyondperimeter.com
-  existingSecret: ""
-  existingCASecret: ""
+  existingSecret: ''
+  existingCASecret: ''
   ca:
-    cert: ""
-    key: ""
-  sharedSecret: ""
-  cookieSecret: ""
+    cert: ''
+    key: ''
+  sharedSecret: ''
+  cookieSecret: ''
   forceGenerateServiceSecrets: false
-  existingSharedSecret: ""
+  existingSharedSecret: ''
   generateTLS: true
   generateTLSAnnotations: {}
   forceGenerateTLS: false
   generateSigningKey: true
   forceGenerateSigningKey: false
   extraOpts: {}
-  existingPolicy: ""
+  existingPolicy: ''
   insecure: false
   insecureProxy: false
-  administrators: ""
+  administrators: ''
   routes: []
-  existingSigningKeySecret: ""
-  signingKey: ""
+  existingSigningKeySecret: ''
+  signingKey: ''
   extraSecretLabels: {}
   extraSharedSecretLabels: {}
 
 authenticate:
-  name: ""
-  fullnameOverride: ""
-  nameOverride: ""
-  existingTLSSecret: ""
-  existingExternalTLSSecret: ""
+  name: ''
+  fullnameOverride: ''
+  nameOverride: ''
+  existingTLSSecret: ''
+  existingExternalTLSSecret: ''
   proxied: true
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:
     provider: google
-    clientID: "REPLACE_ME"
-    clientSecret: "REPLACE_ME"
-    url: ""
-    scopes: ""
-    serviceAccount: ""
+    clientID: 'REPLACE_ME'
+    clientSecret: 'REPLACE_ME'
+    url: ''
+    scopes: ''
+    serviceAccount: ''
   tls:
-    cert: ""
-    key: ""
+    cert: ''
+    key: ''
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
@@ -65,7 +65,7 @@ authenticate:
     minAvailable: 1
   service:
     annotations: {}
-    nodePort: ""
+    nodePort: ''
     type: ClusterIP
   deployment:
     annotations: {}
@@ -73,23 +73,23 @@ authenticate:
     podAnnotations: {}
   serviceAccount:
     annotations: {}
-    nameOverride: ""
+    nameOverride: ''
   ingress:
     # cert-manager example
     # annotations:
     #   cert-manager.io/cluster-issuer: letsencrypt-prod
     annotations: {}
     tls:
-      secretName: ""
+      secretName: ''
       # secretName: authenticate-ingress-tls
 
 authorize:
-  fullnameOverride: ""
-  nameOverride: ""
-  existingTLSSecret: ""
+  fullnameOverride: ''
+  nameOverride: ''
+  existingTLSSecret: ''
   tls:
-    cert: ""
-    key: ""
+    cert: ''
+    key: ''
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
@@ -112,15 +112,15 @@ authorize:
     podAnnotations: {}
   serviceAccount:
     annotations: {}
-    nameOverride: ""
+    nameOverride: ''
 
 databroker:
-  fullnameOverride: ""
-  nameOverride: ""
-  existingTLSSecret: ""
+  fullnameOverride: ''
+  nameOverride: ''
+  existingTLSSecret: ''
   tls:
-    cert: ""
-    key: ""
+    cert: ''
+    key: ''
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
@@ -137,25 +137,25 @@ databroker:
     podAnnotations: {}
   serviceAccount:
     annotations: {}
-    nameOverride: ""
+    nameOverride: ''
   storage:
-    type: "memory"
-    connectionString: ""
+    type: 'memory'
+    connectionString: ''
     tlsSkipVerify: false
     clientTLS:
-      existingSecretName: ""
-      existingCASecretKey: ""
-      cert: ""
-      key: ""
-      ca: ""
+      existingSecretName: ''
+      existingCASecretKey: ''
+      cert: ''
+      key: ''
+      ca: ''
 
 proxy:
-  fullnameOverride: ""
-  nameOverride: ""
-  existingTLSSecret: ""
+  fullnameOverride: ''
+  nameOverride: ''
+  existingTLSSecret: ''
   tls:
-    cert: ""
-    key: ""
+    cert: ''
+    key: ''
     defaultSANList: []
     defaultIPList: []
   replicaCount: 1
@@ -168,12 +168,12 @@ proxy:
   pdb:
     enabled: false
     minAvailable: 1
-  authenticateServiceUrl: ""
-  authorizeInternalUrl: ""
+  authenticateServiceUrl: ''
+  authorizeInternalUrl: ''
   service:
     annotations: {}
-    nodePort: ""
-    type: ""
+    nodePort: ''
+    type: ''
     externalIPs: []
   deployment:
     annotations: {}
@@ -181,14 +181,14 @@ proxy:
     podAnnotations: {}
   serviceAccount:
     annotations: {}
-    nameOverride: ""
+    nameOverride: ''
   redirectServer: true
 
 apiProxy:
   enabled: false
   ingress: true
-  fullNameOverride: ""
-  name: "kubernetes"
+  fullNameOverride: ''
+  name: 'kubernetes'
 
 ingressController:
   enabled: false
@@ -198,12 +198,12 @@ ingressController:
     name: pomerium
     controllerName: pomerium.io/ingress-controller
     parameters: {}
-    defaultCertSecret: ""
-  fullnameOverride: ""
-  nameOverride: ""
+    defaultCertSecret: ''
+  fullnameOverride: ''
+  nameOverride: ''
   image:
-    repository: "pomerium/ingress-controller"
-    tag: "sha-c34791e"
+    repository: 'pomerium/ingress-controller'
+    tag: 'sha-5294279'
     pullPolicy: IfNotPresent
   deployment:
     annotations: {}
@@ -211,7 +211,7 @@ ingressController:
     podAnnotations: {}
   serviceAccount:
     annotations: {}
-    nameOverride: ""
+    nameOverride: ''
   config:
     namespaces: []
     ingressClass: pomerium.io/ingress-controller
@@ -222,14 +222,14 @@ ingressController:
     type: ClusterIP
 
 forwardAuth:
-  name: ""
+  name: ''
   enabled: false
   # Will not create an ingress. ForwardAuth is ony accessible as internal service.
   internal: false
 
 service:
   # externalPort defaults to 80 or 443 depending on config.insecure
-  externalPort: ""
+  externalPort: ''
   annotations:
     {}
     # ===  GKE load balancer tweaks; default on until I can figure out
@@ -237,16 +237,16 @@ service:
     # cloud.google.com/app-protocols: '{"https":"HTTPS"}'
   labels: {}
   grpcTrafficPort:
-    nameOverride: ""
+    nameOverride: ''
   httpTrafficPort:
-    nameOverride: ""
+    nameOverride: ''
 
 ingress:
-  secretName: ""
+  secretName: ''
   secret:
-    name: "pomerium-tls"
-    cert: ""
-    key: ""
+    name: 'pomerium-tls'
+    cert: ''
+    key: ''
   tls:
     hosts: []
   enabled: true
@@ -275,7 +275,7 @@ resources:
   #   cpu: 100m
   #   memory: 300Mi
 
-priorityClassName: ""
+priorityClassName: ''
 
 # Affinity for pod assignment
 # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -303,11 +303,11 @@ extraVolumeMounts: []
 extraTLSSecrets: []
 
 annotations: {}
-imagePullSecrets: ""
+imagePullSecrets: ''
 
 image:
-  repository: "pomerium/pomerium"
-  tag: "v0.18.0"
+  repository: 'pomerium/pomerium'
+  tag: 'v0.18.0'
   pullPolicy: IfNotPresent
 
 metrics:
@@ -316,15 +316,15 @@ metrics:
 
 tracing:
   enabled: false
-  provider: ""
+  provider: ''
   debug: false
   jaeger:
-    collector_endpoint: ""
-    agent_endpoint: ""
+    collector_endpoint: ''
+    agent_endpoint: ''
 
 serviceMonitor:
   enabled: false
-  namespace: ""
+  namespace: ''
   labels:
     release: prometheus
 
