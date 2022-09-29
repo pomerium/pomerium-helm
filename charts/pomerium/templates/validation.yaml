@@ -1,4 +1,4 @@
-{{- if and (and .Values.ingressController.enabled (not .Values.ingressController.operatorMode)) .Values.config.insecureProxy -}}
+{{- if and (and .Values.ingressController.enabled (not .Values.ingressController.config.operatorMode)) .Values.config.insecureProxy -}}
 {{ fail "`ingressController.enabled` is not compatible with `config.insecureProxy`" }}
 {{- end -}}
 {{- if and .Values.ingressController.enabled (not (or .Values.config.generateTLS .Values.authenticate.ingress.tls.secretName )) -}}
@@ -6,6 +6,6 @@
 {{ fail "A TLS certificate must be available for Authenticate when using the ingress controller.  Please set `config.generateTLS`, `ingressController.ingressClassResource.defaultCertSecret` or `authenticate.ingress.tls.secretName"}}
 {{- end -}}
 {{- end -}}
-{{- if and (and .Values.ingressController.enabled (not .Values.ingressController.operatorMode)) .Values.ingress.enabled -}}
+{{- if and (and .Values.ingressController.enabled (not .Values.ingressController.config.operatorMode)) .Values.ingress.enabled -}}
 {{ fail "`ingressController.enabled` is not compatible with `ingress.enabled` unless legacy `ingressController.operatorMode`" }}
 {{- end -}}
