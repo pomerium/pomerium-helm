@@ -82,6 +82,7 @@ authenticate:
     tls:
       secretName: ''
       # secretName: authenticate-ingress-tls
+  affinity: {}
 
 authorize:
   fullnameOverride: ''
@@ -113,6 +114,7 @@ authorize:
   serviceAccount:
     annotations: {}
     nameOverride: ''
+  affinity: {}
 
 databroker:
   fullnameOverride: ''
@@ -148,6 +150,7 @@ databroker:
       cert: ''
       key: ''
       ca: ''
+  affinity: {}
 
 proxy:
   fullnameOverride: ''
@@ -183,6 +186,7 @@ proxy:
     annotations: {}
     nameOverride: ''
   redirectServer: true
+  affinity: {}
 
 apiProxy:
   enabled: false
@@ -220,6 +224,7 @@ ingressController:
   service:
     annotations: {}
     type: ClusterIP
+  affinity: {}
 
 forwardAuth:
   name: ''

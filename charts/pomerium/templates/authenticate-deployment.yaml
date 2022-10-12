@@ -130,7 +130,5 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
-{{- if .Values.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-{{- end }}
+{{ include "pomerium.authenticate.affinity" . | indent 8 }}

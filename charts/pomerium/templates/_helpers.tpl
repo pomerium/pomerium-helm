@@ -713,3 +713,25 @@ true
 {{- printf "%s-storage" (include "pomerium.databroker.name" .) -}}
 {{- end -}}
 {{- end }}
+
+
+{{/* Generates affinity specific to a service */}}
+{{- define "pomerium.authenticate.affinity" -}}
+{{ .Values.authenticate.affinity | default .Values.affinity | toYaml }}
+{{- end -}}
+
+{{- define "pomerium.authorize.affinity" -}}
+{{ .Values.authorize.affinity | default .Values.affinity | toYaml }}
+{{- end -}}
+
+{{- define "pomerium.databroker.affinity" -}}
+{{ .Values.databroker.affinity | default .Values.affinity | toYaml }}
+{{- end -}}
+
+{{- define "pomerium.proxy.affinity" -}}
+{{ .Values.proxy.affinity | default .Values.affinity | toYaml }}
+{{- end -}}
+
+{{- define "pomerium.ingressController.affinity" -}}
+{{ .Values.ingressController.affinity | default .Values.affinity | toYaml }}
+{{- end -}}
