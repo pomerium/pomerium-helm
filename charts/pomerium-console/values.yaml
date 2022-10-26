@@ -7,15 +7,15 @@ replicaCount: 1
 
 image:
   # -- Set to automatically generate an image pull secret
-  pullUsername: ""
+  pullUsername: ''
   # -- Set to automatically generate an image pull secret
-  pullPassword: ""
+  pullPassword: ''
   # -- The image repository source
   repository: docker.cloudsmith.io/pomerium/enterprise/pomerium-console
   # -- The iamge pull policy
   pullPolicy: IfNotPresent
   # -- Override the image tag from the chart appVersion
-  tag: ""
+  tag: ''
 
 serviceAccount:
   # -- Specifies whether a service account should be created
@@ -24,14 +24,14 @@ serviceAccount:
   annotations: {}
   # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name: ''
 
 # -- Reference a list secrets containing image pull credentials for the deployment
 imagePullSecrets: []
 # -- Override the name of the chart
-nameOverride: ""
+nameOverride: ''
 # -- Override full release name
-fullnameOverride: ""
+fullnameOverride: ''
 
 # -- Set annotations on all pods
 podAnnotations: {}
@@ -113,17 +113,17 @@ tls:
   # want to enable `tls.generate` after the chart has already been installed.
   forceGenerate: false
   # -- Use an existing secret for TLS certificates
-  existingSecret: ""
+  existingSecret: ''
   # -- Use an existing secret for a CA certificate when communicating with Pomerium Core
-  existingCASecret: ""
+  existingCASecret: ''
   # -- Set the key name containing the CA certificate in the existingCASecret
   caSecretKey: tls.crt
   # -- A custom CA certificate when communicating with Pomerium Core
-  ca: ""
+  ca: ''
   # -- TLS server key
-  key: ""
+  key: ''
   # -- TLS server cert
-  cert: ""
+  cert: ''
 
 # -- FOR TESTING ONLY.  There is no migration path from embedded (sqlite) to an external RDBMS.
 persistence:
@@ -140,67 +140,77 @@ persistence:
 
 database:
   # -- **Required** Set database driver type.  This can be `pg`, `my` or sqlite for postgres, mysql or sqlite respectively
-  type: ""
+  type: ''
   # -- Set the database username
-  username: ""
+  username: ''
   # -- Set the database password
-  password: ""
+  password: ''
   # -- Set the database hostname
-  host: ""
+  host: ''
   # -- Set the name of the database or schema
-  name: ""
+  name: ''
   # -- Set appropriately for your database driver
-  sslmode: ""
+  sslmode: ''
   # -- Set custom DSN connection options
-  additionalDSNOptions: ""
+  additionalDSNOptions: ''
   tls:
     # -- Use an existing secret containing the client TLS keypair for the database connection
-    existingSecret: ""
+    existingSecret: ''
     # -- Use an existing secret containing the CA certificate for the database connection
-    existingCASecret: ""
+    existingCASecret: ''
     # -- Set the key name containing the CA certificate in the existingCASecret
     caSecretKey: tls.crt
     # -- A custom CA certificate when communicating with the database
-    ca: ""
+    ca: ''
     # -- Set a TLS client key for the database connection
-    key: ""
+    key: ''
     # -- Set a TLS client certificate for the database connection
-    cert: ""
+    cert: ''
 
 config:
   # -- Set to boostrap permissions to the console or recover from a misconfiguration.  Overrides permissions
   # in the database.
-  administrators: ""
+  administrators: ''
   # -- Override default customerId
-  customerId: ""
+  customerId: ''
   # -- Override the URL default to the Pomerium Cache service
   # @default -- `https://pomerium-databroker.[release namespace].svc.cluster.local`
-  databrokerServiceUrl: ""
+  databrokerServiceUrl: ''
   # -- **Required** Secures communication with the databroker.  Must match Pomerium `shared_secret` parameter.
-  sharedSecret: ""
+  sharedSecret: ''
   # -- **Required** if `config.authenticateServiceUrl` is unset.  Set the public key for verifying the Pomerium attestation JWT header
-  signingKey: ""
+  signingKey: ''
   # -- **Required** encryption key for protecting sensitive data in the database
-  databaseEncryptionKey: ""
+  databaseEncryptionKey: ''
   # -- Set URL for external prometheus server.  An embedded server is used if left unset.
-  prometheusUrl: ""
+  prometheusUrl: ''
   # -- **Required** console's external URL.  This should match the `from` in Pomerium Core's config.
-  audience: ""
+  audience: ''
   # -- **Required** for device identity enrollment.  If set, you do not need to set signingKey.
-  authenticateServiceUrl: ""
+  authenticateServiceUrl: ''
   # -- **Required** license key for your Pomerium Enterprise install.
-  licenseKey: ""
+  licenseKey: ''
 prometheus:
   # -- Enable using an embedded prometheus service if no external URL is provided
   enabled: true
   persistence:
     # -- Enable storage persistence for embedded prometheus
     enabled: false
-    storageClassName: ""
+    storageClassName: ''
     accessModes:
       - ReadWriteOnce
     size: 10Gi
     annotations: {}
     finalizers:
       - kubernetes.io/pvc-protection
-    existingClaim: ""
+    existingClaim: ''
+
+serviceMonitor:
+  enabled: false
+  namespace: ''
+  labels:
+    release: prometheus-console
+
+metrics:
+  enabled: true
+  port: 9092

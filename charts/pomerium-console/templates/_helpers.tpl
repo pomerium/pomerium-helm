@@ -199,3 +199,17 @@ imagePullSecrets:
 {{- define "pomerium-console.pullSecret.data" -}}
 {{- printf "{\"auths\":{\"%s\":{\"username\":\"%s\",\"password\":\"%s\",\"auth\":\"%s\"}}}" "docker.cloudsmith.io" .Values.image.pullUsername .Values.image.pullPassword (printf "%s:%s" .Values.image.pullUsername .Values.image.pullPassword | b64enc) | b64enc }}
 {{- end }}
+
+{{/* Return metrics env var block */}}
+{{- define "pomerium-console.metrics.envVars" }}
+{{- if .Values.metrics.enabled }}
+- name: POD_IP
+  valueFrom:
+    fieldRef:
+      fieldPath: status.podIP
+- name: METRICS_PORT
+  value: "{{ .Values.metrics.port }}"
+- name: METRICS_ADDR
+  value: "$(POD_IP):$(METRICS_PORT)"
+{{- end }}
+{{- end }}
