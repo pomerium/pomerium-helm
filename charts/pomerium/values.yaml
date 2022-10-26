@@ -150,6 +150,10 @@ databroker:
       ca: ''
 
 proxy:
+  # internalPort defaults to 80 or 443 depending on config.insecure
+  internalPort: ''
+  # externalPort defaults to 80 or 443 depending on config.insecure
+  externalPort: ''
   fullnameOverride: ''
   nameOverride: ''
   existingTLSSecret: ''
@@ -228,6 +232,8 @@ forwardAuth:
   internal: false
 
 service:
+  # internalPort defaults to 80 or 443 depending on config.insecure
+  internalPort: ''
   # externalPort defaults to 80 or 443 depending on config.insecure
   externalPort: ''
   annotations:

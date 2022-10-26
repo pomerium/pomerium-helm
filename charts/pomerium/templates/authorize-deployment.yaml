@@ -64,6 +64,8 @@ spec:
 {{- end }}
 {{- end }}
         env:
+        - name: ADDRESS
+          value: {{ printf ":%s" (include "pomerium.trafficPort.number" . ) }}
 {{- if or ( or ( and .Values.authorize.tls.cert .Values.authorize.tls.key ) .Values.authorize.existingTLSSecret ) .Values.config.generateTLS }}
 {{- include "pomerium.tls.internal.envVars" . | indent 8 }}
 {{- end }}

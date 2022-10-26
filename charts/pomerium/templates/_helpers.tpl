@@ -304,10 +304,14 @@ Adapted from : https://github.com/helm/charts/blob/master/stable/drone/templates
 
 {{/*Expand the port number for secure or insecure mode */}}
 {{- define "pomerium.trafficPort.number" -}}
-{{- if .Values.config.insecure -}}
-80
+{{- if .Values.service.internalPort -}}
+{{- .Values.service.internalPort -}}
 {{- else -}}
+{{-   if .Values.config.insecure -}}
+80
+{{-   else -}}
 443
+{{-   end -}}
 {{- end -}}
 {{- end -}}
 
@@ -340,10 +344,14 @@ https
 
 {{/*Expand the proxy's port number for secure or insecure mode */}}
 {{- define "pomerium.proxy.trafficPort.number" -}}
-{{- if (include "pomerium.proxy.insecure" .) -}}
-80
+{{- if .Values.proxy.internalPort -}}
+{{- .Values.proxy.internalPort -}}
 {{- else -}}
+{{-   if (include "pomerium.proxy.insecure" .) -}}
+80
+{{-   else -}}
 443
+{{-   end -}}
 {{- end -}}
 {{- end -}}
 
@@ -367,6 +375,19 @@ grpc is used for insecure rather than http for istio compatibility
 {{- .Values.service.externalPort -}}
 {{- else -}}
 {{-   if .Values.config.insecure -}}
+80
+{{-   else -}}
+443
+{{-   end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*Expand the proxy's service port number for secure or insecure mode */}}
+{{- define "pomerium.proxy.externalPort" -}}
+{{- if .Values.proxy.externalPort -}}
+{{- .Values.proxy.externalPort -}}
+{{- else -}}
+{{-   if (include "pomerium.proxy.insecure" .) -}}
 80
 {{-   else -}}
 443
