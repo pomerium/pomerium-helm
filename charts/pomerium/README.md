@@ -462,6 +462,11 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 32.2.0
+
+- Allow setting internal ports by introducing `proxy.internalPort`, `service.internalPort`
+- Allow setting external port of the proxy by introducing `proxy.externalPort`
+
 ### 32.0.0
 
 - Update to v0.18 of Pomerium
