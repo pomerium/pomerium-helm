@@ -207,9 +207,7 @@ imagePullSecrets:
   valueFrom:
     fieldRef:
       fieldPath: status.podIP
-- name: METRICS_PORT
-  value: "{{ .Values.metrics.port }}"
 - name: METRICS_ADDR
-  value: "$(POD_IP):$(METRICS_PORT)"
+  value: "$(POD_IP):{{.Values.metrics.port}}"
 {{- end }}
 {{- end }}

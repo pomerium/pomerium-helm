@@ -41,6 +41,9 @@ spec:
             - name: {{ include "pomerium-console.grpc.name" . }}
               containerPort: 8702
               protocol: TCP
+            - name: metrics
+              containerPort: 9092
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: /
@@ -63,6 +66,7 @@ spec:
           envFrom:
 {{-          toYaml .Values.extraEnvFrom | nindent 12 }}
 {{-       end }}
+{{- include "pomerium-console.metrics.envVars" . | indent 10 }}
           volumeMounts:
             - mountPath: /etc/pomerium/
               name: config
