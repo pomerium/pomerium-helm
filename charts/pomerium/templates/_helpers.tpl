@@ -470,9 +470,6 @@ forward_auth_url: {{ printf "https://%s" ( include "pomerium.forwardAuth.name" .
 {{- end }}
 idp_client_id: {{ .Values.authenticate.idp.clientID }}
 idp_client_secret: {{ .Values.authenticate.idp.clientSecret }}
-{{- if or .Values.authenticate.idp.serviceAccount .Values.authenticate.idp.serviceAccountYAML }}
-idp_service_account: {{ include "pomerium.idp.serviceAccount" . }}
-{{- end }}
 {{- if ne (include "pomerium.databroker.storage.type" . ) "memory" }}
 databroker_storage_tls_skip_verify: {{ .Values.databroker.storage.tlsSkipVerify }}
 {{- end  }}
@@ -555,15 +552,6 @@ routes:
 1
 {{- else -}}
 {{ default .Values.replicaCount .Values.databroker.replicaCount -}}
-{{- end -}}
-{{- end -}}
-
-{{/* Render idp_service_account */}}
-{{- define "pomerium.idp.serviceAccount" -}}
-{{- if .Values.authenticate.idp.serviceAccount -}}
-{{- .Values.authenticate.idp.serviceAccount -}}
-{{- else -}}
-{{- .Values.authenticate.idp.serviceAccountYAML | toJson | b64enc -}}
 {{- end -}}
 {{- end -}}
 

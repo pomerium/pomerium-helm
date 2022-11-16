@@ -15,5 +15,11 @@ spec:
       targetPort: {{ include "pomerium-console.grpc.name" . }}
       protocol: TCP
       name: {{ include "pomerium-console.grpc.name" . }}
+{{- if .Values.metrics.enabled }}
+    - name: metrics
+      port: {{ .Values.metrics.port }}
+      protocol: TCP
+      targetPort: metrics
+{{- end }}
   selector:
     {{- include "pomerium-console.selectorLabels" . | nindent 4 }}

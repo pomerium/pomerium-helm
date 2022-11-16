@@ -203,7 +203,7 @@ ingressController:
   nameOverride: ''
   image:
     repository: 'pomerium/ingress-controller'
-    tag: 'sha-5294279'
+    tag: 'sha-5623bd8'
     pullPolicy: IfNotPresent
   deployment:
     annotations: {}
