@@ -2,6 +2,41 @@ apiVersion: v1
 entries:
   pomerium:
   - apiVersion: v2
+    appVersion: v0.20.0
+    created: "2022-11-16T21:40:14.640135543Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.0.9
+    description: Pomerium is an identity-aware access proxy.
+    digest: 381a8432a22dfa7a1d399da6266ba17db1e27c135a293d6ca973b50cffb454cd
+    home: http://www.pomerium.com/
+    icon: https://www.pomerium.com/img/icon.svg
+    keywords:
+    - proxy
+    - access-proxy
+    - reverse-proxy
+    - sso
+    - openid connect
+    - oauth2
+    - authorization
+    - authentication
+    - google
+    - okta
+    - azure
+    - auth0
+    maintainers:
+    - email: bdd@pomerium.io
+      name: desimone
+    - name: travisgroth
+    name: pomerium
+    sources:
+    - https://github.com/pomerium/pomerium
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-33.0.0/pomerium-33.0.0.tgz
+    version: 33.0.0
+  - apiVersion: v2
     appVersion: v0.18.0
     created: "2022-10-05T18:48:57.931531393Z"
     dependencies:
@@ -4919,6 +4954,21 @@ entries:
     version: 4.0.0
   pomerium-console:
   - apiVersion: v2
+    appVersion: 0.20.0
+    created: "2022-11-16T21:40:14.78142044Z"
+    description: Pomerium Enterprise Console
+    digest: 7660cfa5e97e7acdc79db1960f53fd426d64c4e0c0473aab81f3dbfe6b3fc1f7
+    home: https://www.pomerium.com
+    icon: https://www.pomerium.com/img/icon.svg
+    maintainers:
+    - name: Pomerium Developers
+      url: https://www.pomerium.com
+    name: pomerium-console
+    type: application
+    urls:
+    - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-console-11.0.0/pomerium-console-11.0.0.tgz
+    version: 11.0.0
+  - apiVersion: v2
     appVersion: 0.19.0
     created: "2022-10-18T15:13:41.560959771Z"
     description: Pomerium Enterprise Console
@@ -5033,4 +5083,4 @@ entries:
     urls:
     - https://github.com/pomerium/pomerium-helm/releases/download/pomerium-verify-0.1.0/pomerium-verify-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-18T15:13:41.562675699Z"
+generated: "2022-11-16T21:40:14.782999336Z"
