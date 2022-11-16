@@ -3,11 +3,12 @@
 [Pomerium](https://pomerium.io) is an [open-source](https://github.com/pomerium/pomerium) tool for managing secure access to internal applications and resources.
 
 - [Pomerium](#pomerium)
+  - [DEPRECATION](#deprecation)
   - [TL;DR;](#tldr)
   - [Install the chart](#install-the-chart)
   - [Uninstalling the Chart](#uninstalling-the-chart)
   - [Pomerium Operator (DEPRECATED)](#pomerium-operator-deprecated)
-    - [Pomerium operator has been replaced by Pomerium Ingress Controller. See `ingressController.config.operatorMode` for similar functionality.](#pomerium-operator-has-been-replaced-by-pomerium-ingress-controller--see-ingresscontrollerconfigoperatormode-for-similar-functionality)
+    - [Pomerium operator has been replaced by Pomerium Ingress Controller. See `ingressController.config.operatorMode` for similar functionality.](#pomerium-operator-has-been-replaced-by-pomerium-ingress-controller-see-ingresscontrollerconfigoperatormode-for-similar-functionality)
   - [Pomerium Ingress Controller](#pomerium-ingress-controller)
   - [TLS Certificates](#tls-certificates)
     - [Ingress Controller Annotations](#ingress-controller-annotations)
@@ -20,7 +21,9 @@
   - [Redis Subchart](#redis-subchart)
   - [Configuration](#configuration)
   - [Changelog](#changelog)
+    - [33.0.0](#3300)
     - [32.0.0](#3200)
+    - [31.2.0](#3120)
     - [31.0.0](#3100)
     - [30.0.0](#3000)
     - [29.0.0](#2900)
@@ -88,9 +91,11 @@
     - [Prometheus Operator](#prometheus-operator)
     - [Prometheus kubernetes_sd_configs](#prometheus-kubernetes_sd_configs)
 
-## TL;DR;
+## DEPRECATION
 
-Helm installation is no longer recommended for new deployments, please see https://github.com/pomerium/ingress-controller
+Helm installation is no longer recommended for new deployments, please use [Manifests based deployment instead](https://www.pomerium.com/docs/k8s/quickstart).
+
+## TL;DR;
 
 ```console
 helm install my-release pomerium/pomerium
@@ -295,8 +300,6 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `authenticate.idp.clientSecret`                              | Identity Provider oauth [client secret](https://www.pomerium.io/docs/reference/reference.html#identity-provider-client-secret).                                                                                                                                                                                                                                     | Required                                                                   |
 | `authenticate.idp.url`                                       | Identity [Provider URL](https://www.pomerium.io/docs/reference/reference.html#identity-provider-url).                                                                                                                                                                                                                                                               | Optional                                                                   |
 | `authenticate.idp.scopes`                                    | Identity [Provider Scopes](https://www.pomerium.io/configuration/#identity-provider-scopes).                                                                                                                                                                                                                                                                        | Optional                                                                   |
-| `authenticate.idp.serviceAccount`                            | Identity Provider [service account](https://www.pomerium.io/docs/reference/reference.html#identity-provider-service-account) base64 encoded.                                                                                                                                                                                                                        | Optional                                                                   |
-| `authenticate.idp.serviceAccountYAML`                        | Identity Provider [service account](https://www.pomerium.io/docs/reference/reference.html#identity-provider-service-account) as inline YAML or JSON. <br><br>`authenticate.idp.serviceAccount` takes precedence.                                                                                                                                                    | Optional                                                                   |
 | `authenticate.ingress.tls.secretName`                        | When using Pomerium Ingress Controller, the name of the TLS secret for the `authenticate` Ingress resource. If left unset, you may receive a non-deterministic certificate for requests to `authenticate.${rootDomain}`. This may become [pinned](https://www.ssl2buy.com/wiki/how-to-clear-hsts-settings-on-chrome-firefox-and-ie-browsers) if you are using HSTS. | `{}`                                                                       |
 | `authenticate.ingress.annotations`                           | When using Pomerium Ingress Controller, set the annotations on the `authenticate` Ingress resource. Example: `cert-manager.io/cluster-issuer: letsencrypt-prod-http`                                                                                                                                                                                                | `{}`                                                                       |
 | `authenticate.replicaCount`                                  | Number of Authenticate pods to run                                                                                                                                                                                                                                                                                                                                  | `1`                                                                        |
@@ -458,6 +461,12 @@ A full listing of Pomerium's configuration variables can be found on the [config
 | `ingressController.serviceAccount.nameOverride`              | Override the name of the ingressController pod service account                                                                                                                                                                                                                                                                                                      | `pomerium-ingressController`                                               |
 
 ## Changelog
+
+### 33.0.0
+
+- `idp.serviceAccount` is removed. Please see the [Upgrade Guide](https://www.pomerium.com/docs/overview/upgrading#since-0200)
+- Update to v0.20.0 of Pomerium
+
 
 ### 32.0.0
 
