@@ -1,6 +1,6 @@
 apiVersion: v2
 name: pomerium
-version: 33.0.1
+version: 33.1.0
 appVersion: v0.20.0
 home: http://www.pomerium.com/
 icon: https://www.pomerium.com/img/icon.svg

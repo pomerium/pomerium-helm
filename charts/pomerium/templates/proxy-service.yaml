@@ -36,7 +36,7 @@ spec:
   externalTrafficPolicy: {{ .Values.proxy.service.externalTrafficPolicy }}
   {{- end }}
   ports:
-    - port: {{ template "pomerium.proxy.trafficPort.number" . }}
+    - port: {{ template "pomerium.proxy.externalPort" . }}
       targetPort: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
       protocol: TCP
       name: {{ template "pomerium.proxy.httpTrafficPort.scheme" . }}
