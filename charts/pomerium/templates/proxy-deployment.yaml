@@ -77,6 +77,11 @@ spec:
 {{- end }}
         - name: SERVICES
           value: proxy
+        - name: SIGNING_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "pomerium.signingKeySecret.name" . }}
+              key: signing-key
 {{- include "pomerium.metrics.envVars" . | indent 8}}
 {{- range $name, $value := .Values.extraEnv }}
         - name: {{ $name }}
