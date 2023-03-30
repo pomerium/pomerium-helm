@@ -1,6 +1,6 @@
 apiVersion: v2
 name: pomerium
-version: 33.0.1
+version: 33.0.2
 appVersion: v0.20.0
 home: http://www.pomerium.com/
 icon: https://www.pomerium.com/img/icon.svg
@@ -23,7 +23,7 @@ sources:
 engine: gotpl
 dependencies:
   - name: redis
-    version: '17.0.9'
+    version: "17.0.9"
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
 
