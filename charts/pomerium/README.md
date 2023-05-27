@@ -462,11 +462,14 @@ A full listing of Pomerium's configuration variables can be found on the [config
 
 ## Changelog
 
+### 34.0.0
+
+- Upgrade to Pomerium Core v0.22.2, that addresses a critical security vulnerability [GHSA-pvrc-wvj2-f59p](https://github.com/pomerium/pomerium/security/advisories/GHSA-pvrc-wvj2-f59p)
+
 ### 33.0.0
 
 - `idp.serviceAccount` is removed. Please see the [Upgrade Guide](https://www.pomerium.com/docs/overview/upgrading#since-0200)
 - Update to v0.20.0 of Pomerium
-
 
 ### 32.0.0
 
