@@ -39,6 +39,7 @@ authenticate:
   nameOverride: ''
   existingTLSSecret: ''
   existingExternalTLSSecret: ''
+  hostnameDivider: ""
   proxied: true
   # see https://www.pomerium.io/docs/identity-providers.html
   idp:

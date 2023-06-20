@@ -659,7 +659,7 @@ Return if ingress supports pathType.
 Return the hostname of the authenticate service
 */}}
 {{- define "pomerium.authenticate.hostname" -}}
-{{ printf "%s.%s" (.Values.authenticate.name | default "authenticate") .Values.config.rootDomain }}
+{{ printf "%s%s%s" (.Values.authenticate.name | default "authenticate") (.Values.authenticate.hostnameDivider | default ".") .Values.config.rootDomain }}
 {{- end -}}
 
 {{/* Expand the extraTLSSecret file path */}}
