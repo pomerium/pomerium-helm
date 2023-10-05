@@ -192,6 +192,7 @@ apiProxy:
 
 ingressController:
   enabled: false
+  replicaCount: 1
   ingressClassResource:
     enabled: true
     default: false
@@ -220,6 +221,9 @@ ingressController:
   service:
     annotations: {}
     type: ClusterIP
+  pdb:
+    enabled: false
+    minAvailable: 1
 
 forwardAuth:
   name: ''
