@@ -20,8 +20,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "apparitor"
-          git config user.email "apparitor@users.noreply.github.com"
+          git config user.name "pomerium-ci-bot[bot]"
+          git config user.email "346165314+pomerium-ci-bot[bot]@users.noreply.github.com"
 
       - name: Install helm
         uses: azure/setup-helm@v3
@@ -31,10 +31,18 @@ jobs:
       - name: Add bitnami repo
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
 
+      - name: Create CI token
+        id: ci-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510
+        with:
+          client-id: ${{ secrets.POMERIUM_CI_APP_CLIENT_ID }}
+          private-key: ${{ secrets.POMERIUM_CI_APP_PRIVATE_KEY }}
+          permission-contents: write
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0
         env:
-          CR_TOKEN: "${{ secrets.CI_TOKEN }}"
+          CR_TOKEN: "${{ steps.ci-token.outputs.token }}"
         with:
           charts_dir: charts
           charts_repo_url: https://helm.pomerium.io
