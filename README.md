@@ -1,3 +1,13 @@
+> [!WARNING]
+> **This repository is archived and the chart is no longer maintained.** The last release, `pomerium-34.0.1` (May 2023), pins Pomerium v0.22. It does not receive updates or security fixes.
+>
+> To run Pomerium on Kubernetes, use one of these instead:
+>
+> - The [Pomerium Ingress Controller](https://github.com/pomerium/ingress-controller), following the [Kubernetes deployment docs](https://www.pomerium.com/docs/deploy/k8s) and the [quickstart](https://www.pomerium.com/docs/deploy/k8s/quickstart).
+> - The Kustomize manifests in [pomerium/install](https://github.com/pomerium/install).
+>
+> The chart repository at `https://helm.pomerium.io` stays online for existing installations.
+
 # Helm charts maintained by [Pomerium](https://pomerium.io)
 
 # Using
